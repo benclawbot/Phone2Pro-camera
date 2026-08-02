@@ -1,14 +1,13 @@
-# Phone2Pro Camera
+# Phone2Pro-camera
 
-An on-device Android camera project for the CMF Phone 2 Pro, beginning with a hardware and Camera2 capability audit before the production camera pipeline is finalized.
+Privacy-first, fully on-device camera development for the CMF Phone 2 Pro, with authentic zoom detail as the flagship goal.
 
-## Repository layout
+## Current status
 
-- `docs/PRODUCT_IDEATION.md` — agreed product direction and UX decisions.
-- `docs/DIAGNOSTICS_PLAN.md` — measurements required from the real phone.
-- `docs/GALLERY_INTEROP.md` — standard gallery thumbnail and default photo-viewer behavior.
-- `diagnostics/` — standalone Android diagnostics app.
+- A standalone diagnostics app lives under `diagnostics/`.
+- The first on-device static capability report was completed on 2026-08-02.
+- Findings are documented in `docs/CAPABILITY_AUDIT_2026-08-02.md`.
+- Public Camera2 exposes one rear and one front camera ID; the rear path is `LEVEL_3` with RAW, burst, manual controls, and YUV/PRIVATE reprocessing, but no logical multi-camera or physical rear camera IDs.
+- The next diagnostics stage is a one-button dynamic zoom and burst-throughput audit before the Max Detail algorithm is finalized.
 
-## Current phase
-
-Phase 0 establishes what the phone actually exposes: Camera2 hardware levels, physical and concurrent cameras, RAW and reprocessing support, vendor extensions, stream sizes, sensors, codecs, and thermal limits. The production camera app will be designed from the resulting JSON report rather than assumptions.
+See `docs/PRODUCT_IDEATION.md` for the agreed product direction and `docs/DIAGNOSTICS_PLAN.md` for the measurement gates.
