@@ -9,6 +9,8 @@ import android.hardware.SensorManager;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraExtensionCharacteristics;
 import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
@@ -22,11 +24,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 final class CapabilityReporter {
+    private static final int HIDDEN_NUMERIC_ID_PROBE_LIMIT = 32;
+
     private final Context context;
 
     CapabilityReporter(Context context) {
@@ -35,7 +41,7 @@ final class CapabilityReporter {
 
     JSONObject build() throws Exception {
         JSONObject root = new JSONObject();
-        root.put("schemaVersion", 1);
+        root.put("schemaVersion", 2);
         root.put("generatedAtEpochMillis", System.currentTimeMillis());
         root.put("device", buildDevice());
         root.put("cameras", buildCameras());
@@ -122,6 +128,7 @@ final class CapabilityReporter {
 
         result.put("publicCameraIds", publicIds);
         result.put("cameraEntries", entries);
+        result.put("unlistedNumericIdProbe", probeUnlistedNumericIds(manager, reportedIds));
 
         if (Build.VERSION.SDK_INT >= 30) {
             JSONArray concurrentSets = new JSONArray();
@@ -131,6 +138,56 @@ final class CapabilityReporter {
             result.put("concurrentCameraIdSets", concurrentSets);
         }
         return result;
+    }
+
+    private JSONObject probeUnlistedNumericIds(
+            CameraManager manager,
+            Set<String> alreadyReported
+    ) throws JSONException {
+        JSONObject probe = new JSONObject();
+        probe.put("firstCandidate", 0);
+        probe.put("lastCandidateInclusive", HIDDEN_NUMERIC_ID_PROBE_LIMIT - 1);
+
+        JSONArray accessible = new JSONArray();
+        JSONArray rejected = new JSONArray();
+        for (int number = 0; number < HIDDEN_NUMERIC_ID_PROBE_LIMIT; number++) {
+            String candidate = Integer.toString(number);
+            if (alreadyReported.contains(candidate)) {
+                continue;
+            }
+            try {
+                CameraCharacteristics characteristics = manager.getCameraCharacteristics(candidate);
+                JSONObject discovered = new JSONObject();
+                discovered.put("id", candidate);
+                discovered.put(
+                        "lensFacing",
+                        lensFacing(characteristics.get(CameraCharacteristics.LENS_FACING))
+                );
+                put(
+                        discovered,
+                        "focalLengthsMm",
+                        characteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)
+                );
+                put(
+                        discovered,
+                        "pixelArraySize",
+                        characteristics.get(CameraCharacteristics.SENSOR_INFO_PIXEL_ARRAY_SIZE)
+                );
+                discovered.put("physicalCameraIds", new JSONArray(characteristics.getPhysicalCameraIds()));
+                accessible.put(discovered);
+            } catch (IllegalArgumentException error) {
+                rejected.put(candidate);
+            } catch (Exception error) {
+                JSONObject failure = new JSONObject();
+                failure.put("id", candidate);
+                failure.put("errorType", error.getClass().getName());
+                failure.put("message", String.valueOf(error.getMessage()));
+                rejected.put(failure);
+            }
+        }
+        probe.put("accessibleUnlistedIds", accessible);
+        probe.put("rejectedCandidates", rejected);
+        return probe;
     }
 
     private JSONObject buildCameraEntry(
@@ -180,6 +237,7 @@ final class CapabilityReporter {
                 "outputSizes",
                 outputSizes(characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP))
         );
+        camera.put("metadataKeyInventory", buildMetadataKeyInventory(characteristics));
 
         if (independentlyOpenable && Build.VERSION.SDK_INT >= 31) {
             JSONArray extensions = new JSONArray();
@@ -198,6 +256,96 @@ final class CapabilityReporter {
             }
         }
         return camera;
+    }
+
+    private JSONObject buildMetadataKeyInventory(
+            CameraCharacteristics characteristics
+    ) throws JSONException {
+        JSONObject inventory = new JSONObject();
+        JSONArray characteristicNames = new JSONArray();
+        JSONArray vendorCharacteristicValues = new JSONArray();
+
+        for (CameraCharacteristics.Key<?> key : characteristics.getKeys()) {
+            String name = key.getName();
+            characteristicNames.put(name);
+            if (!name.startsWith("android.")) {
+                JSONObject item = new JSONObject();
+                item.put("name", name);
+                try {
+                    item.put("value", jsonValue(readCharacteristic(characteristics, key)));
+                } catch (Exception error) {
+                    item.put("readError", error.toString());
+                }
+                vendorCharacteristicValues.put(item);
+            }
+        }
+
+        inventory.put("characteristicKeyNames", characteristicNames);
+        inventory.put("vendorCharacteristicValues", vendorCharacteristicValues);
+        inventory.put(
+                "captureRequestKeyNames",
+                requestKeyNames(characteristics.getAvailableCaptureRequestKeys())
+        );
+        inventory.put(
+                "captureResultKeyNames",
+                resultKeyNames(characteristics.getAvailableCaptureResultKeys())
+        );
+        inventory.put(
+                "physicalCameraRequestKeyNames",
+                requestKeyNames(characteristics.getAvailablePhysicalCameraRequestKeys())
+        );
+        inventory.put(
+                "sessionRequestKeyNames",
+                requestKeyNames(characteristics.getAvailableSessionKeys())
+        );
+        inventory.put(
+                "permissionRestrictedCharacteristicKeyNames",
+                characteristicKeyNames(characteristics.getKeysNeedingPermission())
+        );
+        return inventory;
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private static Object readCharacteristic(
+            CameraCharacteristics characteristics,
+            CameraCharacteristics.Key<?> key
+    ) {
+        return characteristics.get((CameraCharacteristics.Key) key);
+    }
+
+    private static JSONArray characteristicKeyNames(
+            Collection<CameraCharacteristics.Key<?>> keys
+    ) {
+        JSONArray names = new JSONArray();
+        if (keys == null) {
+            return names;
+        }
+        for (CameraCharacteristics.Key<?> key : keys) {
+            names.put(key.getName());
+        }
+        return names;
+    }
+
+    private static JSONArray requestKeyNames(Collection<CaptureRequest.Key<?>> keys) {
+        JSONArray names = new JSONArray();
+        if (keys == null) {
+            return names;
+        }
+        for (CaptureRequest.Key<?> key : keys) {
+            names.put(key.getName());
+        }
+        return names;
+    }
+
+    private static JSONArray resultKeyNames(Collection<CaptureResult.Key<?>> keys) {
+        JSONArray names = new JSONArray();
+        if (keys == null) {
+            return names;
+        }
+        for (CaptureResult.Key<?> key : keys) {
+            names.put(key.getName());
+        }
+        return names;
     }
 
     private JSONObject outputSizes(StreamConfigurationMap map) throws JSONException {
@@ -297,26 +445,12 @@ final class CapabilityReporter {
         if (value == null) {
             return JSONObject.NULL;
         }
-        if (value instanceof int[]) {
-            JSONArray result = new JSONArray();
-            for (int number : (int[]) value) {
-                result.put(number);
-            }
-            return result;
-        }
-        if (value instanceof float[]) {
-            JSONArray result = new JSONArray();
-            for (float number : (float[]) value) {
-                result.put((double) number);
-            }
-            return result;
-        }
-        if (value instanceof long[]) {
-            JSONArray result = new JSONArray();
-            for (long number : (long[]) value) {
-                result.put(number);
-            }
-            return result;
+        if (value instanceof CharSequence
+                || value instanceof Number
+                || value instanceof Boolean
+                || value instanceof JSONObject
+                || value instanceof JSONArray) {
+            return value;
         }
         if (value instanceof Size) {
             Size size = (Size) value;
@@ -332,7 +466,23 @@ final class CapabilityReporter {
         if (value instanceof Range<?>) {
             return value.toString();
         }
-        return value;
+        if (value instanceof Collection<?>) {
+            JSONArray result = new JSONArray();
+            for (Object item : (Collection<?>) value) {
+                result.put(jsonValue(item));
+            }
+            return result;
+        }
+        Class<?> valueClass = value.getClass();
+        if (valueClass.isArray()) {
+            JSONArray result = new JSONArray();
+            int length = Array.getLength(value);
+            for (int index = 0; index < length; index++) {
+                result.put(jsonValue(Array.get(value, index)));
+            }
+            return result;
+        }
+        return String.valueOf(value);
     }
 
     private static String lensFacing(Integer facing) {
