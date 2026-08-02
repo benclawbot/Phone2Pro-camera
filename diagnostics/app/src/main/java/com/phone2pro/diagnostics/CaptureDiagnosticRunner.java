@@ -43,7 +43,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 final class CaptureDiagnosticRunner implements AutoCloseable {
-    private static final float[] ZOOM_REQUESTS = {0.6f, 1.0f, 2.0f, 4.0f, 10.0f, 20.0f};
+    private static final float[] NIGHT_ZOOM_REQUESTS =
+            {0.6f, 1.0f, 2.0f, 4.0f, 10.0f, 20.0f};
+    private static final float[] DAYLIGHT_ZOOM_REQUESTS =
+            {0.6f, 1.0f, 1.5f, 1.8f, 1.9f, 2.0f, 2.1f, 2.2f, 2.5f, 3.0f, 4.0f, 10.0f, 20.0f};
+    private static final String MTK_EFFECTIVE_CROP =
+            "com.mediatek.control.capture.scalerCropRegion";
+    private static final String NOTHING_INSENSOR_ZOOM =
+            "com.nothing.camera.insensorzoom.enable";
+    private static final String NOTHING_REMOSAIC =
+            "com.nothing.camera.remosaic.status";
     private static final Set<String> IMPORTANT_RESULT_KEYS = new HashSet<>(Arrays.asList(
             "android.logicalMultiCamera.activePhysicalId",
             "android.lens.focalLength",
@@ -62,7 +71,8 @@ final class CaptureDiagnosticRunner implements AutoCloseable {
 
     private final Context context;
     private final DiagnosticProfile profile;
-    private final HandlerThread cameraThread = new HandlerThread("Phone2ProDiagnosticsCamera");
+    private final HandlerThread cameraThread =
+            new HandlerThread("Phone2ProDiagnosticsCamera");
 
     private Handler cameraHandler;
     private CameraDevice cameraDevice;
@@ -72,6 +82,7 @@ final class CaptureDiagnosticRunner implements AutoCloseable {
     private Surface previewSurface;
     private CameraCharacteristics characteristics;
     private String cameraId;
+    private Size captureSize;
 
     CaptureDiagnosticRunner(Context context, DiagnosticProfile profile) {
         this.context = context.getApplicationContext();
@@ -91,25 +102,47 @@ final class CaptureDiagnosticRunner implements AutoCloseable {
         if (manager == null) {
             throw new IllegalStateException("Camera service is unavailable");
         }
+
+        if (profile == DiagnosticProfile.DAYLIGHT_LENS_ROUTING) {
+            report.put("systemOnlyCameraOpenProbe", probeSystemOnlyCameraOpen(manager));
+        }
+
         cameraId = findRearCamera(manager);
         characteristics = manager.getCameraCharacteristics(cameraId);
         report.put("cameraId", cameraId);
         report.put("advertisedZoomRange", jsonValue(
                 characteristics.get(CameraCharacteristics.CONTROL_ZOOM_RATIO_RANGE)
         ));
+        report.put("activeArray", jsonValue(
+                characteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE)
+        ));
 
         openCamera(manager);
         configureSession();
+        report.put("captureJpegSize", captureSize.toString());
 
         JSONArray samples = new JSONArray();
-        for (float zoom : ZOOM_REQUESTS) {
+        for (float zoom : zoomRequests()) {
             samples.put(captureZoomSample(zoom));
         }
         report.put("zoomSamples", samples);
-        report.put("eightFrameBurst", runBurst(8, 1.0f));
+
+        JSONObject burstAt1x = runBurst(8, 1.0f);
+        report.put("eightFrameBurst", burstAt1x);
+        report.put("eightFrameBurstAt1x", burstAt1x);
+        if (profile == DiagnosticProfile.DAYLIGHT_LENS_ROUTING) {
+            report.put("eightFrameBurstAt2x", runBurst(8, 2.0f));
+        }
+
         report.put("thermalStatusAfter", thermalStatus());
         report.put("finishedAtElapsedRealtimeMillis", SystemClock.elapsedRealtime());
         return report;
+    }
+
+    private float[] zoomRequests() {
+        return profile == DiagnosticProfile.DAYLIGHT_LENS_ROUTING
+                ? DAYLIGHT_ZOOM_REQUESTS
+                : NIGHT_ZOOM_REQUESTS;
     }
 
     private String findRearCamera(CameraManager manager) throws CameraAccessException {
@@ -121,6 +154,82 @@ final class CaptureDiagnosticRunner implements AutoCloseable {
             }
         }
         throw new IllegalStateException("No public rear camera is available");
+    }
+
+    @SuppressLint("MissingPermission")
+    private JSONArray probeSystemOnlyCameraOpen(CameraManager manager) throws JSONException {
+        JSONArray probes = new JSONArray();
+        for (int numericId = 2; numericId <= 5; numericId++) {
+            String candidate = String.valueOf(numericId);
+            JSONObject probe = new JSONObject();
+            probe.put("id", candidate);
+            CountDownLatch latch = new CountDownLatch(1);
+            AtomicReference<String> outcome = new AtomicReference<>("timeout");
+            AtomicReference<Integer> callbackError = new AtomicReference<>();
+
+            try {
+                manager.openCamera(candidate, new CameraDevice.StateCallback() {
+                    @Override
+                    public void onOpened(CameraDevice camera) {
+                        outcome.set("opened");
+                        camera.close();
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onDisconnected(CameraDevice camera) {
+                        outcome.set("disconnected");
+                        camera.close();
+                        latch.countDown();
+                    }
+
+                    @Override
+                    public void onError(CameraDevice camera, int error) {
+                        callbackError.set(error);
+                        outcome.set("callback-error");
+                        camera.close();
+                        latch.countDown();
+                    }
+                }, cameraHandler);
+
+                boolean completed = latch.await(3, TimeUnit.SECONDS);
+                probe.put("completed", completed);
+                probe.put("outcome", outcome.get());
+                if (callbackError.get() != null) {
+                    probe.put("callbackErrorCode", callbackError.get());
+                    probe.put("callbackErrorName", cameraErrorName(callbackError.get()));
+                }
+            } catch (Exception error) {
+                probe.put("completed", true);
+                probe.put("outcome", "exception");
+                probe.put("errorType", error.getClass().getName());
+                probe.put("message", String.valueOf(error.getMessage()));
+                if (error instanceof CameraAccessException) {
+                    probe.put("cameraAccessReason",
+                            ((CameraAccessException) error).getReason());
+                }
+            }
+            probes.put(probe);
+            SystemClock.sleep(150);
+        }
+        return probes;
+    }
+
+    private static String cameraErrorName(int error) {
+        switch (error) {
+            case CameraDevice.StateCallback.ERROR_CAMERA_IN_USE:
+                return "ERROR_CAMERA_IN_USE";
+            case CameraDevice.StateCallback.ERROR_MAX_CAMERAS_IN_USE:
+                return "ERROR_MAX_CAMERAS_IN_USE";
+            case CameraDevice.StateCallback.ERROR_CAMERA_DISABLED:
+                return "ERROR_CAMERA_DISABLED";
+            case CameraDevice.StateCallback.ERROR_CAMERA_DEVICE:
+                return "ERROR_CAMERA_DEVICE";
+            case CameraDevice.StateCallback.ERROR_CAMERA_SERVICE:
+                return "ERROR_CAMERA_SERVICE";
+            default:
+                return "UNKNOWN_" + error;
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -144,7 +253,9 @@ final class CaptureDiagnosticRunner implements AutoCloseable {
             @Override
             public void onError(CameraDevice camera, int error) {
                 camera.close();
-                failure.set(new IllegalStateException("Rear camera open error " + error));
+                failure.set(new IllegalStateException(
+                        "Rear camera open error " + cameraErrorName(error)
+                ));
                 latch.countDown();
             }
         }, cameraHandler);
@@ -159,10 +270,10 @@ final class CaptureDiagnosticRunner implements AutoCloseable {
     }
 
     private void configureSession() throws Exception {
-        Size jpegSize = chooseJpegSize(characteristics);
+        captureSize = chooseJpegSize(characteristics);
         jpegReader = ImageReader.newInstance(
-                jpegSize.getWidth(),
-                jpegSize.getHeight(),
+                captureSize.getWidth(),
+                captureSize.getHeight(),
                 ImageFormat.JPEG,
                 24
         );
@@ -183,7 +294,9 @@ final class CaptureDiagnosticRunner implements AutoCloseable {
 
                     @Override
                     public void onConfigureFailed(CameraCaptureSession configured) {
-                        failure.set(new IllegalStateException("Capture session configuration failed"));
+                        failure.set(new IllegalStateException(
+                                "Capture session configuration failed"
+                        ));
                         latch.countDown();
                     }
                 },
@@ -195,9 +308,11 @@ final class CaptureDiagnosticRunner implements AutoCloseable {
         }
     }
 
-    private Size chooseJpegSize(CameraCharacteristics c) {
+    private Size chooseJpegSize(CameraCharacteristics cameraCharacteristics) {
         android.hardware.camera2.params.StreamConfigurationMap map =
-                c.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+                cameraCharacteristics.get(
+                        CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP
+                );
         if (map == null || map.getOutputSizes(ImageFormat.JPEG) == null) {
             return new Size(1920, 1440);
         }
@@ -207,7 +322,8 @@ final class CaptureDiagnosticRunner implements AutoCloseable {
             if (pixels > 5_000_000L) {
                 continue;
             }
-            if (best == null || pixels > (long) best.getWidth() * best.getHeight()) {
+            if (best == null
+                    || pixels > (long) best.getWidth() * best.getHeight()) {
                 best = size;
             }
         }
@@ -288,7 +404,8 @@ final class CaptureDiagnosticRunner implements AutoCloseable {
             }
         }, cameraHandler);
 
-        await(resultLatch, 15, "receiving capture metadata at " + requestedZoom + "x");
+        await(resultLatch, 15,
+                "receiving capture metadata at " + requestedZoom + "x");
         await(imageLatch, 15, "receiving JPEG at " + requestedZoom + "x");
 
         sample.put("requestAccepted", captureError.get() == null);
@@ -297,6 +414,10 @@ final class CaptureDiagnosticRunner implements AutoCloseable {
         }
         if (captureResult.get() != null) {
             sample.put("captureResult", captureResultJson(captureResult.get()));
+            sample.put(
+                    "derivedRoutingEvidence",
+                    deriveRoutingEvidence(captureResult.get(), requestedZoom)
+            );
         }
         if (jpegBytes.get() != null) {
             sample.put("jpegBytes", jpegBytes.get().length);
@@ -314,6 +435,90 @@ final class CaptureDiagnosticRunner implements AutoCloseable {
         return sample;
     }
 
+    private JSONObject deriveRoutingEvidence(
+            TotalCaptureResult result,
+            float requestedZoom
+    ) throws JSONException {
+        JSONObject evidence = new JSONObject();
+        evidence.put("requestedZoom", requestedZoom);
+
+        Object standardZoom = resultValueByName(
+                result,
+                "android.control.zoomRatio"
+        );
+        Object activePhysicalId = resultValueByName(
+                result,
+                "android.logicalMultiCamera.activePhysicalId"
+        );
+        Object focalLength = resultValueByName(
+                result,
+                "android.lens.focalLength"
+        );
+        Object effectiveCrop = resultValueByName(result, MTK_EFFECTIVE_CROP);
+        Object inSensorZoom = resultValueByName(result, NOTHING_INSENSOR_ZOOM);
+        Object remosaic = resultValueByName(result, NOTHING_REMOSAIC);
+
+        evidence.put("standardZoomEcho", jsonValue(standardZoom));
+        evidence.put("activePhysicalId", jsonValue(activePhysicalId));
+        evidence.put("focalLengthMm", jsonValue(focalLength));
+        evidence.put("mediatekEffectiveCrop", jsonValue(effectiveCrop));
+        evidence.put("nothingInSensorZoom", jsonValue(inSensorZoom));
+        evidence.put("nothingRemosaic", jsonValue(remosaic));
+
+        Double effectiveZoom = effectiveZoomFromCrop(effectiveCrop);
+        if (effectiveZoom != null) {
+            evidence.put("effectiveDigitalZoom", effectiveZoom);
+            evidence.put(
+                    "requestClampedOrIgnored",
+                    Math.abs(effectiveZoom - requestedZoom) > 0.15
+            );
+        } else {
+            evidence.put("effectiveDigitalZoom", JSONObject.NULL);
+            evidence.put("requestClampedOrIgnored", JSONObject.NULL);
+        }
+        return evidence;
+    }
+
+    private Double effectiveZoomFromCrop(Object cropValue) {
+        Rect active = characteristics.get(
+                CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE
+        );
+        if (active == null || cropValue == null) {
+            return null;
+        }
+
+        double cropWidth;
+        if (cropValue instanceof Rect) {
+            cropWidth = ((Rect) cropValue).width();
+        } else if (cropValue.getClass().isArray()
+                && Array.getLength(cropValue) >= 4) {
+            Object widthValue = Array.get(cropValue, 2);
+            if (!(widthValue instanceof Number)) {
+                return null;
+            }
+            cropWidth = ((Number) widthValue).doubleValue();
+        } else {
+            return null;
+        }
+
+        if (cropWidth <= 0) {
+            return null;
+        }
+        return active.width() / cropWidth;
+    }
+
+    private Object resultValueByName(
+            TotalCaptureResult result,
+            String targetName
+    ) {
+        for (CaptureResult.Key<?> key : result.getKeys()) {
+            if (targetName.equals(key.getName())) {
+                return readResult(result, key);
+            }
+        }
+        return null;
+    }
+
     private JSONObject runBurst(int frameCount, float zoom) throws Exception {
         JSONObject result = new JSONObject();
         result.put("requestedFrames", frameCount);
@@ -324,6 +529,7 @@ final class CaptureDiagnosticRunner implements AutoCloseable {
         CountDownLatch imageLatch = new CountDownLatch(frameCount);
         CountDownLatch resultLatch = new CountDownLatch(frameCount);
         JSONArray sensorTimestamps = new JSONArray();
+        List<Long> timestampValues = new ArrayList<>();
 
         jpegReader.setOnImageAvailableListener(reader -> {
             try (Image image = reader.acquireNextImage()) {
@@ -358,7 +564,12 @@ final class CaptureDiagnosticRunner implements AutoCloseable {
             ) {
                 Long timestamp = captureResult.get(CaptureResult.SENSOR_TIMESTAMP);
                 synchronized (sensorTimestamps) {
-                    sensorTimestamps.put(timestamp == null ? JSONObject.NULL : timestamp);
+                    sensorTimestamps.put(
+                            timestamp == null ? JSONObject.NULL : timestamp
+                    );
+                    if (timestamp != null) {
+                        timestampValues.add(timestamp);
+                    }
                 }
                 completedResults.incrementAndGet();
                 resultLatch.countDown();
@@ -382,7 +593,30 @@ final class CaptureDiagnosticRunner implements AutoCloseable {
         result.put("imagesComplete", imagesComplete);
         result.put("wallTimeMillis", SystemClock.elapsedRealtime() - start);
         result.put("sensorTimestampsNs", sensorTimestamps);
+        addBurstTiming(result, timestampValues);
         return result;
+    }
+
+    private void addBurstTiming(JSONObject output, List<Long> timestamps)
+            throws JSONException {
+        JSONArray deltas = new JSONArray();
+        if (timestamps.size() < 2) {
+            output.put("interFrameDeltasNs", deltas);
+            output.put("meanInterFrameMillis", JSONObject.NULL);
+            output.put("estimatedFramesPerSecond", JSONObject.NULL);
+            return;
+        }
+
+        long sum = 0;
+        for (int index = 1; index < timestamps.size(); index++) {
+            long delta = timestamps.get(index) - timestamps.get(index - 1);
+            deltas.put(delta);
+            sum += delta;
+        }
+        double meanNs = (double) sum / (timestamps.size() - 1);
+        output.put("interFrameDeltasNs", deltas);
+        output.put("meanInterFrameMillis", meanNs / 1_000_000.0);
+        output.put("estimatedFramesPerSecond", 1_000_000_000.0 / meanNs);
     }
 
     private void applyAutomaticControls(CaptureRequest.Builder request) {
@@ -413,7 +647,8 @@ final class CaptureDiagnosticRunner implements AutoCloseable {
         }
     }
 
-    private JSONObject captureResultJson(TotalCaptureResult result) throws JSONException {
+    private JSONObject captureResultJson(TotalCaptureResult result)
+            throws JSONException {
         JSONObject output = new JSONObject();
         JSONArray keyNames = new JSONArray();
         JSONObject important = new JSONObject();
@@ -437,7 +672,10 @@ final class CaptureDiagnosticRunner implements AutoCloseable {
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static Object readResult(TotalCaptureResult result, CaptureResult.Key<?> key) {
+    private static Object readResult(
+            TotalCaptureResult result,
+            CaptureResult.Key<?> key
+    ) {
         return result.get((CaptureResult.Key) key);
     }
 
@@ -446,8 +684,11 @@ final class CaptureDiagnosticRunner implements AutoCloseable {
         return manager == null ? -1 : manager.getCurrentThermalStatus();
     }
 
-    private static void await(CountDownLatch latch, int seconds, String operation)
-            throws Exception {
+    private static void await(
+            CountDownLatch latch,
+            int seconds,
+            String operation
+    ) throws Exception {
         if (!latch.await(seconds, TimeUnit.SECONDS)) {
             throw new IllegalStateException("Timed out while " + operation);
         }
@@ -457,13 +698,17 @@ final class CaptureDiagnosticRunner implements AutoCloseable {
         if (value == null) {
             return JSONObject.NULL;
         }
-        if (value instanceof Number || value instanceof Boolean || value instanceof String) {
+        if (value instanceof Number
+                || value instanceof Boolean
+                || value instanceof String) {
             return value;
         }
         if (value instanceof Rect) {
             return ((Rect) value).flattenToString();
         }
-        if (value instanceof Range<?> || value instanceof Size || value instanceof SizeF) {
+        if (value instanceof Range<?>
+                || value instanceof Size
+                || value instanceof SizeF) {
             return value.toString();
         }
         if (value instanceof Collection<?>) {
