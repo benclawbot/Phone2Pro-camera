@@ -18,7 +18,7 @@ enum DiagnosticProfile {
     DAYLIGHT_LENS_ROUTING(
             "daylight-lens-routing",
             "Daylight lens-routing audit",
-            "Run outdoors in good light. Tests 0.6x, 1x, 2x, 4x, 10x, and 20x requests, sensor switching metadata, sample geometry, and an 8-frame burst.",
+            "Run outdoors in good light. Probes system-only camera IDs, tests dense zoom steps around 2x plus 0.6x to 20x, derives the real crop/zoom path, and benchmarks 8-frame bursts at 1x and 2x.",
             true,
             800
     );
