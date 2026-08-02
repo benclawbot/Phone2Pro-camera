@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Phone2Pro Diagnostics</string>
-    <string name="run_audit">Run capability audit</string>
-    <string name="export_report">Export JSON report</string>
-    <string name="gallery_test">Create gallery test JPEG</string>
-    <string name="thumbnail_description">Open latest Phone2Pro photo in the default photo viewer</string>
+    <string name="start_diagnostics">Start diagnostics and create report</string>
 </resources>
