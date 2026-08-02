@@ -24,7 +24,6 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 final class CapabilityReporter {
@@ -58,6 +57,7 @@ final class CapabilityReporter {
         device.put("sdkInt", Build.VERSION.SDK_INT);
         device.put("securityPatch", Build.VERSION.SECURITY_PATCH);
         device.put("fingerprint", Build.FINGERPRINT);
+
         if (Build.VERSION.SDK_INT >= 31) {
             device.put("socManufacturer", Build.SOC_MANUFACTURER);
             device.put("socModel", Build.SOC_MODEL);
@@ -87,113 +87,147 @@ final class CapabilityReporter {
         if (manager == null) {
             throw new IllegalStateException("Camera service is unavailable");
         }
+
         JSONObject result = new JSONObject();
         JSONArray publicIds = new JSONArray();
-        JSONArray cameras = new JSONArray();
+        JSONArray entries = new JSONArray();
         Set<String> reportedIds = new LinkedHashSet<>();
 
-        for (String id : manager.getCameraIdList()) {
-            publicIds.put(id);
-            CameraCharacteristics characteristics = manager.getCameraCharacteristics(id);
-            cameras.put(buildCamera(manager, id, characteristics, true));
-            reportedIds.add(id);
+        for (String cameraId : manager.getCameraIdList()) {
+            publicIds.put(cameraId);
+            CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
+            entries.put(buildCameraEntry(manager, cameraId, characteristics, true));
+            reportedIds.add(cameraId);
+
             for (String physicalId : characteristics.getPhysicalCameraIds()) {
-                if (reportedIds.add(physicalId)) {
-                    cameras.put(buildCamera(
+                if (!reportedIds.add(physicalId)) {
+                    continue;
+                }
+                try {
+                    entries.put(buildCameraEntry(
                             manager,
                             physicalId,
                             manager.getCameraCharacteristics(physicalId),
                             false
                     ));
+                } catch (Exception error) {
+                    JSONObject failed = new JSONObject();
+                    failed.put("id", physicalId);
+                    failed.put("independentlyOpenable", false);
+                    failed.put("inspectionError", error.toString());
+                    entries.put(failed);
                 }
             }
         }
 
         result.put("publicCameraIds", publicIds);
-        result.put("cameraEntries", cameras);
+        result.put("cameraEntries", entries);
+
         if (Build.VERSION.SDK_INT >= 30) {
-            JSONArray concurrent = new JSONArray();
-            for (Set<String> combination : manager.getConcurrentCameraIds()) {
-                concurrent.put(new JSONArray(combination));
+            JSONArray concurrentSets = new JSONArray();
+            for (Set<String> cameraSet : manager.getConcurrentCameraIds()) {
+                concurrentSets.put(new JSONArray(cameraSet));
             }
-            result.put("concurrentCameraIdSets", concurrent);
+            result.put("concurrentCameraIdSets", concurrentSets);
         }
         return result;
     }
 
-    private JSONObject buildCamera(
+    private JSONObject buildCameraEntry(
             CameraManager manager,
             String id,
-            CameraCharacteristics c,
+            CameraCharacteristics characteristics,
             boolean independentlyOpenable
     ) throws Exception {
         JSONObject camera = new JSONObject();
         camera.put("id", id);
         camera.put("independentlyOpenable", independentlyOpenable);
-        camera.put("lensFacing", lensFacing(c.get(CameraCharacteristics.LENS_FACING)));
-        camera.put("sensorOrientation", value(c.get(CameraCharacteristics.SENSOR_ORIENTATION)));
-        camera.put("hardwareLevel", hardwareLevel(c.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL)));
-        camera.put("physicalCameraIds", new JSONArray(c.getPhysicalCameraIds()));
-        camera.put("capabilities", capabilities(c.get(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES)));
-        camera.put("flashAvailable", value(c.get(CameraCharacteristics.FLASH_INFO_AVAILABLE)));
-        camera.put("focalLengthsMm", value(c.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)));
-        camera.put("apertures", value(c.get(CameraCharacteristics.LENS_INFO_AVAILABLE_APERTURES)));
-        camera.put("minimumFocusDistance", value(c.get(CameraCharacteristics.LENS_INFO_MINIMUM_FOCUS_DISTANCE)));
-        camera.put("maxDigitalZoom", value(c.get(CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM)));
+        camera.put(
+                "lensFacing",
+                lensFacing(characteristics.get(CameraCharacteristics.LENS_FACING))
+        );
+        camera.put(
+                "hardwareLevel",
+                hardwareLevel(characteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL))
+        );
+        put(camera, "sensorOrientation", characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION));
+        camera.put("physicalCameraIds", new JSONArray(characteristics.getPhysicalCameraIds()));
+        camera.put(
+                "capabilities",
+                capabilities(characteristics.get(CameraCharacteristics.REQUEST_AVAILABLE_CAPABILITIES))
+        );
+        put(camera, "flashAvailable", characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE));
+        put(camera, "focalLengthsMm", characteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS));
+        put(camera, "apertures", characteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_APERTURES));
+        put(camera, "minimumFocusDistance", characteristics.get(CameraCharacteristics.LENS_INFO_MINIMUM_FOCUS_DISTANCE));
+        put(camera, "maxDigitalZoom", characteristics.get(CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM));
         if (Build.VERSION.SDK_INT >= 30) {
-            camera.put("zoomRatioRange", value(c.get(CameraCharacteristics.CONTROL_ZOOM_RATIO_RANGE)));
+            put(camera, "zoomRatioRange", characteristics.get(CameraCharacteristics.CONTROL_ZOOM_RATIO_RANGE));
         }
-        camera.put("opticalStabilizationModes", value(c.get(CameraCharacteristics.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION)));
-        camera.put("videoStabilizationModes", value(c.get(CameraCharacteristics.CONTROL_AVAILABLE_VIDEO_STABILIZATION_MODES)));
-        camera.put("maxAfRegions", value(c.get(CameraCharacteristics.CONTROL_MAX_REGIONS_AF)));
-        camera.put("pixelArraySize", value(c.get(CameraCharacteristics.SENSOR_INFO_PIXEL_ARRAY_SIZE)));
-        camera.put("activeArray", value(c.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE)));
-        camera.put("physicalSensorSizeMm", value(c.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE)));
-        camera.put("exposureTimeRangeNs", value(c.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE)));
-        camera.put("sensitivityRange", value(c.get(CameraCharacteristics.SENSOR_INFO_SENSITIVITY_RANGE)));
-        camera.put("maxAnalogSensitivity", value(c.get(CameraCharacteristics.SENSOR_MAX_ANALOG_SENSITIVITY)));
-        camera.put("maxRawOutputs", value(c.get(CameraCharacteristics.REQUEST_MAX_NUM_OUTPUT_RAW)));
-        camera.put("maxProcessedOutputs", value(c.get(CameraCharacteristics.REQUEST_MAX_NUM_OUTPUT_PROC)));
-        camera.put("maxStallingOutputs", value(c.get(CameraCharacteristics.REQUEST_MAX_NUM_OUTPUT_PROC_STALLING)));
-        camera.put("outputSizes", outputSizes(c.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)));
+        put(camera, "opticalStabilizationModes", characteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION));
+        put(camera, "videoStabilizationModes", characteristics.get(CameraCharacteristics.CONTROL_AVAILABLE_VIDEO_STABILIZATION_MODES));
+        put(camera, "maxAfRegions", characteristics.get(CameraCharacteristics.CONTROL_MAX_REGIONS_AF));
+        put(camera, "pixelArraySize", characteristics.get(CameraCharacteristics.SENSOR_INFO_PIXEL_ARRAY_SIZE));
+        put(camera, "activeArray", characteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE));
+        put(camera, "physicalSensorSizeMm", characteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE));
+        put(camera, "exposureTimeRangeNs", characteristics.get(CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE));
+        put(camera, "sensitivityRange", characteristics.get(CameraCharacteristics.SENSOR_INFO_SENSITIVITY_RANGE));
+        put(camera, "maxAnalogSensitivity", characteristics.get(CameraCharacteristics.SENSOR_MAX_ANALOG_SENSITIVITY));
+        put(camera, "maxRawOutputs", characteristics.get(CameraCharacteristics.REQUEST_MAX_NUM_OUTPUT_RAW));
+        put(camera, "maxProcessedOutputs", characteristics.get(CameraCharacteristics.REQUEST_MAX_NUM_OUTPUT_PROC));
+        put(camera, "maxStallingOutputs", characteristics.get(CameraCharacteristics.REQUEST_MAX_NUM_OUTPUT_PROC_STALLING));
+        camera.put(
+                "outputSizes",
+                outputSizes(characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP))
+        );
 
         if (independentlyOpenable && Build.VERSION.SDK_INT >= 31) {
             JSONArray extensions = new JSONArray();
-            for (Integer extension : manager.getCameraExtensionCharacteristics(id).getSupportedExtensions()) {
-                JSONObject item = new JSONObject();
-                item.put("id", extension);
-                item.put("name", extensionName(extension));
-                extensions.put(item);
+            try {
+                CameraExtensionCharacteristics extensionCharacteristics =
+                        manager.getCameraExtensionCharacteristics(id);
+                for (Integer extension : extensionCharacteristics.getSupportedExtensions()) {
+                    JSONObject item = new JSONObject();
+                    item.put("id", extension);
+                    item.put("name", extensionName(extension));
+                    extensions.put(item);
+                }
+                camera.put("extensions", extensions);
+            } catch (Exception error) {
+                camera.put("extensionsError", error.toString());
             }
-            camera.put("extensions", extensions);
         }
         return camera;
     }
 
     private JSONObject outputSizes(StreamConfigurationMap map) throws JSONException {
-        JSONObject sizes = new JSONObject();
+        JSONObject output = new JSONObject();
         if (map == null) {
-            return sizes;
+            return output;
         }
-        sizes.put("jpeg", sizes(map.getOutputSizes(ImageFormat.JPEG)));
-        sizes.put("yuv420", sizes(map.getOutputSizes(ImageFormat.YUV_420_888)));
-        sizes.put("rawSensor", sizes(map.getOutputSizes(ImageFormat.RAW_SENSOR)));
-        sizes.put("private", sizes(map.getOutputSizes(ImageFormat.PRIVATE)));
-        sizes.put("highResolutionJpeg", sizes(map.getHighResolutionOutputSizes(ImageFormat.JPEG)));
-        sizes.put("highResolutionYuv420", sizes(map.getHighResolutionOutputSizes(ImageFormat.YUV_420_888)));
-        return sizes;
+        output.put("jpeg", sizes(map.getOutputSizes(ImageFormat.JPEG)));
+        output.put("yuv420", sizes(map.getOutputSizes(ImageFormat.YUV_420_888)));
+        output.put("rawSensor", sizes(map.getOutputSizes(ImageFormat.RAW_SENSOR)));
+        output.put("private", sizes(map.getOutputSizes(ImageFormat.PRIVATE)));
+        output.put("highResolutionJpeg", sizes(map.getHighResolutionOutputSizes(ImageFormat.JPEG)));
+        output.put(
+                "highResolutionYuv420",
+                sizes(map.getHighResolutionOutputSizes(ImageFormat.YUV_420_888))
+        );
+        return output;
     }
 
-    private JSONArray sizes(Size[] sizes) {
+    private JSONArray sizes(Size[] values) {
         JSONArray result = new JSONArray();
-        if (sizes != null) {
-            Arrays.stream(sizes)
-                    .sorted((a, b) -> Long.compare(
-                            (long) b.getWidth() * b.getHeight(),
-                            (long) a.getWidth() * a.getHeight()
-                    ))
-                    .forEach(size -> result.put(size.getWidth() + "x" + size.getHeight()));
+        if (values == null) {
+            return result;
         }
+        Arrays.stream(values)
+                .sorted((left, right) -> Long.compare(
+                        (long) right.getWidth() * right.getHeight(),
+                        (long) left.getWidth() * left.getHeight()
+                ))
+                .forEach(size -> result.put(size.getWidth() + "x" + size.getHeight()));
         return result;
     }
 
@@ -212,13 +246,13 @@ final class CapabilityReporter {
     }
 
     private JSONArray buildSensors() throws JSONException {
+        JSONArray result = new JSONArray();
         SensorManager manager = context.getSystemService(SensorManager.class);
-        JSONArray sensors = new JSONArray();
         if (manager == null) {
-            return sensors;
+            return result;
         }
-        List<Sensor> all = manager.getSensorList(Sensor.TYPE_ALL);
-        for (Sensor sensor : all) {
+
+        for (Sensor sensor : manager.getSensorList(Sensor.TYPE_ALL)) {
             JSONObject item = new JSONObject();
             item.put("name", sensor.getName());
             item.put("vendor", sensor.getVendor());
@@ -231,14 +265,15 @@ final class CapabilityReporter {
             item.put("minDelayMicros", sensor.getMinDelay());
             item.put("maxDelayMicros", sensor.getMaxDelay());
             item.put("reportingMode", sensor.getReportingMode());
-            sensors.put(item);
+            result.put(item);
         }
-        return sensors;
+        return result;
     }
 
     private JSONArray buildCodecs() throws JSONException {
         JSONArray result = new JSONArray();
-        for (MediaCodecInfo codec : new MediaCodecList(MediaCodecList.ALL_CODECS).getCodecInfos()) {
+        MediaCodecInfo[] codecs = new MediaCodecList(MediaCodecList.ALL_CODECS).getCodecInfos();
+        for (MediaCodecInfo codec : codecs) {
             if (!codec.isHardwareAccelerated()) {
                 continue;
             }
@@ -254,17 +289,25 @@ final class CapabilityReporter {
         return result;
     }
 
-    private static Object value(Object value) {
+    private static void put(JSONObject target, String key, Object value) throws JSONException {
+        target.put(key, jsonValue(value));
+    }
+
+    private static Object jsonValue(Object value) throws JSONException {
         if (value == null) {
             return JSONObject.NULL;
         }
         if (value instanceof int[]) {
-            return new JSONArray(Arrays.stream((int[]) value).boxed().toList());
+            JSONArray result = new JSONArray();
+            for (int number : (int[]) value) {
+                result.put(number);
+            }
+            return result;
         }
         if (value instanceof float[]) {
             JSONArray result = new JSONArray();
             for (float number : (float[]) value) {
-                result.put(number);
+                result.put((double) number);
             }
             return result;
         }
@@ -275,17 +318,19 @@ final class CapabilityReporter {
             }
             return result;
         }
-        if (value instanceof Size size) {
+        if (value instanceof Size) {
+            Size size = (Size) value;
             return size.getWidth() + "x" + size.getHeight();
         }
-        if (value instanceof SizeF size) {
+        if (value instanceof SizeF) {
+            SizeF size = (SizeF) value;
             return size.getWidth() + "x" + size.getHeight();
         }
-        if (value instanceof Rect rect) {
-            return rect.flattenToString();
+        if (value instanceof Rect) {
+            return ((Rect) value).flattenToString();
         }
-        if (value instanceof Range<?> range) {
-            return range.toString();
+        if (value instanceof Range<?>) {
+            return value.toString();
         }
         return value;
     }
