@@ -1,5 +1,7 @@
 # Gallery and default photo-viewer integration
 
+This is a requirement for the future production camera app. It is intentionally outside the diagnostics app.
+
 ## Required behavior
 
 The camera screen has a small circular latest-photo thumbnail in the bottom-left position, matching the familiar behavior shown in the reference screenshots.
@@ -21,6 +23,6 @@ The camera screen has a small circular latest-photo thumbnail in the bottom-left
 - A thumbnail is loaded with `ContentResolver.loadThumbnail`.
 - Because the app opens media it created itself, broad photo-library permission is not required for this interaction on modern Android versions.
 
-## Diagnostics coverage
+## Scope boundary
 
-The diagnostics app contains a `Create gallery test JPEG` action. It creates a local JPEG test card, inserts it into MediaStore, updates a circular bottom-left thumbnail, and opens the image in the default viewer when tapped. This validates the exact interoperability path before the production camera app exists.
+The diagnostics app has one purpose: start the capability-measurement workflow and save its JSON report. It does not capture user photos or implement camera-screen, thumbnail, gallery, or viewer behavior.
