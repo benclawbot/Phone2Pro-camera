@@ -1,8 +1,10 @@
 # Phone2Pro diagnostics app
 
-Standalone dependency-light Android app that audits the phone's public Camera2, sensor, codec, memory, and thermal capabilities.
+A standalone, dependency-light Android app that collects the phone's public Camera2, sensor, codec, memory, and thermal capabilities.
 
-It also validates the planned gallery flow by creating a local test JPEG in `DCIM/Phone2Pro Camera`, showing its thumbnail in the bottom-left control, and opening it in the phone's default photo viewer.
+The interface intentionally contains one action: **Start diagnostics and create report**. It requests camera permission, runs the complete audit, and automatically writes one JSON report to `Downloads/Phone2Pro Diagnostics`.
+
+The diagnostics app does not implement the future camera UI, photo capture, gallery thumbnail, or default-viewer flow. Those requirements are documented separately for the production camera app.
 
 ## Build
 
@@ -18,4 +20,4 @@ From the repository root:
 gradle -p diagnostics lintDebug assembleDebug
 ```
 
-Install `diagnostics/app/build/outputs/apk/debug/app-debug.apk`, grant camera permission, and run the audit. Exported reports are written to `Downloads/Phone2Pro Diagnostics`.
+Install `diagnostics/app/build/outputs/apk/debug/app-debug.apk`, launch it, press the single button, grant camera permission, and retrieve the generated report from `Downloads/Phone2Pro Diagnostics`.
