@@ -2,7 +2,6 @@ package com.phone2pro.diagnostics;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.SystemClock;
 
 import org.json.JSONArray;
@@ -128,13 +127,14 @@ final class FullSpecificationRunner {
         return wrapper;
     }
 
+    @SuppressWarnings("deprecation")
     private JSONObject appInfo() {
         JSONObject result = new JSONObject();
         CameraJson.put(result, "packageName", context.getPackageName());
         try {
             PackageInfo info = context.getPackageManager().getPackageInfo(
                     context.getPackageName(),
-                    PackageManager.PackageInfoFlags.of(0)
+                    0
             );
             CameraJson.put(result, "versionName", info.versionName);
             CameraJson.put(result, "longVersionCode", info.getLongVersionCode());
