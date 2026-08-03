@@ -1,0 +1,44 @@
+name: Replacement Camera Android
+
+on:
+  push:
+    paths:
+      - "camera-app/**"
+      - ".github/workflows/camera-app-android.yml"
+  pull_request:
+    paths:
+      - "camera-app/**"
+      - ".github/workflows/camera-app-android.yml"
+
+concurrency:
+  group: camera-app-android-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: android-actions/setup-android@v3
+      - name: Install Android SDK
+        run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.5.0"
+      - name: Test, lint and build replacement camera
+        run: gradle -p camera-app testDebugUnitTest lintDebug assembleDebug
+      - name: Upload replacement camera APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: phone2pro-camera-debug
+          path: camera-app/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
