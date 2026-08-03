@@ -12,7 +12,7 @@ set -Eeuo pipefail
 #
 # The user completes the stock-camera interaction while Frida is attached:
 # enter Expert mode, select only the assigned lens, wait, take one photo, wait,
-# exit the camera, then stop Frida with Ctrl-C.
+# exit the camera, then stop Frida. Ctrl-D is preferred; Ctrl-C is also handled.
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
@@ -168,7 +168,7 @@ fi
 # the script through a wrapper if their environment needs multiple selector args.
 FRIDA=(frida "$FRIDA_DEVICE")
 
-DEVICE_STATE="$(${ADB[@]} get-state 2>/dev/null || true)"
+DEVICE_STATE="$("${ADB[@]}" get-state 2>/dev/null || true)"
 [[ "$DEVICE_STATE" == "device" ]] || fail "ADB device is not ready (state: ${DEVICE_STATE:-unknown})"
 
 if ! "${ADB[@]}" shell pm path "$PACKAGE" </dev/null | grep -q '^package:'; then
@@ -182,6 +182,7 @@ mkdir -p "$RUN_DIR"
 LOGCAT_PID=""
 FRIDA_STATUS=0
 CLEANED_UP=0
+INTERRUPTED=0
 
 stop_logcat() {
   if [[ -n "$LOGCAT_PID" ]] && kill -0 "$LOGCAT_PID" 2>/dev/null; then
@@ -200,18 +201,21 @@ cleanup() {
       printf 'cleanupUtc=%s\n' "$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
       printf 'scriptExitStatus=%s\n' "$exit_status"
       printf 'fridaExitStatus=%s\n' "$FRIDA_STATUS"
+      printf 'interrupted=%s\n' "$INTERRUPTED"
     } >>"${RUN_DIR}/run-status.txt" 2>/dev/null || true
   fi
   exit "$exit_status"
 }
 trap cleanup EXIT
-trap 'exit 130' INT
+# Bash receives the same terminal SIGINT as foreground Frida. Record it but do
+# not exit immediately, so post-run dumps and hashes are still collected.
+trap 'INTERRUPTED=1' INT
 trap 'exit 143' TERM
 
-BUILD_FINGERPRINT="$(${ADB[@]} shell getprop ro.build.fingerprint </dev/null | tr -d '\r')"
-SDK_INT="$(${ADB[@]} shell getprop ro.build.version.sdk </dev/null | tr -d '\r')"
-SECURITY_PATCH="$(${ADB[@]} shell getprop ro.build.version.security_patch </dev/null | tr -d '\r')"
-CAMERA_VERSION="$(${ADB[@]} shell dumpsys package "$PACKAGE" </dev/null \
+BUILD_FINGERPRINT="$("${ADB[@]}" shell getprop ro.build.fingerprint </dev/null | tr -d '\r')"
+SDK_INT="$("${ADB[@]}" shell getprop ro.build.version.sdk </dev/null | tr -d '\r')"
+SECURITY_PATCH="$("${ADB[@]}" shell getprop ro.build.version.security_patch </dev/null | tr -d '\r')"
+CAMERA_VERSION="$("${ADB[@]}" shell dumpsys package "$PACKAGE" </dev/null \
   | tr -d '\r' \
   | sed -n 's/^[[:space:]]*versionName=//p' \
   | head -n 1)"
@@ -282,7 +286,7 @@ After Nothing Camera appears:
   4. Take one photograph.
   5. Wait ${CAPTURE_WAIT_SECONDS} seconds.
   6. Exit the camera.
-  7. Stop Frida with Ctrl-C.
+  7. Stop Frida with Ctrl-D (preferred) or Ctrl-C.
 
 Do not select another lens during this run.
 
@@ -350,13 +354,14 @@ fi
 {
   printf 'completeUtc=%s\n' "$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
   printf 'fridaExitStatus=%s\n' "$FRIDA_STATUS"
+  printf 'interrupted=%s\n' "$INTERRUPTED"
 } >>"${RUN_DIR}/run-status.txt"
 
 printf '\nTrace bundle created: %s\n' "$RUN_DIR" >&2
 printf 'Fill output-association-template.json before comparing routes.\n' >&2
 
-# Ctrl-C is the expected way to finish an interactive Frida session. Treat 0 and
-# 130 as completed collections; retain other statuses as failures.
+# Interactive Frida normally exits with 0 on EOF or 130 on SIGINT. Retain the
+# bundle but fail on other statuses so an attachment/startup error is visible.
 if [[ "$FRIDA_STATUS" -ne 0 && "$FRIDA_STATUS" -ne 130 ]]; then
   fail "Frida exited with status $FRIDA_STATUS; bundle retained for diagnosis"
 fi
