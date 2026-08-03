@@ -151,6 +151,7 @@
         "scopeLimitations": [
           "The negative result applies only to the exported widget path and does not disprove internal Expert, SAT, hidden logical camera, privileged service or HAL routes.",
           "Exact process identity, permission state, AppOps, tool version and per-capture timestamps were not preserved in the legacy normalized artifacts.",
+          "The legacy Expert artifact contains one associated capture for each 15 mm, 24 mm and 50 mm route, not the three repetitions per route required by protocol version 1.",
           "The result does not independently trace the selected camera endpoint or downstream physical sensor."
         ],
         "evidenceClass": "device-observed",
