@@ -13,9 +13,9 @@ import org.json.JSONObject;
 import java.util.Locale;
 
 /**
- * Exercises the same exported preset/widget contract that Nothing Camera uses for its own
- * camera widgets. Unlike the ordinary CAMERA_FACING path, this contract applies a 35 mm
- * equivalent focal-length value after rear IDs have been normalized to the SAT endpoint.
+ * Exercises the exported preset/widget contract used by Nothing Camera's own widgets.
+ * This contract applies a 35 mm equivalent focal-length value after ordinary rear IDs
+ * have been normalized to the SAT endpoint.
  */
 final class OfficialExpertWidgetFocalLaunchAudit {
     private static final String ACTION_WIDGET_CAMERA =
@@ -84,10 +84,10 @@ final class OfficialExpertWidgetFocalLaunchAudit {
         intent.removeExtra(EXTRA_PREFIX_SUB_MODE);
         intent.removeExtra(EXTRA_PREFIX_FACING);
 
-        // Recreate the stock widget/preset launch contract exactly enough to trigger
-        // LaunchIntentParser.parseWidgetParam(). The "preset-1" suffix sets mIsFromWidget.
+        // Recreate the stock widget/preset launch contract. The "preset-1" suffix sets
+        // LaunchIntentParser.mIsFromWidget and enables its focal-length parsing path.
         intent.setAction(ACTION_WIDGET_CAMERA);
-        intent.setClassName(session.delegate.packageName, OFFICIAL_CAMERA_ACTIVITY);
+        intent.setClassName(packageName(session), OFFICIAL_CAMERA_ACTIVITY);
         intent.putExtra(EXTRA_WIDGET_CAMERA, true);
         intent.putExtra(EXTRA_IS_FROM_WIDGET, true);
         intent.putExtra(EXTRA_PREFIX_FLAG_WIDGET, "preset-1");
@@ -96,17 +96,8 @@ final class OfficialExpertWidgetFocalLaunchAudit {
         intent.putExtra(EXTRA_PREFIX_FACING, "0");
         intent.putExtra(EXTRA_PREFIX_FOCAL_LENGTH, spec.focalValue);
 
-        JSONObject actualExtras = new JSONObject()
-                .put(EXTRA_WIDGET_CAMERA, true)
-                .put(EXTRA_IS_FROM_WIDGET, true)
-                .put(EXTRA_PREFIX_FLAG_WIDGET, "preset-1")
-                .put(EXTRA_PREFIX_MAIN_MODE, "photo")
-                .put(EXTRA_PREFIX_SUB_MODE, "manual")
-                .put(EXTRA_PREFIX_FACING, "0")
-                .put(EXTRA_PREFIX_FOCAL_LENGTH, spec.focalValue);
-
         session.activeStep = spec;
-        session.activeLaunchExtras = actualExtras;
+        session.activeLaunchExtras = widgetExtras(spec);
         return intent;
     }
 
@@ -117,32 +108,25 @@ final class OfficialExpertWidgetFocalLaunchAudit {
             throw new IllegalStateException("No widget-focal launch step is active");
         }
 
-        JSONObject step = OfficialExpertDirectLaunchAudit.finishCurrentStep(
+        // The shared direct-launch helper records timing here. Saved-image association and EXIF
+        // inspection intentionally occur after all three stock-camera launches have completed.
+        JSONObject launchRecord = OfficialExpertDirectLaunchAudit.finishCurrentStep(
                 context,
                 session.delegate
         );
-        step.put("launchIntentAction", ACTION_WIDGET_CAMERA);
-        step.put(
+        launchRecord.put("launchIntentAction", ACTION_WIDGET_CAMERA);
+        launchRecord.put(
                 "officialCameraComponent",
-                session.delegate.packageName + "/" + OFFICIAL_CAMERA_ACTIVITY
+                packageName(session) + "/" + OFFICIAL_CAMERA_ACTIVITY
         );
-        step.put("launchMechanism", "nothing-camera-widget-preset-focal-length");
-        step.put("launchExtras", actualExtras);
-        step.put("requestedFocalLengthValue", spec.focalValue);
-        step.put("expectedLensButton", spec.lensLabel);
-        step.put("expectedInternalCameraId", spec.expectedCameraId);
-        step.put("expectedPhysicalFocalLengthMm", spec.physicalFocalMm);
-        step.put("expectedFocalLength35mmEquivalent", spec.equivalentFocalMm);
-
-        Object routeResult = step.opt("requestedCameraIdHonored");
-        step.put("widgetFocalRouteHonored", routeResult);
-        step.put(
-                "routeDecisionRule",
-                "EXIF is compared with the expected optical signature for the focal-length "
-                        + "preset: " + spec.physicalFocalMm + " mm physical and "
-                        + spec.equivalentFocalMm + " mm equivalent."
-        );
-        step.put(
+        launchRecord.put("launchMechanism", "nothing-camera-widget-preset-focal-length");
+        launchRecord.put("extras", actualExtras);
+        launchRecord.put("requestedFocalLengthValue", spec.focalValue);
+        launchRecord.put("expectedLensButton", spec.lensLabel);
+        launchRecord.put("expectedInternalCameraId", spec.expectedCameraId);
+        launchRecord.put("expectedPhysicalFocalLengthMm", spec.physicalFocalMm);
+        launchRecord.put("expectedFocalLength35mmEquivalent", spec.equivalentFocalMm);
+        launchRecord.put(
                 "parserReasoning",
                 "Nothing Camera first normalizes externally supplied rear IDs to SAT ID 4. "
                         + "Its widget parser then applies CAMERA_PREFIX_FOCALLENGTH_VALUE and, "
@@ -150,12 +134,10 @@ final class OfficialExpertWidgetFocalLaunchAudit {
                         + "at and above the configured tele ratio."
         );
 
-        relocateDiagnosticCopy(context, step, spec);
-
         session.activeStep = null;
         session.activeLaunchExtras = null;
         session.nextStepIndex++;
-        return step;
+        return launchRecord;
     }
 
     static boolean hasNextStep(Session session) {
@@ -183,10 +165,12 @@ final class OfficialExpertWidgetFocalLaunchAudit {
         boolean complete = report.optBoolean("complete", false);
         boolean allHonored = report.optBoolean("allRequestedCameraIdsHonored", false);
 
+        annotateObservedCaptures(context, report);
+
         report.put("mode", "official-camera-expert-widget-focal-launch");
         report.put(
                 "officialCameraComponent",
-                session.delegate.packageName + "/" + OFFICIAL_CAMERA_ACTIVITY
+                packageName(session) + "/" + OFFICIAL_CAMERA_ACTIVITY
         );
         report.put("launchIntentAction", ACTION_WIDGET_CAMERA);
         report.put("launchContract", new JSONObject()
@@ -214,7 +198,7 @@ final class OfficialExpertWidgetFocalLaunchAudit {
                         ? "The exported Nothing Camera widget preset contract selected the real "
                         + "ultrawide, main and telephoto routes from 15mm, 24mm and 50mm values."
                         : "At least one focal-length preset was not confirmed by EXIF. Inspect "
-                        + "each step to determine whether the exported widget contract was "
+                        + "each capture to determine whether the exported widget contract was "
                         + "ignored, restricted, or remapped on this firmware."
         );
         report.put(
@@ -225,6 +209,46 @@ final class OfficialExpertWidgetFocalLaunchAudit {
                         + "frames to the diagnostics or production application."
         );
         return report;
+    }
+
+    private static void annotateObservedCaptures(Context context, JSONObject report)
+            throws Exception {
+        JSONObject observed = report.optJSONObject("observedOfficialCameraAudit");
+        JSONArray captures = observed == null
+                ? null
+                : observed.optJSONArray("associatedCaptures");
+        if (captures == null) {
+            return;
+        }
+
+        int count = Math.min(captures.length(), STEPS.length);
+        for (int index = 0; index < count; index++) {
+            StepSpec spec = STEPS[index];
+            JSONObject capture = captures.getJSONObject(index);
+            Object honored = capture.opt("requestedCameraIdHonored");
+            capture.put("requestedFocalLengthValue", spec.focalValue);
+            capture.put("expectedLensButton", spec.lensLabel);
+            capture.put("expectedInternalCameraId", spec.expectedCameraId);
+            capture.put("widgetFocalRouteHonored", honored);
+            capture.put(
+                    "routeDecisionRule",
+                    "EXIF is compared with " + spec.physicalFocalMm
+                            + " mm physical and " + spec.equivalentFocalMm
+                            + " mm equivalent."
+            );
+            relocateDiagnosticCopy(context, capture, spec);
+        }
+    }
+
+    private static JSONObject widgetExtras(StepSpec spec) throws Exception {
+        return new JSONObject()
+                .put(EXTRA_WIDGET_CAMERA, true)
+                .put(EXTRA_IS_FROM_WIDGET, true)
+                .put(EXTRA_PREFIX_FLAG_WIDGET, "preset-1")
+                .put(EXTRA_PREFIX_MAIN_MODE, "photo")
+                .put(EXTRA_PREFIX_SUB_MODE, "manual")
+                .put(EXTRA_PREFIX_FACING, "0")
+                .put(EXTRA_PREFIX_FOCAL_LENGTH, spec.focalValue);
     }
 
     private static JSONObject stepContract(StepSpec spec) throws Exception {
@@ -238,14 +262,13 @@ final class OfficialExpertWidgetFocalLaunchAudit {
 
     private static void relocateDiagnosticCopy(
             Context context,
-            JSONObject step,
+            JSONObject capture,
             StepSpec spec
     ) throws Exception {
-        JSONObject capture = step.optJSONObject("associatedCapture");
-        if (capture == null) {
-            return;
+        String copyUriText = capture.optString("directDiagnosticCopyUri", "");
+        if (copyUriText.isEmpty()) {
+            copyUriText = capture.optString("diagnosticCopyUri", "");
         }
-        String copyUriText = capture.optString("diagnosticCopyUri", "");
         if (copyUriText.isEmpty()) {
             return;
         }
@@ -257,7 +280,7 @@ final class OfficialExpertWidgetFocalLaunchAudit {
         String extension = extensionFor(sourceName);
         String displayName = String.format(
                 Locale.US,
-                "phone2pro-official-widget-focal-%s-step-%d%s",
+                "phone2pro-official-widget-focal-%s-id-%d%s",
                 spec.focalValue.replace(".", "_"),
                 spec.expectedCameraId,
                 extension
@@ -268,9 +291,14 @@ final class OfficialExpertWidgetFocalLaunchAudit {
         values.put(MediaStore.Images.Media.DISPLAY_NAME, displayName);
         values.put(MediaStore.Images.Media.RELATIVE_PATH, OUTPUT_FOLDER);
         int updated = context.getContentResolver().update(copyUri, values, null, null);
+        capture.put("widgetDiagnosticCopyUri", copyUri.toString());
         capture.put("diagnosticCopyRelocated", updated > 0);
         capture.put("diagnosticCopyFolder", OUTPUT_FOLDER);
         capture.put("diagnosticCopyDisplayName", displayName);
+    }
+
+    private static String packageName(Session session) {
+        return session.delegate.baseSession.packageName;
     }
 
     private static String extensionFor(String displayName) {
