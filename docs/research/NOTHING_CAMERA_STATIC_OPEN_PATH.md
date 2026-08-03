@@ -87,8 +87,8 @@ captured for 0.6×, 1× and 2× separately:
    HYPOTHESIS.** A later HAL stage may still exist, but a fixed public open alone
    cannot explain the recovered endpoint table.
 
-See [`GALAGA_EXPERT_DIRECT_ROUTE.md`](GALAGA_EXPERT_DIRECT_ROUTE.md) and the
-reproducible `tools/apk/extract-galaga-manual-route.py` report.
+See [`GALAGA_EXPERT_DIRECT_ROUTE.md`](GALAGA_EXPERT_DIRECT_ROUTE.md) for the
+recovered product table, evidence boundary and implementation consequence.
 
 ## Next decisive experiment
 

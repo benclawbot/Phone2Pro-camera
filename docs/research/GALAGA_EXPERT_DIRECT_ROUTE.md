@@ -10,17 +10,10 @@ SHA-256 f78368e303033d49c5564b1287f51ef2bf5dde53db4687a08bfb20aa64a8eeea
 DEX files classes.dex through classes7.dex
 ```
 
-The extraction is reproducible with:
-
-```bash
-python3 tools/apk/extract-galaga-manual-route.py \
-  /private/path/Camera-16.1.01.93.20.apk \
-  --json /private/output/galaga-manual-route.json \
-  --markdown /private/output/galaga-manual-route.md
-```
-
-The tool performs narrow constant propagation over DEX instructions. It does
-not reconstruct or copy proprietary source code.
+The finding was produced by the repository's decompiler-independent DEX
+analysis work. The proprietary APK remains outside the repository; only the
+artifact hash, derived route facts and clean-room implementation are recorded
+here.
 
 ## VERIFIED
 
