@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
 import androidx.camera.camera2.interop.Camera2CameraInfo;
 import androidx.camera.camera2.interop.ExperimentalCamera2Interop;
 import androidx.camera.core.CameraFilter;
@@ -27,9 +28,9 @@ import com.phone2pro.camera.backend.UnverifiedSystemEndpointAccess;
 import com.phone2pro.camera.core.CaptureProfile;
 import com.phone2pro.camera.core.DeviceCapabilitySnapshot;
 import com.phone2pro.camera.core.OpticalRoute;
+import com.phone2pro.camera.core.ResolvedCameraEndpoint;
 import com.phone2pro.camera.core.RouteBackend;
 import com.phone2pro.camera.core.RouteDecision;
-import com.phone2pro.camera.core.ResolvedCameraEndpoint;
 import com.phone2pro.camera.core.RouteNegotiator;
 
 import java.text.SimpleDateFormat;
@@ -50,7 +51,7 @@ import java.util.concurrent.Executors;
  * until a verified backend is added. The controller never substitutes zoom crop for an optical
  * route.</p>
  */
-@ExperimentalCamera2Interop
+@OptIn(markerClass = ExperimentalCamera2Interop.class)
 public final class CameraSessionController {
     public interface Listener {
         void onCapabilitiesReady(
