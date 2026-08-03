@@ -205,8 +205,16 @@ if ((DRY_RUN == 0)); then
   rm -rf "$OPT_DIR/jadx-$jadx_version"
   mkdir -p "$OPT_DIR/jadx-$jadx_version"
   unzip -q "$DOWNLOAD_DIR/jadx-$jadx_version.zip" -d "$OPT_DIR/jadx-$jadx_version"
-  ln -sfn "$OPT_DIR/jadx-$jadx_version/bin/jadx" "$BIN_DIR/jadx"
-  ln -sfn "$OPT_DIR/jadx-$jadx_version/bin/jadx-gui" "$BIN_DIR/jadx-gui"
+  jadx_cli="$(find "$OPT_DIR/jadx-$jadx_version" -type f -path '*/bin/jadx' -print -quit)"
+  jadx_gui="$(find "$OPT_DIR/jadx-$jadx_version" -type f -path '*/bin/jadx-gui' -print -quit)"
+  [[ -n "$jadx_cli" && -n "$jadx_gui" ]] || {
+    printf 'Unable to locate JADX launchers after unpacking %s.\n' \
+      "$DOWNLOAD_DIR/jadx-$jadx_version.zip" >&2
+    exit 5
+  }
+  chmod 0755 "$jadx_cli" "$jadx_gui"
+  ln -sfn "$jadx_cli" "$BIN_DIR/jadx"
+  ln -sfn "$jadx_gui" "$BIN_DIR/jadx-gui"
 fi
 
 apktool_version="$(lock_value apktool version)"
