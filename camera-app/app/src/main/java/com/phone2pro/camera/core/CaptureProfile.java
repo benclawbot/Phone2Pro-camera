@@ -21,10 +21,15 @@ public enum CaptureProfile {
     );
 
     private final String label;
+    @ImageCapture.CaptureMode
     private final int imageCaptureMode;
     private final String implementationStatus;
 
-    CaptureProfile(String label, int imageCaptureMode, String implementationStatus) {
+    CaptureProfile(
+            String label,
+            @ImageCapture.CaptureMode int imageCaptureMode,
+            String implementationStatus
+    ) {
         this.label = label;
         this.imageCaptureMode = imageCaptureMode;
         this.implementationStatus = implementationStatus;
@@ -34,6 +39,7 @@ public enum CaptureProfile {
         return label;
     }
 
+    @ImageCapture.CaptureMode
     public int imageCaptureMode() {
         return imageCaptureMode;
     }
