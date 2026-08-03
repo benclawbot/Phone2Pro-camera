@@ -1,0 +1,45 @@
+# Local device evidence and generated traces
+/traces/
+/evidence/
+/local-evidence/
+/firmware-work/
+/apk-work/
+
+# Proprietary/raw camera artifacts
+*.apk
+*.apks
+*.aab
+*.dex
+*.odex
+*.vdex
+*.oat
+*.art
+*.so
+*.img
+*.bin
+*.elf
+*.ota
+*.zip
+*.7z
+*.tar
+*.tgz
+
+# Captured media must remain outside the repository
+*.jpg
+*.jpeg
+*.heic
+*.heif
+*.dng
+*.raw
+*.yuv
+
+# Local tooling state
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.DS_Store
+.idea/
+.vscode/
