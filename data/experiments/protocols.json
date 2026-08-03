@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-03T20:45:00Z",
+  "protocols": [
+    {
+      "id": "protocol-stock-route-isolation",
+      "version": 1,
+      "title": "Stock camera internal Expert versus exported widget route isolation",
+      "objective": "Determine whether internal Expert lens selection produces distinct optical routes while an adjacent exported widget focal-launch mechanism remains isolated as a negative control.",
+      "scope": "Nothing A001 / Galaga stock camera builds linked through the firmware version matrix. The protocol distinguishes tested launch mechanisms and does not generalize a failure from one route to all stock-camera paths.",
+      "setup": {
+        "scene": {
+          "description": "Static high-detail scene containing near, mid-distance and distant geometry with visible edge alignment across the frame.",
+          "subject": "Fixed textured target and distant background suitable for field-of-view comparison.",
+          "distanceMeters": 2.0,
+          "background": "Distant straight-line geometry extending to the frame edges."
+        },
+        "lighting": {
+          "mode": "controlled",
+          "targetLuxMin": 300,
+          "targetLuxMax": 800,
+          "measurementMethod": "Record a calibrated lux-meter reading at the subject before the first capture and after the final capture."
+        },
+        "motion": {
+          "camera": "Tripod-fixed; stabilization settled before every launch and capture.",
+          "subject": "Static throughout the complete positive and negative control sequence."
+        },
+        "deviceState": {
+          "orientation": "Landscape, fixed orientation for all captures.",
+          "thermalState": "Start below moderate thermal throttling and record the observed thermal status.",
+          "batteryMinimumPercent": 50,
+          "networkState": "Airplane mode unless the tested launch mechanism requires another state; record any exception.",
+          "other": [
+            "Disable automatic display rotation after fixing orientation.",
+            "Clear the stock camera from recents before each isolated launch path.",
+            "Do not change the scene, tripod position or lighting between controls."
+          ]
+        }
+      },
+      "launchProcedure": [
+        {
+          "sequence": 1,
+          "action": "Record the matrix build ID, stock camera package version, process identity, permissions, AppOps, tool versions and UTC experiment-start timestamp.",
+          "expectedObservation": "All required build and identity fields are populated before camera launch."
+        },
+        {
+          "sequence": 2,
+          "action": "Force-stop the stock camera, launch it through the normal application entry point and enter Expert mode without restoring an old task.",
+          "expectedObservation": "A fresh stock camera process reaches Expert mode and reports the selected focal preset."
+        },
+        {
+          "sequence": 3,
+          "action": "After the internal Expert sequence, force-stop the stock camera and invoke the exported widget focal-launch path in a fresh process for the negative control.",
+          "expectedObservation": "The exported path is isolated from the prior Expert task and its launch parameters are recorded."
+        }
+      ],
+      "captureOrder": [
+        {
+          "sequence": 1,
+          "action": "Capture the internal Expert 1x / 24 mm route.",
+          "expectedObservation": "The main-route positive control reports approximately 5.56 mm physical and 24 mm equivalent focal length.",
+          "controlRole": "positive",
+          "repetitions": 3,
+          "parameters": {"launchPath": "internal-expert", "preset": "24mm", "zoomLabel": "1x"}
+        },
+        {
+          "sequence": 2,
+          "action": "Capture the internal Expert 0.6x / 15 mm route.",
+          "expectedObservation": "The route is optically distinct from the 24 mm main positive control and reports approximately 1.64 mm physical / 15 mm equivalent focal length.",
+          "controlRole": "test",
+          "repetitions": 3,
+          "parameters": {"launchPath": "internal-expert", "preset": "15mm", "zoomLabel": "0.6x"}
+        },
+        {
+          "sequence": 3,
+          "action": "Capture the internal Expert 2x / 50 mm route.",
+          "expectedObservation": "The route is optically distinct from the 24 mm main positive control and reports approximately 7.10 mm physical / 50 mm equivalent focal length.",
+          "controlRole": "test",
+          "repetitions": 3,
+          "parameters": {"launchPath": "internal-expert", "preset": "50mm", "zoomLabel": "2x"}
+        },
+        {
+          "sequence": 4,
+          "action": "Invoke exported widget focal-launch values 15 mm, 24 mm and 50 mm in fresh stock camera processes and capture the resulting route metadata.",
+          "expectedObservation": "The negative-control mechanism is evaluated independently; any unchanged route is scoped to the exported widget path only.",
+          "controlRole": "negative",
+          "repetitions": 1,
+          "parameters": {"launchPath": "exported-widget", "focalValuesMm": [15, 24, 50]}
+        }
+      ],
+      "controls": {
+        "positive": [
+          {
+            "id": "internal-expert-main-24mm",
+            "mechanism": "Fresh-process internal Expert 1x / 24 mm selection.",
+            "rationale": "Confirms that the stock camera, metadata collection and capture association are functioning on the tested build.",
+            "expectedObservation": "5.56 mm physical focal length and 24 mm equivalent geometry are associated with the captured image.",
+            "failureInterpretation": "The experiment is inconclusive because the known main route or artifact association was not reproduced under the tested state."
+          },
+          {
+            "id": "internal-expert-distinct-routes",
+            "mechanism": "Fresh-process internal Expert 0.6x, 1x and 2x sequence.",
+            "rationale": "Provides a within-application positive control for three optically distinct field-of-view outputs.",
+            "expectedObservation": "15 mm, 24 mm and 50 mm equivalent outputs with distinct physical focal lengths and no digital crop masquerading as the route change.",
+            "failureInterpretation": "Internal Expert route distinction was not reproduced under the tested build, identity, state and parameters."
+          }
+        ],
+        "negative": [
+          {
+            "id": "exported-widget-focal-route",
+            "mechanism": "Fresh-process exported widget focal-launch values 15 mm, 24 mm and 50 mm.",
+            "rationale": "Tests an adjacent external entry point so its behavior is not conflated with internal Expert routing.",
+            "expectedObservation": "The mechanism either produces independently verified route changes or remains on one route; both outcomes are scoped to this exported path.",
+            "failureInterpretation": "Exported widget focal routing failed under the exact tested build, identity, launch state and focal parameters; this does not disprove internal Expert or other privileged routes."
+          }
+        ]
+      },
+      "timing": {
+        "timezone": "UTC",
+        "clockSource": "Host/device clocks synchronized before collection; record both when available.",
+        "preconditionStabilizationMs": 5000,
+        "interStepDelayMs": 3000,
+        "timeoutMs": 60000,
+        "requiredTimestamps": [
+          "experiment-start",
+          "experiment-end",
+          "launch-request",
+          "camera-open",
+          "capture-request",
+          "capture-result",
+          "artifact-write"
+        ]
+      },
+      "metadataCollection": {
+        "rawArtifacts": true,
+        "sha256": true,
+        "buildMatrixEntry": true,
+        "packageVersion": true,
+        "toolVersions": true,
+        "commands": true,
+        "captureTimestamps": true,
+        "cameraMetadata": true
+      },
+      "interpretation": {
+        "passCriteria": [
+          "The positive controls complete with associated images, results and expected main-route metadata.",
+          "Internal Expert 15 mm, 24 mm and 50 mm captures show distinct physical focal lengths and field of view.",
+          "The exported widget route is reported separately with its exact observed behavior and no cross-path generalization."
+        ],
+        "inconclusiveCriteria": [
+          "The positive main-route control fails or images cannot be associated with capture results.",
+          "Build, package, identity, timing or artifact hashes are missing.",
+          "Scene, camera position or lighting changes materially between controls.",
+          "A restored task prevents fresh-process launch-path isolation."
+        ],
+        "negativeResultTemplate": "<mechanism> failed under <build, identity, state and parameters>",
+        "prohibitedGeneralizations": [
+          "The feature is impossible.",
+          "The sensor route does not exist.",
+          "No privileged or internal mechanism can work."
+        ],
+        "confidenceUpgradeRequirements": [
+          "Repeat the complete sequence on at least two fresh processes under the same immutable build entry.",
+          "Correlate every image with capture result focal length and route metadata.",
+          "Trace the selected endpoint or downstream route for C4 confirmation."
+        ]
+      },
+      "safety": {
+        "deviceRisk": "Read-only observation and ordinary stock-camera operation; do not change permissions, SELinux policy or firmware.",
+        "dataHandling": "Keep raw images, traces and diagnostic JSON in the operator-controlled artifact store; commit only hashes, metadata and derived records.",
+        "stopConditions": [
+          "Stop if the device exceeds the chosen thermal limit.",
+          "Stop if capture association becomes ambiguous or raw artifacts cannot be hashed.",
+          "Stop before any step would require bypassing package authorization or changing device security policy."
+        ]
+      }
+    }
+  ]
+}
