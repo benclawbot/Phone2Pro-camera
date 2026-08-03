@@ -71,7 +71,7 @@ python3 tools/toolchain/verify-re-toolchain.py \
   --profile static \
   --strict \
   --tool jadx=/opt/jadx/bin/jadx \
-  --tool ghidra=/opt/ghidra/ghidraRun
+  --tool ghidra=/opt/ghidra/bin/ghidra-version
 ```
 
 The equivalent environment variable is `RE_TOOL_<ID>`, uppercased with dashes
@@ -89,7 +89,7 @@ Preview the operation:
 bash tools/toolchain/bootstrap-re-toolchain.sh --dry-run
 ```
 
-Install the smaller CLI set:
+Install JADX, Apktool, baksmali, bundletool and Frida:
 
 ```bash
 bash tools/toolchain/bootstrap-re-toolchain.sh \
@@ -99,7 +99,7 @@ export RE_TOOLCHAIN_HOME="$PWD/.re-toolchain"
 export PATH="$RE_TOOLCHAIN_HOME/bin:$PATH"
 ```
 
-Include Ghidra:
+Include Ghidra and its non-GUI `ghidra-version` probe:
 
 ```bash
 bash tools/toolchain/bootstrap-re-toolchain.sh \
@@ -113,18 +113,16 @@ locally observed digest as `locally-recorded-no-publisher-checksum`. Such an
 artifact is reproducible only when the receipt is retained with the experiment;
 it is not equivalent to a publisher-authenticated digest.
 
-The following remain explicit host steps:
+The following remain explicit host steps for the full profile:
 
 - install Android Platform-Tools 37.0.1 with `sdkmanager` and verify `adb`;
-- resolve `com.android.tools.smali:smali-baksmali:3.0.9` from Google Maven and
-  expose a `baksmali` wrapper;
 - install the official Perfetto 55.3 prebuilt matching the host, or build tag
   `v55.3` and record the binary digest;
 - install Node.js 24.x.
 
 ## Container path
 
-A clean Linux baseline can be built with Docker or Podman:
+A strict static-analysis baseline can be built with Docker or Podman:
 
 ```bash
 podman build \
@@ -134,13 +132,15 @@ podman build \
 podman run --rm \
   -v "$PWD:/workspace:ro" \
   phone2pro-re-toolchain:2026-08-03 \
-  --profile static --strict
+  --profile static --strict --include-host-utilities
 ```
 
-The container installs the bootstrap-supported CLI set. Ghidra, ADB USB access,
-Perfetto host prebuilts and device-side Frida components remain outside the
-base image because they are large or host/device-specific. Mount them and use
-`--tool` overrides when a profile requires them.
+The image installs JADX, Apktool, baksmali, bundletool, Frida and Ghidra, then
+uses the lock verifier as its entrypoint. A successful default container run is
+the clean-environment static baseline. ADB USB access, Perfetto host prebuilts,
+Node.js and device-side Frida components remain outside the image because they
+are host- or device-specific; mount them and use `--tool` overrides for device,
+dynamic, firmware or full profiles.
 
 ## Baseline commands
 
