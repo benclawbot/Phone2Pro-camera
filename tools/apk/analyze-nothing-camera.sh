@@ -4,8 +4,10 @@
 
 set -Eeuo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OUT_ROOT="${PWD}/nothing-camera-analysis"
-KEYWORDS_FILE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/routing-keywords.txt"
+KEYWORDS_FILE="$SCRIPT_DIR/routing-keywords.txt"
+MANIFEST_EXTRACTOR="$SCRIPT_DIR/extract-manifest-permissions.py"
 RUN_JADX=1
 RUN_APKTOOL=1
 APKS=()
@@ -22,8 +24,9 @@ Options:
   --no-apktool       Skip apktool resource decoding
   -h, --help         Show help
 
-Optional tools are used when present: apksigner, apkanalyzer, aapt2/aapt,
-jadx, apktool, zipinfo, unzip, file, readelf, nm, strings and rg/grep.
+Optional tools are used when present: python3, apksigner, apkanalyzer,
+aapt2/aapt, jadx, apktool, zipinfo, unzip, file, readelf, nm, strings and
+rg/grep. Python 3 enables the built-in binary-manifest permission report.
 EOF
 }
 
@@ -146,6 +149,20 @@ for apk in "${APKS[@]}"; do
     printf 'size_bytes=%s\n' "$size"
     printf 'sha256=%s\n' "$hash"
   } >"$INPUT_DIR/$name.meta.txt"
+
+  if have python3 && [[ -f "$MANIFEST_EXTRACTOR" ]]; then
+    if python3 "$MANIFEST_EXTRACTOR" "$apk" \
+      --json "$INPUT_DIR/$name.manifest-permissions.json"; then
+      :
+    else
+      rc=$?
+      printf 'manifest_permission_extractor_exit_code=%d\n' "$rc" \
+        >"$INPUT_DIR/$name.manifest-permissions.error.txt"
+    fi
+  else
+    printf 'python3 or manifest extractor unavailable\n' \
+      >"$INPUT_DIR/$name.manifest-permissions.unavailable.txt"
+  fi
 
   mkdir -p "$UNPACKED_DIR/$name"
   unzip -q -o "$apk" -d "$UNPACKED_DIR/$name" \
@@ -284,7 +301,7 @@ fi
     printf '    sha256: %s\n' "$(sha256sum "$apk" | awk '{print $1}')"
   done
   printf 'tools:\n'
-  for tool in apksigner apkanalyzer aapt2 aapt jadx apktool zipinfo unzip file readelf nm strings rg grep; do
+  for tool in python3 apksigner apkanalyzer aapt2 aapt jadx apktool zipinfo unzip file readelf nm strings rg grep; do
     if have "$tool"; then
       version="$($tool --version 2>&1 | head -n 1 || true)"
       printf '  %s: %q\n' "$tool" "$version"
@@ -302,4 +319,4 @@ fi
 } >"$OUT_DIR/manifest.yaml"
 
 printf '\nAnalysis complete: %s\n' "$OUT_DIR"
-printf 'Start review with reports/routing-keyword-hits.txt and reports/camera2-call-sites.txt.\n'
+printf 'Start review with input-metadata/*.manifest-permissions.json, reports/routing-keyword-hits.txt and reports/camera2-call-sites.txt.\n'
