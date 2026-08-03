@@ -5,6 +5,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         bash \
+        binutils \
         ca-certificates \
         curl \
         file \
@@ -17,7 +18,6 @@ RUN apt-get update \
         ripgrep \
         unzip \
         zip \
-        binutils \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /workspace
@@ -26,10 +26,11 @@ COPY config/reverse-engineering-toolchain.json /workspace/config/reverse-enginee
 COPY tools/toolchain /workspace/tools/toolchain
 
 RUN bash /workspace/tools/toolchain/bootstrap-re-toolchain.sh \
-      --install-dir /opt/re-toolchain
+      --install-dir /opt/re-toolchain \
+      --with-ghidra
 
 ENV RE_TOOLCHAIN_HOME=/opt/re-toolchain
 ENV PATH=/opt/re-toolchain/bin:/opt/re-toolchain/venv/bin:${PATH}
 
 ENTRYPOINT ["python3", "/workspace/tools/toolchain/verify-re-toolchain.py", "--lock", "/workspace/config/reverse-engineering-toolchain.json"]
-CMD ["--profile", "static"]
+CMD ["--profile", "static", "--strict", "--include-host-utilities"]
