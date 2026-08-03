@@ -1,0 +1,158 @@
+schemaVersion: 1
+updatedAt: 2026-08-03T11:25:00Z
+sources:
+  - id: android.logical-multi-camera
+    title: Multi-camera API
+    publisher: Android Open Source Project
+    url: https://source.android.com/docs/core/camera/multi-camera
+    sourceType: official-documentation
+    authority: primary
+    revision: rolling
+    license: Android documentation terms
+    targetRelevance: >-
+      Defines logical/physical camera contracts, physical stream configuration and active physical camera concepts used to compare the public Galaga metadata with hidden or system-only routes.
+    status: active
+    confidence: 4
+
+  - id: aosp.camera-metadata-definitions
+    title: Camera metadata definitions
+    publisher: Android Open Source Project
+    url: https://android.googlesource.com/platform/system/media/+/main/camera/docs/metadata_definitions.xml
+    sourceType: source-code
+    authority: primary
+    revision: main; pin exact Android 16 revision during CAM-091
+    license: Apache-2.0
+    targetRelevance: >-
+      Canonical metadata definitions for standard characteristics, requests, results, session parameters, logical multi-camera and system-camera behaviour.
+    status: active
+    confidence: 4
+
+  - id: aosp.camera-characteristics
+    title: CameraCharacteristics.java
+    publisher: Android Open Source Project
+    url: https://android.googlesource.com/platform/frameworks/base/+/main/core/java/android/hardware/camera2/CameraCharacteristics.java
+    sourceType: source-code
+    authority: primary
+    revision: main; pin exact Android 16 revision during CAM-091
+    license: Apache-2.0
+    targetRelevance: >-
+      Public framework contract and key definitions used to interpret the diagnostic inventory and compare OEM framework changes.
+    status: active
+    confidence: 4
+
+  - id: aosp.camera-framework-services
+    title: Camera framework and service source trees
+    publisher: Android Open Source Project
+    url: https://android.googlesource.com/platform/frameworks/av/+/main/services/camera/
+    sourceType: source-code
+    authority: primary
+    revision: main; pin exact Android 16 revision during CAM-091 and CAM-056
+    license: Apache-2.0
+    targetRelevance: >-
+      CameraService, provider management, enumeration/filtering, connection and identity checks for comparison with target framework binaries.
+    status: active
+    confidence: 4
+
+  - id: aosp.camera-hal-interfaces
+    title: Camera HAL interfaces
+    publisher: Android Open Source Project
+    url: https://android.googlesource.com/platform/hardware/interfaces/+/main/camera/
+    sourceType: source-code
+    authority: primary
+    revision: main; pin detected target interface revision during CAM-052
+    license: Apache-2.0
+    targetRelevance: >-
+      AIDL/HIDL provider and device contracts for mapping firmware services, metadata and stream negotiation.
+    status: active
+    confidence: 4
+
+  - id: chromiumos.mediatek-camera
+    title: ChromiumOS MediaTek camera sources
+    publisher: ChromiumOS
+    url: https://chromium.googlesource.com/chromiumos/platform/camera/
+    sourceType: source-code
+    authority: secondary-platform-source
+    revision: pin per matched file during CAM-094
+    license: repository-specific open-source licences
+    targetRelevance: >-
+      Public MediaTek camera metadata, feature-pipeline and HAL implementations useful for recovering subsystem taxonomy, enums and call-flow hypotheses. Not assumed to match MT6878 without target confirmation.
+    status: active
+    confidence: 2
+
+  - id: nothing.official-oss-index
+    title: Nothing OSS organization
+    publisher: Nothing Technology Limited
+    url: https://github.com/NothingOSS
+    sourceType: official-source-index
+    authority: primary
+    revision: rolling
+    license: repository-specific
+    targetRelevance: >-
+      Starting point for official kernel and kernel-module releases. The exact Galaga repository/branch remains unresolved and is tracked by CAM-092.
+    status: active-unresolved
+    confidence: 3
+
+  - id: nothingarchive.official-resources
+    title: Nothing Archive official resources index
+    publisher: Nothing Archive community project
+    url: https://nothingarchive.tech/docs/official
+    sourceType: community-index
+    authority: discovery
+    revision: rolling
+    license: index content; linked resources vary
+    targetRelevance: >-
+      Discovery index for official Nothing kernel releases, manuals and resources. Links must be verified against original publishers before being treated as primary evidence.
+    status: active
+    confidence: 2
+
+  - id: nothingarchive.firmware
+    title: Nothing Archive firmware index
+    publisher: Nothing Archive community project
+    url: https://nothingarchive.tech/docs/firmware
+    sourceType: community-firmware-index
+    authority: discovery
+    revision: rolling
+    license: index content; firmware redistribution varies
+    targetRelevance: >-
+      Candidate source for build-specific Galaga OTA packages used to acquire matching framework, vendor, HAL, policy and camera-package artifacts.
+    status: active
+    confidence: 2
+
+  - id: github.nothing-images
+    title: Nothing Images OTA archive
+    publisher: davideriboli
+    url: https://github.com/davideriboli/Nothing-Images
+    sourceType: community-firmware-index
+    authority: discovery
+    revision: pin commit during CAM-093
+    license: repository-specific; firmware rights remain with OEM
+    targetRelevance: >-
+      Lists Galaga OTA builds including 2025 Galaga-V3.2 releases and may help acquire build-matched partitions. Every package must be hash-verified and handled under the compliance register.
+    status: active
+    confidence: 2
+
+  - id: nothing-community.aux-camera2-request
+    title: Feature request to expose CMF Phone 2 Pro auxiliary cameras through Camera2
+    publisher: Nothing Community
+    url: https://nothing.community/d/58672-feature-request-unblock-camera2-api-for-telephoto-ultrawide-lenses-on-cmf-phone-2-pro
+    sourceType: community-report
+    authority: corroboration
+    revision: rolling thread
+    license: site terms
+    targetRelevance: >-
+      Independent community evidence that ordinary clients observe only main/front public cameras. It corroborates public enumeration but does not establish the internal stock-camera implementation or impossibility of reproduction.
+    status: active
+    confidence: 1
+
+  - id: opensource.camera-architecture-set
+    title: Open-source Android camera implementation set
+    publisher: multiple
+    url: https://github.com/android/camera-samples
+    sourceType: source-discovery-set
+    authority: mixed
+    revision: pin each repository during CAM-096
+    license: per project
+    targetRelevance: >-
+      Entry point for architecture comparison; CAM-096 separately indexes CameraX/CameraPipe, Open Camera, MotionCam, PhotonCamera, Libre Camera and GrapheneOS Camera with exact revisions and licences.
+    status: planned
+    confidence: 2
