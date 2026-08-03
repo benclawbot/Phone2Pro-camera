@@ -212,7 +212,9 @@ class VerifyReverseEngineeringToolchainTest(unittest.TestCase):
 
         self.assertEqual(0, result.returncode, result.stdout + result.stderr)
         self.assertIn("jadx-1.5.5.zip", result.stdout)
-        self.assertIn("frida==17.16.0", result.stdout)
+        self.assertIn("install pinned Frida packages", result.stdout)
+        self.assertIn("Android SDK Platform-Tools 37.0.1", result.stdout)
+        self.assertIn("Perfetto trace_processor_shell 55.3", result.stdout)
         self.assertIn("Verify with:", result.stdout)
 
 
