@@ -208,6 +208,46 @@ class AndroidBinaryXmlTest(unittest.TestCase):
             report["missing_expected_permissions"],
         )
 
+    def test_analysis_pipeline_writes_manifest_permission_report(self) -> None:
+        manifest = build_manifest(
+            ["android.permission.CAMERA", "android.permission.SYSTEM_CAMERA"]
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            apk = root / "camera.apk"
+            output_root = root / "analysis"
+            with zipfile.ZipFile(apk, "w") as archive:
+                archive.writestr("AndroidManifest.xml", manifest)
+
+            result = subprocess.run(
+                [
+                    "bash",
+                    str(APK_TOOLS / "analyze-nothing-camera.sh"),
+                    "--output",
+                    str(output_root),
+                    "--no-jadx",
+                    "--no-apktool",
+                    str(apk),
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            run_directories = sorted(path for path in output_root.iterdir() if path.is_dir())
+            self.assertEqual(1, len(run_directories), result.stderr)
+            run_directory = run_directories[0]
+            reports = list(
+                (run_directory / "input-metadata").glob("*.manifest-permissions.json")
+            )
+            self.assertEqual(1, len(reports), result.stdout + result.stderr)
+            report = json.loads(reports[0].read_text(encoding="utf-8"))
+            manifest_index = (run_directory / "manifest.yaml").read_text(encoding="utf-8")
+
+        self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+        self.assertTrue(report["requested_system_camera"])
+        self.assertIn("manifest-permissions.json", manifest_index)
+
     def test_rejects_truncated_variable_length_prefixes(self) -> None:
         with self.assertRaises(BinaryXmlError):
             _read_length8(b"\x80", 0, 1)
