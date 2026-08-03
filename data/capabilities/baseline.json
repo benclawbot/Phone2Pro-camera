@@ -1,0 +1,239 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-03T11:24:00Z",
+  "deviceContext": {
+    "manufacturer": "Nothing",
+    "brand": "Nothing",
+    "model": "A001",
+    "device": "Galaga",
+    "product": "GalagaEEA",
+    "socManufacturer": "MediaTek",
+    "socModel": "MT6878",
+    "androidRelease": "16",
+    "sdkInt": 36,
+    "securityPatch": "2026-06-01",
+    "cameraPackage": "com.nothing.camera",
+    "cameraPackageVersion": "16.1.01.93.20"
+  },
+  "sourceArtifact": {
+    "name": "phone2pro-official-expert-widget-focal-launch-20260803_123822_592.json",
+    "handling": "User-supplied diagnostic artifact; raw file is not redistributed by this normalized record."
+  },
+  "capabilities": [
+    {
+      "id": "CAMERA.PUBLIC.IDS",
+      "name": "Public Camera2 camera IDs",
+      "description": "The diagnostic application enumerated rear ID 0 and front ID 1 through the public CameraManager surface.",
+      "layer": "framework",
+      "subsystem": "Camera2",
+      "interface": {
+        "kind": "characteristic",
+        "name": "CameraManager.getCameraIdList",
+        "type": "String[]",
+        "validValues": ["0", "1"]
+      },
+      "status": "verified",
+      "reachability": "public",
+      "evidence": [
+        {
+          "class": "device-observed",
+          "reference": "phone2pro-official-expert-widget-focal-launch-20260803_123822_592.json",
+          "notes": "Public IDs only; does not inventory provider-hidden or system-camera routes."
+        }
+      ],
+      "confidence": 4,
+      "replacementAppUse": "Use ID 0 for the verified public rear backend and ID 1 for the front backend.",
+      "openQuestions": [
+        "How are internal IDs 2, 3, 4 and 5 represented below the public enumeration boundary?"
+      ],
+      "updatedAt": "2026-08-03T11:24:00Z"
+    },
+    {
+      "id": "CAMERA.PUBLIC.REAR.LEVEL3",
+      "name": "Rear public camera Level 3 feature set",
+      "description": "Rear camera ID 0 advertises LEVEL_3 with manual sensor and post-processing, RAW, burst, private reprocessing and YUV reprocessing.",
+      "layer": "framework",
+      "subsystem": "Camera2",
+      "interface": {
+        "kind": "characteristic",
+        "name": "android.request.availableCapabilities",
+        "type": "int[]",
+        "validValues": [
+          "BACKWARD_COMPATIBLE",
+          "MANUAL_SENSOR",
+          "MANUAL_POST_PROCESSING",
+          "READ_SENSOR_SETTINGS",
+          "RAW",
+          "BURST_CAPTURE",
+          "PRIVATE_REPROCESSING",
+          "YUV_REPROCESSING",
+          "CONSTRAINED_HIGH_SPEED_VIDEO",
+          "STREAM_USE_CASE",
+          "COLOR_SPACE_PROFILES"
+        ]
+      },
+      "status": "verified",
+      "reachability": "public",
+      "evidence": [
+        {
+          "class": "device-observed",
+          "reference": "phone2pro-official-expert-widget-focal-launch-20260803_123822_592.json"
+        }
+      ],
+      "confidence": 4,
+      "replacementAppUse": "Foundation for burst computational photography, manual capture, future RAW and reprocessing experiments.",
+      "updatedAt": "2026-08-03T11:24:00Z"
+    },
+    {
+      "id": "CAMERA.PUBLIC.REAR.OPTICS",
+      "name": "Rear public camera optical and sensor metadata",
+      "description": "ID 0 advertises 5.56 mm focal length, f/1.879 aperture, 4080x3072 pixel/active array and 8.16x6.14 mm physical sensor size.",
+      "layer": "hardware",
+      "subsystem": "main-rear-sensor-route",
+      "interface": {
+        "kind": "characteristic",
+        "name": "CameraCharacteristics lens and sensor fields",
+        "validValues": {
+          "focalLengthMm": 5.56,
+          "aperture": 1.879,
+          "pixelArray": "4080x3072",
+          "activeArray": "4080x3072",
+          "physicalSensorSizeMm": "8.16x6.14",
+          "zoomRatioRange": "[1.0, 10.0]",
+          "exposureTimeRangeNs": "[100000, 32000000000]",
+          "sensitivityRange": "[100, 16000]",
+          "maxAnalogSensitivity": 1600,
+          "oisModes": [0, 1]
+        }
+      },
+      "status": "verified",
+      "reachability": "public",
+      "evidence": [
+        {
+          "class": "device-observed",
+          "reference": "phone2pro-official-expert-widget-focal-launch-20260803_123822_592.json"
+        }
+      ],
+      "confidence": 4,
+      "replacementAppUse": "Calibrate field of view, exposure policy, stabilization and memory budgets for the public main-camera pipeline.",
+      "updatedAt": "2026-08-03T11:24:00Z"
+    },
+    {
+      "id": "CAMERA.VENDOR.METADATA_SURFACE",
+      "name": "MediaTek and Nothing vendor metadata surface",
+      "description": "The public metadata key inventory contains MediaTek and Nothing keys for MFNR/AIS, HDR, 3A, ZSL, ISP tuning, RAW processing, EIS, in-sensor zoom, seamless sensor scenarios, CameraFlex and custom tuning.",
+      "layer": "vendor-api",
+      "subsystem": "Camera2 vendor tags",
+      "interface": {
+        "kind": "other",
+        "name": "CameraCharacteristics/CaptureRequest/CaptureResult/Session vendor keys"
+      },
+      "status": "partially-verified",
+      "reachability": "unknown",
+      "requirements": {
+        "dependencies": [
+          "Per-key type recovery",
+          "Stock-app call-site tracing",
+          "Guarded write probes",
+          "Session/request ordering validation"
+        ]
+      },
+      "evidence": [
+        {
+          "class": "device-observed",
+          "reference": "phone2pro-official-expert-widget-focal-launch-20260803_123822_592.json",
+          "notes": "Key-name exposure is verified; arbitrary writeability and effect are not."
+        }
+      ],
+      "confidence": 3,
+      "replacementAppUse": "Potential optional acceleration/quality layer behind a build-specific allowlisted adapter.",
+      "openQuestions": [
+        "Which keys are accepted from an ordinary app?",
+        "Which keys require session setup, proprietary initialization or privileged identity?",
+        "Which keys participate in optical sensor routing?"
+      ],
+      "updatedAt": "2026-08-03T11:24:00Z"
+    },
+    {
+      "id": "CAMERA.ROUTING.WIDGET_FOCAL",
+      "name": "External Nothing Camera widget focal route",
+      "description": "The tested widget launch accepted 15 mm, 24 mm and 50 mm focal preset strings, but the resulting captures were reported by the user as 24 mm-equivalent main-camera outputs.",
+      "layer": "stock-app",
+      "subsystem": "widget launch parser",
+      "interface": {
+        "kind": "intent",
+        "name": "com.nothing.camera.WIDGET_CAMERA",
+        "validValues": {
+          "android.intent.extras.CAMERA_PREFIX_MAIN_MODE": "photo",
+          "android.intent.extras.CAMERA_PREFIX_SUB_MODE": "manual",
+          "android.intent.extras.CAMERA_PREFIX_FOCALLENGTH_VALUE": ["15mm", "24mm", "50mm"]
+        }
+      },
+      "status": "verified",
+      "reachability": "public",
+      "test": {
+        "procedure": "Launch the official camera through the exported widget focal preset route and inspect resulting EXIF/scene field of view.",
+        "expected": "15/24/50 mm-equivalent optical routes",
+        "observed": "All reported captures remained 5.56 mm physical / 24 mm-equivalent main-camera outputs.",
+        "error": null,
+        "artifacts": [
+          "phone2pro-official-expert-widget-focal-launch-20260803_123822_592.json"
+        ]
+      },
+      "evidence": [
+        {
+          "class": "device-observed",
+          "reference": "phone2pro-official-expert-widget-focal-launch-20260803_123822_592.json"
+        },
+        {
+          "class": "device-observed",
+          "reference": "User clarification in project conversation: all three outputs were 24 mm."
+        }
+      ],
+      "confidence": 4,
+      "replacementAppUse": "Do not rely on this external route for optical handoff on the tested build.",
+      "openQuestions": [
+        "Which additional in-process state or privileged configuration distinguishes the working internal Expert-mode route?"
+      ],
+      "updatedAt": "2026-08-03T11:24:00Z"
+    },
+    {
+      "id": "CAMERA.ROUTING.INTERNAL_EXPERT",
+      "name": "Internal Expert-mode optical routing",
+      "description": "Project evidence indicates that the stock application's internal Expert controls select distinct ultrawide, main and telephoto sensors. The implementation path has not yet been reproduced or traced end-to-end.",
+      "layer": "stock-app",
+      "subsystem": "Expert mode / SAT routing",
+      "interface": {
+        "kind": "other",
+        "name": "Unresolved internal route",
+        "validValues": {
+          "0.6x": { "expectedInternalId": 2, "physicalFocalLengthMm": 1.64, "equivalentMm": 15 },
+          "1x": { "expectedInternalId": 0, "physicalFocalLengthMm": 5.56, "equivalentMm": 24 },
+          "2x": { "expectedInternalId": 3, "physicalFocalLengthMm": 7.1, "equivalentMm": 50 }
+        }
+      },
+      "status": "partially-verified",
+      "reachability": "unknown",
+      "evidence": [
+        {
+          "class": "device-observed",
+          "reference": "Prior controlled stock Expert-mode EXIF audits in the project",
+          "notes": "Distinct optical outputs are treated as observed; exact call path remains unresolved."
+        },
+        {
+          "class": "inferred",
+          "reference": "Static parser and routing tables recovered from Nothing Camera",
+          "notes": "Internal IDs and SAT normalization require full call-chain validation."
+        }
+      ],
+      "confidence": 3,
+      "replacementAppUse": "Primary reverse-engineering target; architecture must allow this route to be added if reproduced.",
+      "openQuestions": [
+        "Which CameraDevice or logical endpoint is opened for each route?",
+        "Which session parameters and vendor keys are required?",
+        "Does the route require package signature, UID, Binder service access or SELinux privileges?"
+      ],
+      "updatedAt": "2026-08-03T11:24:00Z"
+    }
+  ]
+}
