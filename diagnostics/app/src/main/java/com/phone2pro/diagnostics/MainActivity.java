@@ -36,9 +36,9 @@ public final class MainActivity extends Activity {
     private boolean officialCameraLeftDiagnostics;
     private boolean processingOfficialCameraReturn;
 
-    private OfficialExpertDirectLaunchAudit.Session officialDirectSession;
-    private boolean officialDirectCameraLeftDiagnostics;
-    private boolean processingOfficialDirectReturn;
+    private OfficialExpertWidgetFocalLaunchAudit.Session officialWidgetSession;
+    private boolean officialWidgetCameraLeftDiagnostics;
+    private boolean processingOfficialWidgetReturn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,12 +57,12 @@ public final class MainActivity extends Activity {
             finishOfficialExpertAudit();
             return;
         }
-        if (officialDirectSession != null
-                && officialDirectCameraLeftDiagnostics
-                && !processingOfficialDirectReturn) {
-            officialDirectCameraLeftDiagnostics = false;
-            processingOfficialDirectReturn = true;
-            finishOfficialDirectStep();
+        if (officialWidgetSession != null
+                && officialWidgetCameraLeftDiagnostics
+                && !processingOfficialWidgetReturn) {
+            officialWidgetCameraLeftDiagnostics = false;
+            processingOfficialWidgetReturn = true;
+            finishOfficialWidgetStep();
         }
     }
 
@@ -71,8 +71,8 @@ public final class MainActivity extends Activity {
         if (officialExpertSession != null && !processingOfficialCameraReturn) {
             officialCameraLeftDiagnostics = true;
         }
-        if (officialDirectSession != null && !processingOfficialDirectReturn) {
-            officialDirectCameraLeftDiagnostics = true;
+        if (officialWidgetSession != null && !processingOfficialWidgetReturn) {
+            officialWidgetCameraLeftDiagnostics = true;
         }
         super.onStop();
     }
@@ -82,8 +82,8 @@ public final class MainActivity extends Activity {
         if (officialExpertSession != null) {
             officialExpertSession.stopAvailabilityRecording();
         }
-        if (officialDirectSession != null) {
-            officialDirectSession.stopAvailabilityRecording();
+        if (officialWidgetSession != null) {
+            officialWidgetSession.stopAvailabilityRecording();
         }
         worker.shutdownNow();
         super.onDestroy();
@@ -115,10 +115,10 @@ public final class MainActivity extends Activity {
         addProfile(root, DiagnosticProfile.NIGHT_LOW_LIGHT);
         addProfile(root, DiagnosticProfile.DAYLIGHT_LENS_ROUTING);
         addProfile(root, DiagnosticProfile.OFFICIAL_EXPERT_LENS_ROUTING);
-        addProfile(root, DiagnosticProfile.OFFICIAL_EXPERT_DIRECT_ID_LAUNCH);
+        addProfile(root, DiagnosticProfile.OFFICIAL_EXPERT_WIDGET_FOCAL_LAUNCH);
 
         statusView = text(
-                "Ready. Use the direct-ID Expert audit to test whether the official camera honors IDs 2, 0 and 3 without manual lens selection.",
+                "Ready. Use the 15 / 24 / 50 mm preset audit to test Nothing Camera's own widget-based physical-lens selection path.",
                 14,
                 Color.rgb(210, 210, 210)
         );
@@ -183,7 +183,7 @@ public final class MainActivity extends Activity {
 
     private boolean isOfficialCameraMediaProfile(DiagnosticProfile profile) {
         return profile == DiagnosticProfile.OFFICIAL_EXPERT_LENS_ROUTING
-                || profile == DiagnosticProfile.OFFICIAL_EXPERT_DIRECT_ID_LAUNCH;
+                || profile == DiagnosticProfile.OFFICIAL_EXPERT_WIDGET_FOCAL_LAUNCH;
     }
 
     @Override
@@ -218,8 +218,8 @@ public final class MainActivity extends Activity {
     private void startProfile(DiagnosticProfile profile) {
         if (profile == DiagnosticProfile.OFFICIAL_EXPERT_LENS_ROUTING) {
             showOfficialExpertInstructions();
-        } else if (profile == DiagnosticProfile.OFFICIAL_EXPERT_DIRECT_ID_LAUNCH) {
-            showOfficialDirectInstructions();
+        } else if (profile == DiagnosticProfile.OFFICIAL_EXPERT_WIDGET_FOCAL_LAUNCH) {
+            showOfficialWidgetInstructions();
         } else {
             runDiagnostics(profile);
         }
@@ -329,40 +329,41 @@ public final class MainActivity extends Activity {
         });
     }
 
-    private void showOfficialDirectInstructions() {
+    private void showOfficialWidgetInstructions() {
         new AlertDialog.Builder(this)
-                .setTitle("Direct Expert camera-ID launch audit")
+                .setTitle("Nothing Camera preset focal-length audit")
                 .setMessage(
-                        "This test opens the official camera three separate times and requests its internal Expert camera IDs in this order:\n\n"
-                                + "1. ID 2 — 0.6x ultrawide\n"
-                                + "2. ID 0 — 1x main\n"
-                                + "3. ID 3 — 2x telephoto\n\n"
-                                + "For each launch, do not touch the lens selector. Take exactly one photo, then press Back. The diagnostics app will process it and automatically open the next step.\n\n"
-                                + "Keep the phone in the same position. Leave JPEG or HEIF enabled."
+                        "The previous direct camera-ID launch stayed at 1x because Nothing Camera normalizes externally supplied rear IDs to its SAT endpoint.\n\n"
+                                + "This test uses the separate widget preset route found in the official APK and opens the camera three times with:\n\n"
+                                + "1. 15mm — expected 0.6x ultrawide\n"
+                                + "2. 24mm — expected 1x main\n"
+                                + "3. 50mm — expected 2x telephoto\n\n"
+                                + "For every launch, do not change the mode or lens selector. Take exactly one photo, then press Back. The next step opens automatically.\n\n"
+                                + "Even if it remains at 1x, take the photo unchanged so the rejection is recorded."
                 )
                 .setNegativeButton("Cancel", null)
-                .setPositiveButton("Start 3-step audit", (dialog, which) ->
-                        prepareOfficialDirectAudit())
+                .setPositiveButton("Start 3-step preset audit", (dialog, which) ->
+                        prepareOfficialWidgetAudit())
                 .show();
     }
 
-    private void prepareOfficialDirectAudit() {
+    private void prepareOfficialWidgetAudit() {
         setButtonsEnabled(false);
-        statusView.setText("Preparing direct launch step 1 of 3…");
+        statusView.setText("Preparing preset focal-length step 1 of 3…");
 
         worker.execute(() -> {
             try {
-                OfficialExpertDirectLaunchAudit.Session session =
-                        OfficialExpertDirectLaunchAudit.prepare(this);
-                Intent intent = OfficialExpertDirectLaunchAudit.prepareNextLaunch(
+                OfficialExpertWidgetFocalLaunchAudit.Session session =
+                        OfficialExpertWidgetFocalLaunchAudit.prepare(this);
+                Intent intent = OfficialExpertWidgetFocalLaunchAudit.prepareNextLaunch(
                         this,
                         session
                 );
-                runOnUiThread(() -> launchOfficialDirectStep(session, intent));
+                runOnUiThread(() -> launchOfficialWidgetStep(session, intent));
             } catch (Exception error) {
                 runOnUiThread(() -> {
                     statusView.setText(
-                            "Unable to prepare the direct Expert launch audit:\n" + error
+                            "Unable to prepare the preset focal-length audit:\n" + error
                     );
                     setButtonsEnabled(true);
                 });
@@ -370,86 +371,89 @@ public final class MainActivity extends Activity {
         });
     }
 
-    private void launchOfficialDirectStep(
-            OfficialExpertDirectLaunchAudit.Session session,
+    private void launchOfficialWidgetStep(
+            OfficialExpertWidgetFocalLaunchAudit.Session session,
             Intent intent
     ) {
-        officialDirectSession = session;
-        officialDirectCameraLeftDiagnostics = false;
-        processingOfficialDirectReturn = false;
-        statusView.setText(OfficialExpertDirectLaunchAudit.currentInstruction(session));
+        officialWidgetSession = session;
+        officialWidgetCameraLeftDiagnostics = false;
+        processingOfficialWidgetReturn = false;
+        statusView.setText(OfficialExpertWidgetFocalLaunchAudit.currentInstruction(session));
         try {
             startActivity(intent);
         } catch (RuntimeException error) {
             session.stopAvailabilityRecording();
-            officialDirectSession = null;
-            statusView.setText("Direct official camera launch failed:\n" + error);
+            officialWidgetSession = null;
+            statusView.setText("Official preset camera launch failed:\n" + error);
             setButtonsEnabled(true);
         }
     }
 
-    private void finishOfficialDirectStep() {
-        OfficialExpertDirectLaunchAudit.Session session = officialDirectSession;
-        statusView.setText("Reading this step's saved image and verifying its EXIF route…");
+    private void finishOfficialWidgetStep() {
+        OfficialExpertWidgetFocalLaunchAudit.Session session = officialWidgetSession;
+        statusView.setText("Reading this step's saved image and verifying its EXIF lens route…");
 
         worker.execute(() -> {
             try {
-                OfficialExpertDirectLaunchAudit.finishCurrentStep(this, session);
-                if (OfficialExpertDirectLaunchAudit.hasNextStep(session)) {
-                    Intent nextIntent = OfficialExpertDirectLaunchAudit.prepareNextLaunch(
+                OfficialExpertWidgetFocalLaunchAudit.finishCurrentStep(this, session);
+                if (OfficialExpertWidgetFocalLaunchAudit.hasNextStep(session)) {
+                    Intent nextIntent = OfficialExpertWidgetFocalLaunchAudit.prepareNextLaunch(
                             this,
                             session
                     );
-                    runOnUiThread(() -> launchOfficialDirectStep(session, nextIntent));
+                    runOnUiThread(() -> launchOfficialWidgetStep(session, nextIntent));
                     return;
                 }
 
-                JSONObject directAudit = OfficialExpertDirectLaunchAudit.finish(this, session);
+                JSONObject widgetAudit = OfficialExpertWidgetFocalLaunchAudit.finish(
+                        this,
+                        session
+                );
                 JSONObject report = new CapabilityReporter(this).build();
                 report.put(
                         "selectedProfile",
                         selectedProfileJson(
-                                DiagnosticProfile.OFFICIAL_EXPERT_DIRECT_ID_LAUNCH
+                                DiagnosticProfile.OFFICIAL_EXPERT_WIDGET_FOCAL_LAUNCH
                         )
                 );
-                report.put("officialCameraExpertDirectLaunchAudit", directAudit);
+                report.put("officialCameraExpertWidgetFocalLaunchAudit", widgetAudit);
 
                 Uri reportUri = ReportStorage.saveJsonReport(
                         this,
-                        DiagnosticProfile.OFFICIAL_EXPERT_DIRECT_ID_LAUNCH.fileLabel,
+                        DiagnosticProfile.OFFICIAL_EXPERT_WIDGET_FOCAL_LAUNCH.fileLabel,
                         report.toString(2)
                 );
-                boolean complete = directAudit.optBoolean("complete", false);
-                boolean honored = directAudit.optBoolean(
-                        "allRequestedCameraIdsHonored",
+                boolean complete = widgetAudit.optBoolean("complete", false);
+                boolean honored = widgetAudit.optBoolean(
+                        "allWidgetFocalRoutesHonored",
                         false
                 );
                 runOnUiThread(() -> {
                     String message;
                     if (complete && honored) {
-                        message = "Direct Expert ID audit complete: IDs 2, 0 and 3 were honored.";
+                        message = "Preset focal-length audit complete: 15mm, 24mm and 50mm selected the expected physical lenses.";
                     } else if (complete) {
-                        message = "Direct Expert ID audit complete, but at least one requested ID was not confirmed by EXIF.";
+                        message = "Preset focal-length audit complete, but at least one route was not confirmed by EXIF.";
                     } else {
-                        message = "Direct Expert ID audit saved, but the three-step sequence was incomplete.";
+                        message = "Preset focal-length audit saved, but the three-step sequence was incomplete.";
                     }
                     message += "\nReport: Downloads/Phone2Pro Diagnostics\n"
                             + reportUri
-                            + "\nAssociated copies: Pictures/Phone2Pro Diagnostics/Official Expert Direct Launch Audit";
+                            + "\nAssociated copies: Pictures/Phone2Pro Diagnostics/Official Expert Widget Focal Launch Audit";
                     statusView.setText(message);
-                    officialDirectSession = null;
-                    processingOfficialDirectReturn = false;
+                    officialWidgetSession = null;
+                    processingOfficialWidgetReturn = false;
                     setButtonsEnabled(true);
                 });
             } catch (Exception error) {
                 session.stopAvailabilityRecording();
                 runOnUiThread(() -> {
                     statusView.setText(
-                            "Direct Expert ID audit failed before its report could be saved:\n"
+                            "Preset focal-length audit failed before its report could be saved:\n"
                                     + error
                     );
-                    officialDirectSession = null;
-                    processingOfficialDirectReturn = false;
+                    officialWidgetSession = null;
+                    processingOfficialWidgetReturn = false;
                     setButtonsEnabled(true);
                 });
             }
