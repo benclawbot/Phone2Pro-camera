@@ -31,7 +31,10 @@ jobs:
           find tools -type f -name '*.js' -print0 | sort -z | xargs -0 -r -n1 node --check
 
       - name: Validate Python syntax
-        run: python -m compileall -q tools
+        run: python -m compileall -q tools tests
+
+      - name: Run Python unit tests
+        run: python -m unittest discover -s tests -v
 
       - name: Validate structured evidence
         run: python tools/ci/validate-repository.py
