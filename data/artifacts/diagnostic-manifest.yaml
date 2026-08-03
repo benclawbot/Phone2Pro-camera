@@ -1,0 +1,96 @@
+schemaVersion: 1
+updatedAt: 2026-08-03T11:27:00Z
+deviceBuild:
+  model: A001
+  device: Galaga
+  product: GalagaEEA
+  buildFingerprint: Nothing/GalagaEEA/Galaga:16/BP2A.250605.031.A3/2606151653:user/release-keys
+handling:
+  rawArtifacts: Stored in the user's controlled file library; not redistributed in this public repository.
+  repositoryContent: Hashes, metadata and derived findings only.
+artifacts:
+  - id: diag-capabilities-original
+    name: phone2pro-capabilities-20260802_205658.json
+    sizeBytes: 26604
+    sha256: 7bf2e7f7947ea1ed5679c1822aa1443b90e34d74d7f0d72ef75c734699d8de82
+    schemaVersion: 1
+    generatedAtEpochMillis: 1785697017969
+    profile: legacy-capability-dump
+    status: ingested
+    notes: Exact duplicate of diag-capabilities-copy.
+
+  - id: diag-capabilities-copy
+    name: phone2pro-capabilities-20260802_205658(1).json
+    sizeBytes: 26604
+    sha256: 7bf2e7f7947ea1ed5679c1822aa1443b90e34d74d7f0d72ef75c734699d8de82
+    schemaVersion: 1
+    generatedAtEpochMillis: 1785697017969
+    profile: legacy-capability-dump
+    status: duplicate
+    duplicateOf: diag-capabilities-original
+
+  - id: diag-static-hardware-vendor
+    name: phone2pro-static-hardware-vendor-20260802_223117_378.json
+    sizeBytes: 87085
+    sha256: 78e2ff4ff20309c1a875983f6d8754c823804c249fc9874dbb9a3c7918ae979e
+    schemaVersion: 2
+    generatedAtEpochMillis: 1785702676647
+    profile: static-hardware-vendor
+    label: Static hardware & vendor audit
+    status: ingested
+
+  - id: diag-night-low-light
+    name: phone2pro-night-low-light-20260802_223141_739.json
+    sizeBytes: 226455
+    sha256: f0b406a01329e76bed170f734ecc434c573d3f23d2b8c7a11dcea87429bdf151
+    schemaVersion: 2
+    generatedAtEpochMillis: 1785702689443
+    profile: night-low-light
+    label: Night / low-light capture audit
+    status: ingested
+    observations:
+      - Eight-frame burst completed with all results and images.
+
+  - id: diag-daylight-lens-routing
+    name: phone2pro-daylight-lens-routing-20260803_092933_170.json
+    sizeBytes: 389470
+    sha256: a4ba4f653490dc927f260a03b0a3b455589b17a020461738327c4270370d9d41
+    schemaVersion: 2
+    generatedAtEpochMillis: 1785742156428
+    profile: daylight-lens-routing
+    label: Daylight lens-routing audit
+    status: ingested
+    observations:
+      - System-only camera open probes completed for four candidate IDs.
+      - Eight-frame bursts completed at baseline, 1x and 2x with all results and images.
+
+  - id: diag-official-expert-routing
+    name: phone2pro-official-expert-lens-routing-20260803_100744_866.json
+    sizeBytes: 98220
+    sha256: 6995200e4f2c995c9160464b9300247604bebb2d3e81511f136825fb6934f557
+    schemaVersion: 2
+    generatedAtEpochMillis: 1785744464043
+    profile: official-expert-lens-routing
+    label: Official camera Expert 0.6x / 1x / 2x audit
+    status: ingested
+    complete: true
+    observations:
+      - Three associated stock-camera captures.
+      - 35 mm-equivalent focal lengths: 15, 24 and 50 mm.
+      - Physical focal lengths: 1.64, 5.56 and 7.1 mm.
+      - Digital zoom ratio reported as zero for the three routes.
+
+  - id: diag-official-widget-focal
+    name: phone2pro-official-expert-widget-focal-launch-20260803_123822_592.json
+    sizeBytes: 107605
+    sha256: 126586150fd02faf2ad997490813aee5239648bc1849960887188fe37eb86a46
+    schemaVersion: 2
+    generatedAtEpochMillis: 1785753501933
+    profile: official-expert-widget-focal-launch
+    label: Official Expert preset 15 / 24 / 50 mm launch audit
+    status: ingested
+    complete: false
+    observations:
+      - The exported widget parser was invoked with 15mm, 24mm and 50mm values.
+      - The associated audit outputs remained on the 5.56 mm / 24 mm-equivalent route.
+      - The result is scoped to the external widget path and does not close internal Expert routing research.
