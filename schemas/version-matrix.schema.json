@@ -33,6 +33,7 @@
       "additionalProperties": false,
       "required": [
         "id",
+        "identitySha256",
         "entryRevision",
         "status",
         "recordedAt",
@@ -46,7 +47,11 @@
       "properties": {
         "id": {
           "type": "string",
-          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*-[0-9a-f]{8}$"
+        },
+        "identitySha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
         },
         "entryRevision": {"type": "integer", "minimum": 1},
         "status": {"type": "string", "enum": ["verified", "partial", "unknown"]},
