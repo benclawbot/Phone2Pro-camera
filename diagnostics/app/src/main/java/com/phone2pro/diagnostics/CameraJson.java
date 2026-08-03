@@ -32,6 +32,14 @@ final class CameraJson {
         if (input == null) {
             return JSONObject.NULL;
         }
+        if (input instanceof Rational) {
+            Rational rational = (Rational) input;
+            return object(
+                    "numerator", rational.getNumerator(),
+                    "denominator", rational.getDenominator(),
+                    "doubleValue", rational.doubleValue()
+            );
+        }
         if (input instanceof JSONObject || input instanceof JSONArray
                 || input instanceof String || input instanceof Number
                 || input instanceof Boolean) {
@@ -66,14 +74,6 @@ final class CameraJson {
         if (input instanceof Range<?>) {
             Range<?> range = (Range<?>) input;
             return object("lower", value(range.getLower()), "upper", value(range.getUpper()));
-        }
-        if (input instanceof Rational) {
-            Rational rational = (Rational) input;
-            return object(
-                    "numerator", rational.getNumerator(),
-                    "denominator", rational.getDenominator(),
-                    "doubleValue", rational.doubleValue()
-            );
         }
         if (input instanceof Pair<?, ?>) {
             Pair<?, ?> pair = (Pair<?, ?>) input;
