@@ -1,0 +1,155 @@
+schemaVersion: 1
+updatedAt: 2026-08-03T12:01:00Z
+deviceBuild: galaga-android16-2606151653
+officialSourceFamily: galaga-16b
+status: strong-candidates-awaiting-runtime-binding
+
+routes:
+  rear-main:
+    publicCameraId: "0"
+    systemCameraIdCandidate: null
+    observed:
+      pixelArray: [4080, 3072]
+      activeArray: [4080, 3072]
+      stockCaptureLandscape: [4080, 3072]
+      focalLengthMm: 5.56
+      equivalentFocalLengthMm: 24
+      aperture: 1.879
+      physicalSensorSizeMm: [8.16, 6.14]
+    leadingSensor:
+      baseDriver: s5kgn9sp_mipi_raw
+      compiledVariants:
+        - s5kgn9sp_mipi_raw
+        - s5kgn9spofxian_mipi_raw
+      driverFullArray: [8160, 6144]
+      driverPreviewCapture: [4080, 3072]
+    alternativesConsidered:
+      - baseDriver: imx882_mipi_raw
+        reasonLowerConfidence: Inspected driver preview/capture path is 4000x3000 rather than the exact target 4080x3072 geometry.
+    confidence:
+      sensorFamily: 3
+      exactModuleVariant: 1
+      numericIdMapping: 4
+    evidence:
+      - class: device-observed
+        reference: diag-static-hardware-vendor
+      - class: device-observed
+        reference: diag-official-expert-routing
+      - class: source-confirmed
+        reference: NothingOSS/android_kernel_modules_nothing_mt6878@mt6878/Galaga/16b:mtkcam/imgsensor/src-v4l2/common/s5kgn9sp_mipi_raw/s5kgn9spmipiraw_Sensor.c
+      - class: source-confirmed
+        reference: NothingOSS/android_kernel_device_modules_6.1_nothing_mt6878@mt6878/Galaga/16b:arch/arm64/configs/mgk_64_k61_defconfig
+
+  rear-ultrawide:
+    publicCameraId: null
+    systemCameraIdCandidate: "2"
+    observed:
+      stockCaptureLandscape: [3264, 2448]
+      focalLengthMm: 1.64
+      equivalentFocalLengthMm: 15
+      digitalZoomRatio: 0
+    leadingSensor:
+      baseDriver: gc08a8_mipi_raw
+      compiledVariants:
+        - gc08a8_mipi_raw
+        - gc08a8xl_mipi_raw
+        - gc08a8syx_mipi_raw
+      driverFullArray: [3264, 2448]
+      driverPreviewCapture: [3264, 2448]
+    confidence:
+      sensorFamily: 3
+      exactModuleVariant: 1
+      numericIdMapping: 2
+    evidence:
+      - class: device-observed
+        reference: diag-official-expert-routing
+      - class: source-confirmed
+        reference: NothingOSS/android_kernel_modules_nothing_mt6878@mt6878/Galaga/16b:mtkcam/imgsensor/src-v4l2/common/gc08a8_mipi_raw/gc08a8mipiraw_Sensor.c
+      - class: source-confirmed
+        reference: NothingOSS/android_kernel_device_modules_6.1_nothing_mt6878@mt6878/Galaga/16b:arch/arm64/configs/mgk_64_k61_defconfig
+      - class: inferred
+        reference: Existing Nothing Camera static routing model associates internal ID 2 with the 0.6x route.
+
+  rear-telephoto:
+    publicCameraId: null
+    systemCameraIdCandidate: "3"
+    observed:
+      stockCaptureLandscape: [4096, 3072]
+      focalLengthMm: 7.1
+      equivalentFocalLengthMm: 50
+      aperture: 1.85
+      digitalZoomRatio: 0
+    leadingSensor:
+      baseDriver: ov50d40_mipi_raw
+      compiledVariants:
+        - ov50d40_mipi_raw
+        - ov50d40ofilm_mipi_raw
+      driverFullArray: [8192, 6144]
+      driverPreviewCapture: [4096, 3072]
+    confidence:
+      sensorFamily: 3
+      exactModuleVariant: 1
+      numericIdMapping: 2
+    evidence:
+      - class: device-observed
+        reference: diag-official-expert-routing
+      - class: source-confirmed
+        reference: NothingOSS/android_kernel_modules_nothing_mt6878@mt6878/Galaga/16b:mtkcam/imgsensor/src-v4l2/common/ov50d40_mipi_raw/ov50d40mipiraw_Sensor.c
+      - class: source-confirmed
+        reference: NothingOSS/android_kernel_device_modules_6.1_nothing_mt6878@mt6878/Galaga/16b:arch/arm64/configs/mgk_64_k61_defconfig
+      - class: inferred
+        reference: Existing Nothing Camera static routing model associates internal ID 3 with the 2x route.
+
+  front:
+    publicCameraId: "1"
+    systemCameraIdCandidate: null
+    observed:
+      pixelArray: [2320, 1744]
+      activeArray: [2320, 1744]
+      focalLengthMm: 3.26
+      aperture: 2.0
+    leadingSensor:
+      baseDriver: gc16b3c_mipi_raw
+      compiledVariants:
+        - gc16b3c_mipi_raw
+        - gc16b3cxl_mipi_raw
+        - gc16b3ctxd_mipi_raw
+        - gc16b3c2_mipi_raw
+        - gc16b3cofilm_mipi_raw
+      driverPreviewCapture: [2320, 1744]
+    confidence:
+      sensorFamily: 3
+      exactModuleVariant: 1
+      numericIdMapping: 4
+    evidence:
+      - class: device-observed
+        reference: diag-static-hardware-vendor
+      - class: source-confirmed
+        reference: NothingOSS/android_kernel_modules_nothing_mt6878@mt6878/Galaga/16b:mtkcam/imgsensor/src-v4l2/common/gc16b3c_mipi_raw/gc16b3c_mipiraw_Sensor.c
+      - class: source-confirmed
+        reference: NothingOSS/android_kernel_device_modules_6.1_nothing_mt6878@mt6878/Galaga/16b:arch/arm64/configs/mgk_64_k61_defconfig
+
+logicalOrCompositeCandidates:
+  - cameraId: "4"
+    proposedRole: rear SAT/logical composite
+    confidence: 1
+    evidence:
+      - class: device-observed
+        reference: diag-daylight-lens-routing
+        notes: CameraService classifies ID 4 as system-only.
+      - class: inferred
+        reference: Existing Nothing Camera static routing model normalizes rear IDs to SAT ID 4.
+  - cameraId: "5"
+    proposedRole: portrait or another composite route
+    confidence: 1
+    evidence:
+      - class: device-observed
+        reference: diag-daylight-lens-routing
+        notes: CameraService classifies ID 5 as system-only.
+
+validationRequired:
+  - Installed DTB/DTBO sensor-names and module supplier strings.
+  - Runtime image-sensor binding or authorized kernel log.
+  - EEPROM/module identification.
+  - Stock HAL/provider metadata for system-only IDs.
+  - Dynamic Nothing Camera openCamera and session traces.
