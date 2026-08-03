@@ -1,0 +1,35 @@
+FROM ubuntu:24.04
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        bash \
+        ca-certificates \
+        curl \
+        file \
+        git \
+        jq \
+        openjdk-21-jdk-headless \
+        python3 \
+        python3-pip \
+        python3-venv \
+        ripgrep \
+        unzip \
+        zip \
+        binutils \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+
+COPY config/reverse-engineering-toolchain.json /workspace/config/reverse-engineering-toolchain.json
+COPY tools/toolchain /workspace/tools/toolchain
+
+RUN bash /workspace/tools/toolchain/bootstrap-re-toolchain.sh \
+      --install-dir /opt/re-toolchain
+
+ENV RE_TOOLCHAIN_HOME=/opt/re-toolchain
+ENV PATH=/opt/re-toolchain/bin:/opt/re-toolchain/venv/bin:${PATH}
+
+ENTRYPOINT ["python3", "/workspace/tools/toolchain/verify-re-toolchain.py", "--lock", "/workspace/config/reverse-engineering-toolchain.json"]
+CMD ["--profile", "static"]
