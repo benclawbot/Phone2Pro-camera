@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/phone2pro-camera/capability-entry.schema.json",
+  "title": "CMF Phone 2 Pro Camera Capability Entry",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "layer",
+    "status",
+    "reachability",
+    "evidence",
+    "confidence"
+  ],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[A-Z0-9_.-]+$" },
+    "name": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+    "layer": {
+      "enum": [
+        "hardware",
+        "kernel",
+        "firmware",
+        "hal",
+        "service",
+        "framework",
+        "vendor-api",
+        "stock-app",
+        "replacement-app"
+      ]
+    },
+    "subsystem": { "type": "string" },
+    "interface": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "characteristic",
+            "capture-request",
+            "capture-result",
+            "session-parameter",
+            "intent",
+            "binder",
+            "aidl",
+            "hidl",
+            "jni",
+            "native-symbol",
+            "ioctl",
+            "sysfs",
+            "property",
+            "xml",
+            "other"
+          ]
+        },
+        "name": { "type": "string" },
+        "type": { "type": "string" },
+        "validValues": {},
+        "ordering": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "status": {
+      "enum": [
+        "verified",
+        "partially-verified",
+        "candidate",
+        "unverified",
+        "unsupported"
+      ]
+    },
+    "reachability": {
+      "enum": [
+        "public",
+        "hidden-callable",
+        "privileged",
+        "platform-signature",
+        "root-only",
+        "firmware-internal",
+        "unsupported",
+        "unknown"
+      ]
+    },
+    "requirements": {
+      "type": "object",
+      "properties": {
+        "permissions": { "type": "array", "items": { "type": "string" } },
+        "uid": { "type": "string" },
+        "signature": { "type": "string" },
+        "selinuxDomain": { "type": "string" },
+        "dependencies": { "type": "array", "items": { "type": "string" } },
+        "conflicts": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    },
+    "deviceContext": {
+      "type": "object",
+      "properties": {
+        "model": { "type": "string" },
+        "device": { "type": "string" },
+        "buildFingerprint": { "type": "string" },
+        "securityPatch": { "type": "string" },
+        "cameraPackageVersion": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "test": {
+      "type": "object",
+      "properties": {
+        "procedure": { "type": "string" },
+        "expected": { "type": "string" },
+        "observed": { "type": "string" },
+        "error": { "type": ["string", "null"] },
+        "artifacts": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["class", "reference"],
+        "properties": {
+          "class": {
+            "enum": [
+              "device-observed",
+              "source-confirmed",
+              "documentation-confirmed",
+              "binary-confirmed",
+              "community-corroborated",
+              "inferred",
+              "unverified"
+            ]
+          },
+          "reference": { "type": "string" },
+          "revision": { "type": "string" },
+          "notes": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "confidence": { "type": "integer", "minimum": 0, "maximum": 4 },
+    "replacementAppUse": { "type": "string" },
+    "risks": { "type": "array", "items": { "type": "string" } },
+    "openQuestions": { "type": "array", "items": { "type": "string" } },
+    "updatedAt": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": true
+}
