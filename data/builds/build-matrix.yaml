@@ -1,5 +1,33 @@
 schemaVersion: 1
-updatedAt: 2026-08-03T11:36:00Z
+updatedAt: 2026-08-03T11:47:00Z
+sourceFamilies:
+  galaga-v:
+    operatingSystemFamily: Nothing OS 3.2
+    branches:
+      commonKernel: NothingOSS/android_kernel_6.1_nothing_mt6878@mt6878/Galaga/v
+      vendorModules: NothingOSS/android_kernel_modules_nothing_mt6878@mt6878/Galaga/v
+      deviceModules: NothingOSS/android_kernel_device_modules_6.1_nothing_mt6878@mt6878/Galaga/v
+    publishedBuilds:
+      - Galaga-V3.2-250425-1517
+      - Galaga-V3.2-250526-1427
+      - Galaga-V3.2-250605-1102
+      - Galaga-V3.2-250616-1258
+      - Galaga-V3.2-250715-1813
+      - Galaga-V3.2-250903-2153
+    status: official
+
+  galaga-16b:
+    operatingSystemFamily: Nothing OS 4.x / Android 16 source family
+    branches:
+      commonKernel: NothingOSS/android_kernel_6.1_nothing_mt6878@mt6878/Galaga/16b
+      vendorModules: NothingOSS/android_kernel_modules_nothing_mt6878@mt6878/Galaga/16b
+      deviceModules: NothingOSS/android_kernel_device_modules_6.1_nothing_mt6878@mt6878/Galaga/16b
+    publishedBuilds:
+      - Galaga-B4.0-260108-1654
+      - Galaga-B4.0-260226-1122
+      - Galaga-B4.1-260415-1710
+    status: official
+
 builds:
   - id: galaga-android16-2606151653
     device:
@@ -32,6 +60,12 @@ builds:
       - "3"
       - "4"
       - "5"
+    sourceRelationship:
+      primaryCandidateFamily: galaga-16b
+      exactCommitMatch: unknown
+      confidence: 3
+      rationale: >-
+        The installed build is Android 16 and postdates the official Galaga/16b OS 4.x releases. The source family is strongly matched, but the exact installed kernel/module revision has not been correlated with immutable commit SHAs or runtime build IDs.
     evidenceArtifacts:
       - diag-capabilities-original
       - diag-static-hardware-vendor
@@ -42,6 +76,7 @@ builds:
     status: active-baseline
     openQuestions:
       - Exact Nothing OS release label and OTA filename.
+      - Exact Git commit corresponding to the installed kernel and modules.
       - Camera package signing certificate and privileged grant state.
       - Matching framework, vendor, product, system_ext and odm partition hashes.
       - Provider/HAL version and service instance.
