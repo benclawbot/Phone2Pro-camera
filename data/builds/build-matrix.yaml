@@ -1,0 +1,47 @@
+schemaVersion: 1
+updatedAt: 2026-08-03T11:36:00Z
+builds:
+  - id: galaga-android16-2606151653
+    device:
+      manufacturer: Nothing
+      model: A001
+      codename: Galaga
+      product: GalagaEEA
+      hardware: mt6878
+      socManufacturer: MediaTek
+      socModel: MT6878
+    operatingSystem:
+      androidRelease: "16"
+      sdkInt: 36
+      securityPatch: 2026-06-01
+      fingerprint: Nothing/GalagaEEA/Galaga:16/BP2A.250605.031.A3/2606151653:user/release-keys
+      buildTimestampToken: "2606151653"
+    stockCamera:
+      packageName: com.nothing.camera
+      versionName: 16.1.01.93.20
+      longVersionCode: 161019320
+      signature: unknown
+      installPath: unknown
+      requestedPermissions: unknown
+      grantedPermissions: unknown
+    publicCameraIds:
+      - "0"
+      - "1"
+    recognizedSystemOnlyCameraIds:
+      - "2"
+      - "3"
+      - "4"
+      - "5"
+    evidenceArtifacts:
+      - diag-capabilities-original
+      - diag-static-hardware-vendor
+      - diag-night-low-light
+      - diag-daylight-lens-routing
+      - diag-official-expert-routing
+      - diag-official-widget-focal
+    status: active-baseline
+    openQuestions:
+      - Exact Nothing OS release label and OTA filename.
+      - Camera package signing certificate and privileged grant state.
+      - Matching framework, vendor, product, system_ext and odm partition hashes.
+      - Provider/HAL version and service instance.
