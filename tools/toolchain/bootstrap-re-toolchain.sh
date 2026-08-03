@@ -21,10 +21,10 @@ Options:
   --dry-run          print planned actions without downloading or installing
   -h, --help         show help
 
-The bootstrap installs pinned JADX, Apktool, bundletool and Frida host tools.
-Android Platform-Tools, Perfetto and baksmali remain explicit host steps because
-their official packaging is platform-specific or not distributed as one
-self-contained executable. Run verify-re-toolchain.py afterwards.
+The bootstrap installs pinned JADX, Apktool, baksmali, bundletool and Frida host
+tools. Ghidra is optional because of its size. Android Platform-Tools and
+Perfetto remain explicit host steps because their official binaries are
+platform-specific. Run verify-re-toolchain.py afterwards.
 EOF
 }
 
@@ -174,6 +174,28 @@ write_wrapper() {
   chmod 0755 "$path"
 }
 
+write_ghidra_version_wrapper() {
+  local path="$1"
+  local ghidra_root="$2"
+  local properties="$ghidra_root/Ghidra/application.properties"
+  if ((DRY_RUN)); then
+    printf 'Would write Ghidra version wrapper: %s\n' "$path"
+    return
+  fi
+  [[ -f "$properties" ]] || {
+    printf 'Ghidra application properties not found: %s\n' "$properties" >&2
+    exit 5
+  }
+  cat >"$path" <<EOF
+#!/usr/bin/env bash
+set -Eeuo pipefail
+version="\$(sed -n 's/^application.version=//p' '$properties' | head -n 1)"
+[[ -n "\$version" ]] || { echo 'Unable to read Ghidra version.' >&2; exit 1; }
+printf 'Ghidra %s\\n' "\$version"
+EOF
+  chmod 0755 "$path"
+}
+
 : >"$RECEIPT_TSV"
 printf 'tool_id\tversion\tpath\tsha256\tintegrity\n' >>"$RECEIPT_TSV"
 
@@ -190,6 +212,11 @@ fi
 apktool_version="$(lock_value apktool version)"
 download_tool apktool "apktool-$apktool_version.jar"
 write_wrapper "$BIN_DIR/apktool" java -jar "$DOWNLOAD_DIR/apktool-$apktool_version.jar"
+
+baksmali_version="$(lock_value baksmali version)"
+download_tool baksmali "baksmali-$baksmali_version-fat-release.jar"
+write_wrapper "$BIN_DIR/baksmali" java -jar \
+  "$DOWNLOAD_DIR/baksmali-$baksmali_version-fat-release.jar"
 
 bundletool_version="$(lock_value bundletool version)"
 download_tool bundletool "bundletool-$bundletool_version.jar"
@@ -209,17 +236,24 @@ if ((WITH_GHIDRA)); then
     }
     ln -sfn "$ghidra_root/ghidraRun" "$BIN_DIR/ghidraRun"
     ln -sfn "$ghidra_root/support/analyzeHeadless" "$BIN_DIR/analyzeHeadless"
+    write_ghidra_version_wrapper "$BIN_DIR/ghidra-version" "$ghidra_root"
+  else
+    write_ghidra_version_wrapper "$BIN_DIR/ghidra-version" \
+      "$OPT_DIR/ghidra-$ghidra_version/ghidra_$ghidra_version"
   fi
 fi
 
+frida_version="$(lock_value frida version)"
+frida_tools_version="$(lock_value frida-tools version)"
 if ((DRY_RUN)); then
-  printf 'Would create Python virtual environment and install pinned Frida packages.\n'
+  printf 'Would create Python virtual environment and install frida==%s frida-tools==%s.\n' \
+    "$frida_version" "$frida_tools_version"
 else
   python3 -m venv "$INSTALL_DIR/venv"
   "$INSTALL_DIR/venv/bin/python" -m pip install --disable-pip-version-check --upgrade pip
   "$INSTALL_DIR/venv/bin/python" -m pip install --disable-pip-version-check \
-    "frida==$(lock_value frida version)" \
-    "frida-tools==$(lock_value frida-tools version)"
+    "frida==$frida_version" \
+    "frida-tools==$frida_tools_version"
   for executable in frida frida-ps frida-trace frida-discover frida-kill; do
     if [[ -x "$INSTALL_DIR/venv/bin/$executable" ]]; then
       ln -sfn "$INSTALL_DIR/venv/bin/$executable" "$BIN_DIR/$executable"
@@ -228,14 +262,24 @@ else
   "$INSTALL_DIR/venv/bin/python" - <<'PY' >>"$RECEIPT_TSV"
 import hashlib
 import importlib.metadata
-import pathlib
 
 for distribution_name in ("frida", "frida-tools"):
     distribution = importlib.metadata.distribution(distribution_name)
     version = distribution.version
-    record = distribution.locate_file("METADATA")
-    path = pathlib.Path(record)
-    digest = hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else "n/a"
+    metadata_path = next(
+        (
+            distribution.locate_file(item)
+            for item in (distribution.files or [])
+            if str(item).endswith(".dist-info/METADATA")
+        ),
+        None,
+    )
+    if metadata_path is not None and metadata_path.is_file():
+        digest = hashlib.sha256(metadata_path.read_bytes()).hexdigest()
+        path = str(metadata_path)
+    else:
+        digest = "n/a"
+        path = "distribution-metadata-unavailable"
     print(f"{distribution_name}\t{version}\t{path}\t{digest}\tinstalled-distribution-metadata")
 PY
 fi
@@ -264,9 +308,13 @@ Add to PATH:
 
 Still required for the full profile:
   - Android SDK Platform-Tools 37.0.1
-  - baksmali 3.0.9 from Google Maven
   - Perfetto trace_processor_shell 55.3 for the current host
   - Node.js 24
+EOF
+if ((WITH_GHIDRA == 0)); then
+  printf '  - Ghidra 12.1.2 (rerun with --with-ghidra)\n'
+fi
+cat <<EOF
 
 Verify with:
   python3 "$SCRIPT_DIR/verify-re-toolchain.py" --profile full --strict --include-host-utilities
