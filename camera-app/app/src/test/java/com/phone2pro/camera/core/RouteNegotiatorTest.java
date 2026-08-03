@@ -35,6 +35,10 @@ public final class RouteNegotiatorTest {
         assertTrue(decision.support().isAvailable());
         assertEquals(PublicMainBackend.BACKEND_ID, decision.backendId());
         assertEquals(RouteMechanism.PUBLIC_CAMERA, decision.support().mechanism());
+        assertEquals(
+                PublicMainBackend.GALAGA_PUBLIC_REAR_ID,
+                decision.endpoint().orElseThrow(AssertionError::new).cameraId()
+        );
     }
 
     @Test

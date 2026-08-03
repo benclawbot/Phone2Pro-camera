@@ -2,9 +2,12 @@ package com.phone2pro.camera.backend;
 
 import com.phone2pro.camera.core.DeviceCapabilitySnapshot;
 import com.phone2pro.camera.core.OpticalRoute;
+import com.phone2pro.camera.core.ResolvedCameraEndpoint;
 import com.phone2pro.camera.core.RouteBackend;
 import com.phone2pro.camera.core.RouteMechanism;
 import com.phone2pro.camera.core.RouteSupport;
+
+import java.util.Optional;
 
 /** Ordinary-app backend for the verified public rear main camera. */
 public final class PublicMainBackend implements RouteBackend {
@@ -39,5 +42,20 @@ public final class PublicMainBackend implements RouteBackend {
                 RouteMechanism.PUBLIC_CAMERA,
                 "Verified public Camera2 ID 0 main-camera route."
         );
+    }
+
+    @Override
+    public Optional<ResolvedCameraEndpoint> resolve(
+            OpticalRoute route,
+            DeviceCapabilitySnapshot capabilities
+    ) {
+        if (!evaluate(route, capabilities).isAvailable()) {
+            return Optional.empty();
+        }
+        return Optional.of(new ResolvedCameraEndpoint(
+                GALAGA_PUBLIC_REAR_ID,
+                RouteMechanism.PUBLIC_CAMERA,
+                "Public Camera2 capability snapshot contains rear camera ID 0."
+        ));
     }
 }

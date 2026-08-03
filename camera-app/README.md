@@ -38,19 +38,31 @@ OpticalRoute
         -> CameraSessionController binder
 ```
 
-Current backend:
+Installed backend policies:
 
 ```text
+galaga-system-camera2
+  routes: 0.6× → ID 2, 1× → ID 0, 2× → ID 3
+  mechanism: SYSTEM_CAMERA
+  state: fail-closed until an independent authorization probe succeeds
+
 public-main-camera2
   route: 1× / 24 mm equivalent
   mechanism: PUBLIC_CAMERA
   Camera2 ID: 0
 ```
 
+Concrete IDs are owned by backend route tables rather than `OpticalRoute`. The
+Galaga table records verified static stock-camera configuration, while
+`SystemEndpointAccess` independently determines whether the current process is
+authorized to bind the endpoint. The production policy is unverified and
+always denies system-camera access, so current ordinary-app behavior remains
+unchanged.
+
 Planned optional backends remain isolated:
 
 - verified public MediaTek/Nothing SAT adapter;
-- authorized OEM/system-camera adapter;
+- authorized OEM/system-camera session binder and access probe;
 - rooted/custom-ROM integration;
 - official-camera handoff.
 
@@ -83,7 +95,11 @@ The GitHub Actions workflow `.github/workflows/camera-app-android.yml` runs test
 app/src/main/java/com/phone2pro/camera/
   MainActivity.java
   backend/
+    GalagaManualRouteTable.java
+    GalagaSystemCameraBackend.java
     PublicMainBackend.java
+    SystemEndpointAccess.java
+    UnverifiedSystemEndpointAccess.java
   capture/
     CameraSessionController.java
   core/
@@ -93,6 +109,7 @@ app/src/main/java/com/phone2pro/camera/
     RouteBackend.java
     RouteDecision.java
     RouteMechanism.java
+    ResolvedCameraEndpoint.java
     RouteNegotiator.java
     RouteSupport.java
 ```
@@ -103,7 +120,9 @@ app/src/main/java/com/phone2pro/camera/
 
 - the main route selects the public Camera2 backend;
 - ultrawide does not fall back to a digital crop;
-- a future higher-priority verified vendor backend can supersede a lower-priority handoff backend.
+- a future higher-priority verified vendor backend can supersede a lower-priority handoff backend;
+- the recovered Galaga table resolves `2`, `0` and `3` only after an independent authorization probe succeeds;
+- the default system-endpoint policy fails closed.
 
 ## Next implementation slices
 
@@ -112,4 +131,4 @@ app/src/main/java/com/phone2pro/camera/
 3. Add focus/metering gestures, orientation handling and capture-state feedback.
 4. Add frame/result correlation and structured diagnostic bundles.
 5. Implement burst acquisition, frame scoring and gyro timestamp capture.
-6. Add optional auxiliary-lens backends only after the stock route is reproduced and its privilege boundary is known.
+6. Implement the `SystemEndpointAccess` probe and direct Camera2 session binder only after the privilege boundary is reproduced lawfully.

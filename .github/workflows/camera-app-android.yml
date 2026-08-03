@@ -34,7 +34,28 @@ jobs:
         with:
           gradle-version: "9.5.0"
       - name: Test, lint and build replacement camera
-        run: gradle -p camera-app testDebugUnitTest lintDebug assembleDebug
+        shell: bash
+        run: |
+          set +e
+          gradle -p camera-app testDebugUnitTest lintDebug assembleDebug
+          status=$?
+          if [[ $status -ne 0 ]]; then
+            report="camera-app/app/build/intermediates/lint_intermediate_text_report/debug/lintReportDebug/lint-results-debug.txt"
+            if [[ -f "$report" ]]; then
+              echo "::group::Full Android lint report"
+              cat "$report"
+              echo "::endgroup::"
+            fi
+          fi
+          exit "$status"
+      - name: Upload lint reports after failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phone2pro-camera-lint-reports
+          path: camera-app/app/build/reports/lint-results-debug.*
+          if-no-files-found: warn
+          retention-days: 14
       - name: Upload replacement camera APK
         uses: actions/upload-artifact@v4
         with:
