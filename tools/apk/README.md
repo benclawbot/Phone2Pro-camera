@@ -69,3 +69,38 @@ Start with:
 ## Evidence handling
 
 The base/split APKs are proprietary artifacts from the user's device. Keep them outside the public repository. Commit only hashes, independently written analysis, small legally appropriate excerpts where necessary, and machine-readable derived facts.
+
+## Method-level DEX routing index
+
+`build-dex-routing-index.py` parses APK or DEX bytecode directly and does not
+require JADX. It identifies exact method identities, `const-string` references,
+Camera2 invocations, application camera-open dispatchers, session-parameter
+construction, physical-output selection and MediaTek/Nothing routing metadata.
+It also builds a bounded reverse caller graph and models command/executor
+callbacks through explicit synthetic edges.
+
+```bash
+python3 tools/apk/build-dex-routing-index.py \
+  /private/path/Camera.apk \
+  --json /private/output/dex-routing-index.json \
+  --markdown /private/output/dex-routing-index.md \
+  --max-caller-depth 8
+```
+
+The regular `analyze-nothing-camera.sh` pipeline now creates this report
+automatically. The evidence class is `STATIC_REFERENCE_ONLY`: recovered symbols
+and call paths do not establish runtime execution, privilege or optical output.
+
+## Galaga Expert route extraction
+
+```bash
+python3 tools/apk/extract-galaga-expert-route.py \
+  /private/path/Camera-16.1.01.93.20.apk \
+  --json /private/output/galaga-expert-route.json \
+  --markdown /private/output/galaga-expert-route.md
+```
+
+The extractor verifies the Galaga manual zoom table and the named integer
+camera-ID dispatch boundary. It exits non-zero when the expected mapping or
+required call-site checks change. `--allow-incomplete` is intended only for the
+broader multi-APK inventory pipeline.

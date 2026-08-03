@@ -138,6 +138,24 @@ setImmediate(function () {
       }
     }
 
+    function firstArrayItem(value) {
+      if (value === null || value === undefined) return null;
+      try {
+        return JArray.getLength(value) > 0 ? JArray.get(value, 0) : null;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function scalarString(value) {
+      if (value === null || value === undefined) return null;
+      try {
+        return value.toString();
+      } catch (_) {
+        return String(value);
+      }
+    }
+
     function cameraKeyName(key) {
       try {
         return key.getName().toString();
@@ -236,6 +254,106 @@ setImmediate(function () {
         emit('hook-installed', { className: classNameValue, methodName, signature });
       });
     }
+
+    // Stock-build-specific hooks derived from the static DEX open path. They are
+    // observational only and fail closed with hook-unavailable on other versions.
+    hookOverloads(
+      'com.nothing.common.setting.SettingContext',
+      'setCameraId',
+      function (args, signature) {
+        emit('nothing-camera-id-set', {
+          signature,
+          cameraId: args.length > 0 ? scalarString(args[0]) : null,
+          stack: CONFIG.includeOpenStacks ? stackTrace() : null,
+        });
+        return {};
+      }
+    );
+
+    hookOverloads(
+      'com.nothing.common.setting.SettingContext',
+      'getCameraId',
+      function (_args, signature) {
+        return { signature };
+      },
+      function (result, thrown, context) {
+        emit('nothing-camera-id-get', {
+          signature: context.signature,
+          cameraId: thrown ? null : scalarString(result),
+          error: thrown ? String(thrown) : null,
+        });
+      }
+    );
+
+    [
+      'getFirstBackCameraId',
+      'getFirstBackLogicCameraId',
+      'getWideAngleCameraId',
+      'getTeleCameraId',
+      'getSatCameraId',
+    ].forEach(function (methodName) {
+      hookOverloads(
+        'com.nothing.common.setting.CameraDeviceInfoManager',
+        methodName,
+        function (_args, signature) {
+          return { signature };
+        },
+        function (result, thrown, context) {
+          emit('nothing-camera-id-helper', {
+            methodName,
+            signature: context.signature,
+            cameraId: thrown ? null : scalarString(result),
+            error: thrown ? String(thrown) : null,
+          });
+        }
+      );
+    });
+
+    ['openCameraAsync', 'resumeCameraAsync'].forEach(function (methodName) {
+      hookOverloads(
+        'com.nothing.cameracore.context.module.ModuleContext',
+        methodName,
+        function (args, signature) {
+          emit('nothing-module-open-request', {
+            methodName,
+            signature,
+            cameraId: args.length > 0 ? scalarString(args[0]) : null,
+            stack: CONFIG.includeOpenStacks ? stackTrace() : null,
+          });
+          return {};
+        }
+      );
+    });
+
+    hookOverloads(
+      'com.nothing.cameracore.context.module.CameraContext',
+      'openCamera',
+      function (args, signature) {
+        emit('nothing-camera-context-open', {
+          signature,
+          cameraId: args.length > 0 ? scalarString(args[0]) : null,
+          args: args.map((value) => summarize(value, 0)),
+          stack: CONFIG.includeOpenStacks ? stackTrace() : null,
+        });
+        return {};
+      }
+    );
+
+    hookOverloads(
+      'com.nothing.cameracore.context.module.CameraContext$3',
+      'execute',
+      function (args, signature) {
+        const commandArgs = args.length > 0 ? args[0] : null;
+        const cameraId = firstArrayItem(commandArgs);
+        emit('nothing-open-dispatch', {
+          signature,
+          cameraId: scalarString(cameraId),
+          commandArgs: summarize(commandArgs, 0),
+          stack: CONFIG.includeOpenStacks ? stackTrace() : null,
+        });
+        return {};
+      }
+    );
 
     hookOverloads(
       'android.hardware.camera2.CameraManager',

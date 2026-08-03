@@ -26,7 +26,7 @@ Options:
 
 Optional tools are used when present: python3, apksigner, apkanalyzer,
 aapt2/aapt, jadx, apktool, zipinfo, unzip, file, readelf, nm, strings and
-rg/grep. Python 3 enables the built-in binary-manifest permission report.
+rg/grep. Python 3 enables the built-in binary-manifest and DEX reports.
 EOF
 }
 
@@ -139,7 +139,6 @@ run_optional() {
   }
 }
 
-# Immutable input metadata and archive extraction.
 for apk in "${APKS[@]}"; do
   name="$(safe_name "$apk")"
   size="$(wc -c <"$apk" | tr -d ' ')"
@@ -194,7 +193,6 @@ for apk in "${APKS[@]}"; do
   fi
 done
 
-# JADX accepts multiple APKs and can resolve base/split classes into one output tree.
 if ((RUN_JADX)) && have jadx; then
   mkdir -p "$JADX_DIR"
   JADX_ARGS=(
@@ -210,7 +208,6 @@ else
   printf 'JADX skipped or unavailable.\n'
 fi
 
-# Decode each APK separately because apktool models one resource package per output.
 if ((RUN_APKTOOL)) && have apktool; then
   for apk in "${APKS[@]}"; do
     name="$(safe_name "$apk")"
@@ -222,7 +219,27 @@ else
   printf 'apktool skipped or unavailable.\n'
 fi
 
-# Native inventory and static symbol/string extraction.
+if have python3; then
+  printf 'Building method-level DEX routing index...\n'
+  python3 "$SCRIPT_DIR/build-dex-routing-index.py" "${APKS[@]}" \
+    --json "$REPORT_DIR/dex-routing-index.json" \
+    --markdown "$REPORT_DIR/dex-routing-index.md" \
+    >"$REPORT_DIR/dex-routing-index.log" 2>&1 || true
+else
+  printf 'DEX routing index skipped: python3 unavailable.\n'
+fi
+
+if have python3; then
+  printf 'Extracting Galaga Expert/manual route...\n'
+  python3 "$SCRIPT_DIR/extract-galaga-expert-route.py" "${APKS[@]}" \
+    --json "$REPORT_DIR/galaga-expert-route.json" \
+    --markdown "$REPORT_DIR/galaga-expert-route.md" \
+    --allow-incomplete \
+    >"$REPORT_DIR/galaga-expert-route.log" 2>&1 || true
+else
+  printf 'Galaga Expert route extraction skipped: python3 unavailable.\n'
+fi
+
 while IFS= read -r -d '' library; do
   relative="${library#"$UNPACKED_DIR/"}"
   safe="$(printf '%s' "$relative" | tr '/ ' '__')"
@@ -246,7 +263,6 @@ while IFS= read -r -d '' library; do
   fi
 done < <(find "$UNPACKED_DIR" -type f -name '*.so' -print0 | sort -z)
 
-# DEX/archive string fallback, useful even when JADX cannot fully decompile.
 if have strings; then
   while IFS= read -r -d '' artifact; do
     relative="${artifact#"$UNPACKED_DIR/"}"
@@ -255,7 +271,6 @@ if have strings; then
   done < <(find "$UNPACKED_DIR" -type f \( -name '*.dex' -o -name '*.jar' -o -name '*.bin' \) -print0 | sort -z)
 fi
 
-# Search decompiled, decoded and string output for routing indicators.
 SEARCH_ROOTS=()
 [[ -d "$JADX_DIR" ]] && SEARCH_ROOTS+=("$JADX_DIR")
 [[ -d "$APKTOOL_DIR" ]] && SEARCH_ROOTS+=("$APKTOOL_DIR")
@@ -274,23 +289,19 @@ else
   done <"$KEYWORDS_FILE"
 fi
 
-# High-signal file indexes for manual review.
 find "$JADX_DIR" -type f 2>/dev/null | sort >"$REPORT_DIR/jadx-files.txt" || true
 find "$APKTOOL_DIR" -type f 2>/dev/null | sort >"$REPORT_DIR/apktool-files.txt" || true
 find "$UNPACKED_DIR" -type f 2>/dev/null | sort >"$REPORT_DIR/archive-files.txt" || true
 
-if [[ -d "$JADX_DIR" ]]; then
-  if have rg; then
-    rg --no-heading --line-number --text \
-      'System\.loadLibrary|native [A-Za-z0-9_<>, ?\[\]]+ [A-Za-z0-9_$]+\(|registerNatives|JNI_OnLoad' \
-      "$JADX_DIR" >"$REPORT_DIR/jni-native-hits.txt" 2>/dev/null || true
-    rg --no-heading --line-number --text \
-      'CaptureRequest\.(Key|Builder)|SessionConfiguration|OutputConfiguration|CameraManager|CameraDevice|CameraCaptureSession' \
-      "$JADX_DIR" >"$REPORT_DIR/camera2-call-sites.txt" 2>/dev/null || true
-  fi
+if [[ -d "$JADX_DIR" ]] && have rg; then
+  rg --no-heading --line-number --text \
+    'System\.loadLibrary|native [A-Za-z0-9_<>, ?\[\]]+ [A-Za-z0-9_$]+\(|registerNatives|JNI_OnLoad' \
+    "$JADX_DIR" >"$REPORT_DIR/jni-native-hits.txt" 2>/dev/null || true
+  rg --no-heading --line-number --text \
+    'CaptureRequest\.(Key|Builder)|SessionConfiguration|OutputConfiguration|CameraManager|CameraDevice|CameraCaptureSession' \
+    "$JADX_DIR" >"$REPORT_DIR/camera2-call-sites.txt" 2>/dev/null || true
 fi
 
-# Final manifest covers every generated file except itself.
 {
   printf 'schemaVersion: 1\n'
   printf 'generatedAtUtc: %s\n' "$STAMP"
@@ -319,4 +330,4 @@ fi
 } >"$OUT_DIR/manifest.yaml"
 
 printf '\nAnalysis complete: %s\n' "$OUT_DIR"
-printf 'Start review with input-metadata/*.manifest-permissions.json, reports/routing-keyword-hits.txt and reports/camera2-call-sites.txt.\n'
+printf 'Start review with input-metadata/*.manifest-permissions.json, reports/galaga-expert-route.md, reports/dex-routing-index.md, reports/routing-keyword-hits.txt and reports/camera2-call-sites.txt.\n'

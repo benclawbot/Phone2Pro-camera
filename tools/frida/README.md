@@ -26,6 +26,18 @@ The script records JSON messages for:
 
 It prioritizes routing-relevant metadata but defaults to logging every request key so normalized 0.6×/1×/2× traces can be diffed later.
 
+For the analyzed `Camera-16.1.01.93.20.apk` build, it also installs narrowly
+scoped observational hooks on the recovered Nothing application path:
+
+- `SettingContext.setCameraId` and `getCameraId`;
+- rear/wide/tele/SAT ID helper methods;
+- `ModuleContext.openCameraAsync` and `resumeCameraAsync`;
+- `CameraContext.openCamera`;
+- `CameraContext$3.execute`, immediately before the framework open call.
+
+These hooks emit `hook-unavailable` instead of assuming that internal names are
+stable across stock-camera versions.
+
 ## Requirements
 
 Attaching to a privileged stock application generally requires one of:
@@ -85,6 +97,11 @@ Use a separate synchronized collection script or terminal so logcat is stopped c
 
 Inspect these message kinds first:
 
+- `nothing-camera-id-set`
+- `nothing-camera-id-helper`
+- `nothing-module-open-request`
+- `nothing-camera-context-open`
+- `nothing-open-dispatch`
 - `open-camera`
 - `set-session-parameters`
 - `set-output-physical-id`
