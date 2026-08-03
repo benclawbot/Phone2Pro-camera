@@ -2,7 +2,8 @@
 """Validate structured evidence and repository safety invariants.
 
 This validator intentionally performs no network access. It checks syntax, schema
-conformance, unique identifiers and accidental raw-artifact commits.
+conformance, unique identifiers, cross-record build links and accidental
+raw-artifact commits.
 """
 
 from __future__ import annotations
@@ -19,6 +20,10 @@ import jsonschema
 import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "tools" / "matrix"))
+
+from version_matrix import MatrixError, identity_sha256  # noqa: E402
+
 ERRORS: list[str] = []
 
 RAW_ARTIFACT_SUFFIXES = {
@@ -108,6 +113,140 @@ def validate_capabilities() -> None:
                 f"data/capabilities/baseline.json capabilities[{index}]"
                 f"{'.' + location if location else ''}: {error.message}"
             )
+
+
+def validate_version_matrix() -> None:
+    schema_path = ROOT / "schemas" / "version-matrix.schema.json"
+    matrix_path = ROOT / "data" / "builds" / "version-matrix.json"
+    artifact_path = ROOT / "data" / "artifacts" / "diagnostic-manifest.yaml"
+    schema = load_json(schema_path)
+    matrix = load_json(matrix_path)
+    artifact_manifest = load_yaml(artifact_path)
+    if not isinstance(schema, dict) or not isinstance(matrix, dict):
+        return
+
+    validator = jsonschema.Draft202012Validator(
+        schema,
+        format_checker=jsonschema.Draft202012Validator.FORMAT_CHECKER,
+    )
+    for error in sorted(validator.iter_errors(matrix), key=lambda item: list(item.path)):
+        location = ".".join(str(part) for part in error.path)
+        fail(
+            f"{matrix_path.relative_to(ROOT)}"
+            f"{'.' + location if location else ''}: {error.message}"
+        )
+
+    builds = matrix.get("builds")
+    if not isinstance(builds, list):
+        return
+    object_builds = [item for item in builds if isinstance(item, dict)]
+    check_unique(object_builds, "id", "version matrix builds")
+    build_by_id = {
+        build.get("id"): build
+        for build in object_builds
+        if isinstance(build.get("id"), str)
+    }
+
+    identities: dict[str, str] = {}
+    diagnostic_ids: dict[str, str] = {}
+    for index, build in enumerate(object_builds):
+        build_id = build.get("id")
+        expected_identity = build.get("identitySha256")
+        try:
+            actual_identity = identity_sha256(build)
+        except MatrixError as error:
+            fail(f"version matrix builds[{index}]: invalid identity inputs: {error}")
+        else:
+            if actual_identity != expected_identity:
+                fail(
+                    f"version matrix builds[{index}]: identitySha256 mismatch; "
+                    f"expected {actual_identity}, found {expected_identity!r}"
+                )
+            if isinstance(build_id, str) and not build_id.endswith(f"-{actual_identity[:8]}"):
+                fail(
+                    f"version matrix builds[{index}]: id must end with the identity "
+                    f"prefix {actual_identity[:8]!r}"
+                )
+            previous_identity = identities.get(actual_identity)
+            if previous_identity is not None:
+                fail(
+                    f"version matrix builds[{index}]: identity duplicates entry "
+                    f"{previous_identity!r}"
+                )
+            elif isinstance(build_id, str):
+                identities[actual_identity] = build_id
+
+        camera_packages = build.get("cameraPackages")
+        if isinstance(camera_packages, list):
+            packages = [item for item in camera_packages if isinstance(item, dict)]
+            check_unique(packages, "packageName", f"version matrix build {build_id!r} cameraPackages")
+
+        diagnostic_builds = build.get("diagnosticBuilds")
+        if isinstance(diagnostic_builds, list):
+            diagnostics = [item for item in diagnostic_builds if isinstance(item, dict)]
+            check_unique(diagnostics, "id", f"version matrix build {build_id!r} diagnosticBuilds")
+            for diagnostic in diagnostics:
+                diagnostic_id = diagnostic.get("id")
+                if isinstance(diagnostic_id, str):
+                    previous = diagnostic_ids.get(diagnostic_id)
+                    if previous is not None:
+                        fail(
+                            f"diagnostic build id {diagnostic_id!r} appears in both "
+                            f"{previous!r} and {build_id!r}"
+                        )
+                    elif isinstance(build_id, str):
+                        diagnostic_ids[diagnostic_id] = build_id
+
+    if not isinstance(artifact_manifest, dict):
+        return
+    artifacts = artifact_manifest.get("artifacts")
+    if not isinstance(artifacts, list):
+        return
+    artifact_by_id = {
+        artifact.get("id"): artifact
+        for artifact in artifacts
+        if isinstance(artifact, dict) and isinstance(artifact.get("id"), str)
+    }
+
+    device_build = artifact_manifest.get("deviceBuild")
+    if isinstance(device_build, dict):
+        linked_id = device_build.get("matrixEntryId")
+        if linked_id not in build_by_id:
+            fail(
+                f"{artifact_path.relative_to(ROOT)}: deviceBuild.matrixEntryId "
+                f"{linked_id!r} is missing from the version matrix"
+            )
+
+    for artifact_id, artifact in artifact_by_id.items():
+        linked_id = artifact.get("buildMatrixEntryId")
+        if linked_id not in build_by_id:
+            fail(
+                f"diagnostic artifact {artifact_id!r}: buildMatrixEntryId "
+                f"{linked_id!r} is missing from the version matrix"
+            )
+
+    for build_id, build in build_by_id.items():
+        diagnostics = build.get("diagnosticBuilds")
+        if not isinstance(diagnostics, list):
+            continue
+        for diagnostic in diagnostics:
+            if not isinstance(diagnostic, dict):
+                continue
+            source_artifacts = diagnostic.get("sourceArtifacts")
+            if not isinstance(source_artifacts, list):
+                continue
+            for artifact_id in source_artifacts:
+                artifact = artifact_by_id.get(artifact_id)
+                if artifact is None:
+                    fail(
+                        f"version matrix build {build_id!r}: diagnostic source artifact "
+                        f"{artifact_id!r} is missing"
+                    )
+                elif artifact.get("buildMatrixEntryId") != build_id:
+                    fail(
+                        f"version matrix build {build_id!r}: diagnostic source artifact "
+                        f"{artifact_id!r} links to {artifact.get('buildMatrixEntryId')!r}"
+                    )
 
 
 def validate_artifact_manifest() -> None:
@@ -223,6 +362,7 @@ def validate_documented_hashes() -> None:
 def main() -> int:
     validate_syntax()
     validate_capabilities()
+    validate_version_matrix()
     validate_artifact_manifest()
     validate_source_index()
     validate_sensor_map()
