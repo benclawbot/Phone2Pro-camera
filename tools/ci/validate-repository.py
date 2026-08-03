@@ -341,22 +341,44 @@ def validate_no_raw_artifacts() -> None:
             fail(f"raw/proprietary artifact must not be committed: {path.relative_to(ROOT)}")
 
 
-def validate_documented_hashes() -> None:
-    """Flag malformed literal SHA-256 values in structured files.
+def iter_sha256_fields(value: Any, location: str = ""):
+    """Yield structured fields whose key denotes a SHA-256 digest or requirement."""
 
-    External artifacts are intentionally absent, so this validates syntax only rather
-    than attempting to recalculate their digests.
+    if isinstance(value, dict):
+        for key, child in value.items():
+            child_location = f"{location}.{key}" if location else key
+            if key.lower().endswith("sha256"):
+                yield child_location, key, child
+            yield from iter_sha256_fields(child, child_location)
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            child_location = f"{location}[{index}]"
+            yield from iter_sha256_fields(child, child_location)
+
+
+def validate_documented_hashes() -> None:
+    """Validate literal SHA-256 values in structured data by key and value type.
+
+    A boolean field named ``sha256`` is allowed when a protocol declares that
+    hashing is required. Digest-bearing fields such as ``sha256`` strings and
+    ``identitySha256`` must contain exactly 64 lowercase hexadecimal characters.
     """
 
     for path in (ROOT / "data").rglob("*"):
         if not path.is_file() or path.suffix.lower() not in {".json", ".yaml", ".yml"}:
             continue
-        for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-            if "sha256" not in line.lower() or ":" not in line:
+        data = load_json(path) if path.suffix.lower() == ".json" else load_yaml(path)
+        if data is None:
+            continue
+        for location, key, value in iter_sha256_fields(data):
+            if key == "sha256" and isinstance(value, bool):
                 continue
-            candidate = line.split(":", 1)[-1].strip().strip("\"' ,}")
-            if candidate and candidate not in {"unknown", "null"} and not SHA256_PATTERN.fullmatch(candidate):
-                fail(f"{path.relative_to(ROOT)}:{line_number}: malformed SHA-256 value {candidate!r}")
+            if value in {None, "unknown"}:
+                continue
+            if not isinstance(value, str) or not SHA256_PATTERN.fullmatch(value):
+                fail(
+                    f"{path.relative_to(ROOT)}:{location}: malformed SHA-256 value {value!r}"
+                )
 
 
 def main() -> int:
