@@ -66,6 +66,7 @@ class VersionMatrixTest(unittest.TestCase):
         matrix = load_matrix(MATRIX_PATH)
         before = copy.deepcopy(next(iter(build_index(matrix).values())))
         after = copy.deepcopy(before)
+        before_identity = identity_sha256(before)
         after["id"] = "synthetic-after-00000000"
         after["platform"]["securityPatch"] = "2026-07-01"
         after["cameraPackages"][0]["versionName"] = "16.1.01.99.1"
@@ -75,6 +76,7 @@ class VersionMatrixTest(unittest.TestCase):
 
         report = diff_builds(before, after)
 
+        self.assertNotEqual(before_identity, after["identitySha256"])
         self.assertTrue(report["summary"]["firmwareOrPlatformChanged"])
         self.assertTrue(report["summary"]["cameraPackageChanged"])
         self.assertEqual(1, report["summary"]["generalChanges"])
@@ -88,6 +90,9 @@ class VersionMatrixTest(unittest.TestCase):
         matrix = load_matrix(MATRIX_PATH)
         before = copy.deepcopy(next(iter(build_index(matrix).values())))
         after = copy.deepcopy(before)
+        after["platform"]["buildFingerprint"] = after["platform"]["buildFingerprint"].replace(
+            "2606151653", "2607000000"
+        )
         after["platform"]["buildNumber"] = "2607000000"
         after["identitySha256"] = identity_sha256(after)
         after["id"] = "synthetic-after-" + after["identitySha256"][:8]
@@ -120,7 +125,7 @@ class VersionMatrixTest(unittest.TestCase):
             report = json.loads(report_path.read_text(encoding="utf-8"))
 
         self.assertEqual(1, result.returncode)
-        self.assertEqual(1, report["summary"]["generalChanges"])
+        self.assertEqual(2, report["summary"]["generalChanges"])
         self.assertIn("Version matrix diff:", result.stdout)
 
     def test_diff_cli_rejects_unknown_build_id(self) -> None:
