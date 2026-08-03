@@ -87,3 +87,60 @@ Causality requires:
 - selection of the newest static-analysis run.
 
 The repository validation workflow compiles the tool and runs these tests automatically.
+
+## Decompiler-independent DEX index
+
+`tools/apk/build-dex-routing-index.py` complements the source-oriented index by
+reading DEX tables and code items directly. It recovers:
+
+- exact defined-method descriptors;
+- `const-string` values referenced by each method;
+- resolved invoke targets, including all `CameraManager.openCamera` overloads;
+- session construction and `setSessionParameters` calls;
+- `OutputConfiguration.setPhysicalCameraId` calls;
+- MediaTek/Nothing routing-key references;
+- bounded reverse caller paths through direct calls;
+- explicitly labelled synthetic edges for command/executor callback classes.
+
+This path remains available when JADX is missing or fails on an obfuscated
+method. It intentionally avoids reconstructing proprietary Java source.
+
+Example:
+
+```bash
+python3 tools/apk/build-dex-routing-index.py \
+  /private/path/Camera.apk \
+  --json /private/output/dex-routing-index.json \
+  --markdown /private/output/dex-routing-index.md \
+  --max-caller-depth 8
+```
+
+The report separates all framework/library camera-open sites from Nothing
+application call sites. A static application call site is still not proof that
+a particular camera ID is selected at runtime.
+
+## Analyzed stock camera result
+
+The method-level result for `Camera-16.1.01.93.20.apk` is documented in
+[`NOTHING_CAMERA_STATIC_OPEN_PATH.md`](NOTHING_CAMERA_STATIC_OPEN_PATH.md).
+It identifies an application-owned integer camera-ID path into
+`CameraManager.openCamera`, while preserving the distinction between static
+presence and route-specific runtime causality.
+
+## Galaga Expert endpoint extractor
+
+`tools/apk/extract-galaga-expert-route.py` performs a narrow constant-flow
+analysis over the Galaga manual zoom builder. For the hashed Nothing Camera
+16.1.01.93.20 artifact it verifies this static configuration:
+
+| Expert zoom region | Camera endpoint |
+|---|---:|
+| `[0.6,1)` | `2` |
+| `[1,2)` | `0` |
+| `[2,10]` | `3` |
+
+It also checks the named dispatch boundary from the zoom consumer through
+`pref_camera_id_key` to the integer-to-string `CameraManager.openCamera` call.
+The result is static configuration evidence. Package authorization and actual
+per-capture execution still require device evidence. See
+[`GALAGA_EXPERT_DIRECT_ROUTE.md`](GALAGA_EXPERT_DIRECT_ROUTE.md).
