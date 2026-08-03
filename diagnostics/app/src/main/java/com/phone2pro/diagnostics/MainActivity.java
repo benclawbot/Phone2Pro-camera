@@ -3,6 +3,7 @@ package com.phone2pro.diagnostics;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -35,6 +36,10 @@ public final class MainActivity extends Activity {
     private boolean officialCameraLeftDiagnostics;
     private boolean processingOfficialCameraReturn;
 
+    private OfficialExpertDirectLaunchAudit.Session officialDirectSession;
+    private boolean officialDirectCameraLeftDiagnostics;
+    private boolean processingOfficialDirectReturn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +55,14 @@ public final class MainActivity extends Activity {
             officialCameraLeftDiagnostics = false;
             processingOfficialCameraReturn = true;
             finishOfficialExpertAudit();
+            return;
+        }
+        if (officialDirectSession != null
+                && officialDirectCameraLeftDiagnostics
+                && !processingOfficialDirectReturn) {
+            officialDirectCameraLeftDiagnostics = false;
+            processingOfficialDirectReturn = true;
+            finishOfficialDirectStep();
         }
     }
 
@@ -58,6 +71,9 @@ public final class MainActivity extends Activity {
         if (officialExpertSession != null && !processingOfficialCameraReturn) {
             officialCameraLeftDiagnostics = true;
         }
+        if (officialDirectSession != null && !processingOfficialDirectReturn) {
+            officialDirectCameraLeftDiagnostics = true;
+        }
         super.onStop();
     }
 
@@ -65,6 +81,9 @@ public final class MainActivity extends Activity {
     protected void onDestroy() {
         if (officialExpertSession != null) {
             officialExpertSession.stopAvailabilityRecording();
+        }
+        if (officialDirectSession != null) {
+            officialDirectSession.stopAvailabilityRecording();
         }
         worker.shutdownNow();
         super.onDestroy();
@@ -96,9 +115,10 @@ public final class MainActivity extends Activity {
         addProfile(root, DiagnosticProfile.NIGHT_LOW_LIGHT);
         addProfile(root, DiagnosticProfile.DAYLIGHT_LENS_ROUTING);
         addProfile(root, DiagnosticProfile.OFFICIAL_EXPERT_LENS_ROUTING);
+        addProfile(root, DiagnosticProfile.OFFICIAL_EXPERT_DIRECT_ID_LAUNCH);
 
         statusView = text(
-                "Ready. Use the official Expert-mode audit to compare the stock camera's 0.6x, 1x and 2x routes.",
+                "Ready. Use the direct-ID Expert audit to test whether the official camera honors IDs 2, 0 and 3 without manual lens selection.",
                 14,
                 Color.rgb(210, 210, 210)
         );
@@ -133,9 +153,9 @@ public final class MainActivity extends Activity {
             return;
         }
 
-        if (profile == DiagnosticProfile.OFFICIAL_EXPERT_LENS_ROUTING) {
+        if (isOfficialCameraMediaProfile(profile)) {
             statusView.setText(
-                    "Camera permission and full Photos and videos access are required to associate the three official-camera images with 0.6x, 1x and 2x."
+                    "Camera permission and full Photos and videos access are required to associate official-camera images with their requested lens routes."
             );
         } else {
             statusView.setText("Camera permission is required for this diagnostics profile.");
@@ -150,7 +170,7 @@ public final class MainActivity extends Activity {
             missing.add(Manifest.permission.CAMERA);
         }
 
-        if (profile == DiagnosticProfile.OFFICIAL_EXPERT_LENS_ROUTING) {
+        if (isOfficialCameraMediaProfile(profile)) {
             String mediaPermission = Build.VERSION.SDK_INT >= 33
                     ? Manifest.permission.READ_MEDIA_IMAGES
                     : Manifest.permission.READ_EXTERNAL_STORAGE;
@@ -159,6 +179,11 @@ public final class MainActivity extends Activity {
             }
         }
         return missing;
+    }
+
+    private boolean isOfficialCameraMediaProfile(DiagnosticProfile profile) {
+        return profile == DiagnosticProfile.OFFICIAL_EXPERT_LENS_ROUTING
+                || profile == DiagnosticProfile.OFFICIAL_EXPERT_DIRECT_ID_LAUNCH;
     }
 
     @Override
@@ -180,9 +205,10 @@ public final class MainActivity extends Activity {
         if (allGranted && pendingProfile != null
                 && missingPermissions(pendingProfile).isEmpty()) {
             startProfile(pendingProfile);
-        } else if (pendingProfile == DiagnosticProfile.OFFICIAL_EXPERT_LENS_ROUTING) {
+        } else if (pendingProfile != null
+                && isOfficialCameraMediaProfile(pendingProfile)) {
             statusView.setText(
-                    "Permission denied or limited. Grant Camera and full Photos and videos access, not selected-photo access, then run the Expert-mode audit again."
+                    "Permission denied or limited. Grant Camera and full Photos and videos access, not selected-photo access, then run the official-camera audit again."
             );
         } else {
             statusView.setText("Permission denied. No report was created.");
@@ -192,6 +218,8 @@ public final class MainActivity extends Activity {
     private void startProfile(DiagnosticProfile profile) {
         if (profile == DiagnosticProfile.OFFICIAL_EXPERT_LENS_ROUTING) {
             showOfficialExpertInstructions();
+        } else if (profile == DiagnosticProfile.OFFICIAL_EXPERT_DIRECT_ID_LAUNCH) {
+            showOfficialDirectInstructions();
         } else {
             runDiagnostics(profile);
         }
@@ -295,6 +323,133 @@ public final class MainActivity extends Activity {
                                     + error
                     );
                     processingOfficialCameraReturn = false;
+                    setButtonsEnabled(true);
+                });
+            }
+        });
+    }
+
+    private void showOfficialDirectInstructions() {
+        new AlertDialog.Builder(this)
+                .setTitle("Direct Expert camera-ID launch audit")
+                .setMessage(
+                        "This test opens the official camera three separate times and requests its internal Expert camera IDs in this order:\n\n"
+                                + "1. ID 2 — 0.6x ultrawide\n"
+                                + "2. ID 0 — 1x main\n"
+                                + "3. ID 3 — 2x telephoto\n\n"
+                                + "For each launch, do not touch the lens selector. Take exactly one photo, then press Back. The diagnostics app will process it and automatically open the next step.\n\n"
+                                + "Keep the phone in the same position. Leave JPEG or HEIF enabled."
+                )
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Start 3-step audit", (dialog, which) ->
+                        prepareOfficialDirectAudit())
+                .show();
+    }
+
+    private void prepareOfficialDirectAudit() {
+        setButtonsEnabled(false);
+        statusView.setText("Preparing direct launch step 1 of 3…");
+
+        worker.execute(() -> {
+            try {
+                OfficialExpertDirectLaunchAudit.Session session =
+                        OfficialExpertDirectLaunchAudit.prepare(this);
+                Intent intent = OfficialExpertDirectLaunchAudit.prepareNextLaunch(
+                        this,
+                        session
+                );
+                runOnUiThread(() -> launchOfficialDirectStep(session, intent));
+            } catch (Exception error) {
+                runOnUiThread(() -> {
+                    statusView.setText(
+                            "Unable to prepare the direct Expert launch audit:\n" + error
+                    );
+                    setButtonsEnabled(true);
+                });
+            }
+        });
+    }
+
+    private void launchOfficialDirectStep(
+            OfficialExpertDirectLaunchAudit.Session session,
+            Intent intent
+    ) {
+        officialDirectSession = session;
+        officialDirectCameraLeftDiagnostics = false;
+        processingOfficialDirectReturn = false;
+        statusView.setText(OfficialExpertDirectLaunchAudit.currentInstruction(session));
+        try {
+            startActivity(intent);
+        } catch (RuntimeException error) {
+            session.stopAvailabilityRecording();
+            officialDirectSession = null;
+            statusView.setText("Direct official camera launch failed:\n" + error);
+            setButtonsEnabled(true);
+        }
+    }
+
+    private void finishOfficialDirectStep() {
+        OfficialExpertDirectLaunchAudit.Session session = officialDirectSession;
+        statusView.setText("Reading this step's saved image and verifying its EXIF route…");
+
+        worker.execute(() -> {
+            try {
+                OfficialExpertDirectLaunchAudit.finishCurrentStep(this, session);
+                if (OfficialExpertDirectLaunchAudit.hasNextStep(session)) {
+                    Intent nextIntent = OfficialExpertDirectLaunchAudit.prepareNextLaunch(
+                            this,
+                            session
+                    );
+                    runOnUiThread(() -> launchOfficialDirectStep(session, nextIntent));
+                    return;
+                }
+
+                JSONObject directAudit = OfficialExpertDirectLaunchAudit.finish(this, session);
+                JSONObject report = new CapabilityReporter(this).build();
+                report.put(
+                        "selectedProfile",
+                        selectedProfileJson(
+                                DiagnosticProfile.OFFICIAL_EXPERT_DIRECT_ID_LAUNCH
+                        )
+                );
+                report.put("officialCameraExpertDirectLaunchAudit", directAudit);
+
+                Uri reportUri = ReportStorage.saveJsonReport(
+                        this,
+                        DiagnosticProfile.OFFICIAL_EXPERT_DIRECT_ID_LAUNCH.fileLabel,
+                        report.toString(2)
+                );
+                boolean complete = directAudit.optBoolean("complete", false);
+                boolean honored = directAudit.optBoolean(
+                        "allRequestedCameraIdsHonored",
+                        false
+                );
+                runOnUiThread(() -> {
+                    String message;
+                    if (complete && honored) {
+                        message = "Direct Expert ID audit complete: IDs 2, 0 and 3 were honored.";
+                    } else if (complete) {
+                        message = "Direct Expert ID audit complete, but at least one requested ID was not confirmed by EXIF.";
+                    } else {
+                        message = "Direct Expert ID audit saved, but the three-step sequence was incomplete.";
+                    }
+                    message += "\nReport: Downloads/Phone2Pro Diagnostics\n"
+                            + reportUri
+                            + "\nAssociated copies: Pictures/Phone2Pro Diagnostics/Official Expert Direct Launch Audit";
+                    statusView.setText(message);
+                    officialDirectSession = null;
+                    processingOfficialDirectReturn = false;
+                    setButtonsEnabled(true);
+                });
+            } catch (Exception error) {
+                session.stopAvailabilityRecording();
+                runOnUiThread(() -> {
+                    statusView.setText(
+                            "Direct Expert ID audit failed before its report could be saved:\n"
+                                    + error
+                    );
+                    officialDirectSession = null;
+                    processingOfficialDirectReturn = false;
                     setButtonsEnabled(true);
                 });
             }
