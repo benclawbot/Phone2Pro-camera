@@ -49,3 +49,5 @@ adb install -r diagnostics/app/build/outputs/apk/debug/app-debug.apk
 ```
 
 Launch the app, grant Camera permission, keep the phone still, and leave the app open until the JSON URI is displayed.
+
+GitHub Actions runs `lintDebug` and `assembleDebug` for every diagnostics change and uploads the debug APK when the build succeeds.
