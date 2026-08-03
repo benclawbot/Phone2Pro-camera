@@ -39,17 +39,26 @@ def _u32(data: bytes, offset: int) -> int:
     return struct.unpack_from("<I", data, offset)[0]
 
 
-def _read_length8(data: bytes, offset: int) -> tuple[int, int]:
+def _read_length8(data: bytes, offset: int, limit: int) -> tuple[int, int]:
+    if offset < 0 or offset >= limit or limit > len(data):
+        raise BinaryXmlError("truncated UTF-8 string length")
     first = data[offset]
     if first & 0x80:
+        if offset + 1 >= limit:
+            raise BinaryXmlError("truncated UTF-8 string length")
         return ((first & 0x7F) << 8) | data[offset + 1], 2
     return first, 1
 
 
-def _read_length16(data: bytes, offset: int) -> tuple[int, int]:
-    first = _u16(data, offset)
+def _read_length16(data: bytes, offset: int, limit: int) -> tuple[int, int]:
+    if offset < 0 or offset + 2 > limit or limit > len(data):
+        raise BinaryXmlError("truncated UTF-16 string length")
+    first = struct.unpack_from("<H", data, offset)[0]
     if first & 0x8000:
-        return ((first & 0x7FFF) << 16) | _u16(data, offset + 2), 4
+        if offset + 4 > limit:
+            raise BinaryXmlError("truncated UTF-16 string length")
+        second = struct.unpack_from("<H", data, offset + 2)[0]
+        return ((first & 0x7FFF) << 16) | second, 4
     return first, 2
 
 
@@ -88,9 +97,9 @@ class StringPool:
         if cursor >= self._end:
             raise BinaryXmlError("string offset exceeds pool bounds")
         if self._flags & UTF8_FLAG:
-            _, consumed = _read_length8(self._data, cursor)
+            _, consumed = _read_length8(self._data, cursor, self._end)
             cursor += consumed
-            byte_length, consumed = _read_length8(self._data, cursor)
+            byte_length, consumed = _read_length8(self._data, cursor, self._end)
             cursor += consumed
             end = cursor + byte_length
             if end >= self._end:
@@ -103,7 +112,7 @@ class StringPool:
             except UnicodeDecodeError as error:
                 raise BinaryXmlError("invalid UTF-8 string in pool") from error
 
-        utf16_length, consumed = _read_length16(self._data, cursor)
+        utf16_length, consumed = _read_length16(self._data, cursor, self._end)
         cursor += consumed
         end = cursor + utf16_length * 2
         if end + 2 > self._end:
