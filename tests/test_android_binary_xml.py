@@ -13,7 +13,13 @@ ROOT = Path(__file__).resolve().parents[1]
 APK_TOOLS = ROOT / "tools" / "apk"
 sys.path.insert(0, str(APK_TOOLS))
 
-from android_binary_xml import BinaryXmlError, parse_manifest, read_manifest_input
+from android_binary_xml import (
+    BinaryXmlError,
+    _read_length16,
+    _read_length8,
+    parse_manifest,
+    read_manifest_input,
+)
 
 NO_INDEX = 0xFFFFFFFF
 
@@ -201,6 +207,12 @@ class AndroidBinaryXmlTest(unittest.TestCase):
             ["android.permission.SYSTEM_CAMERA"],
             report["missing_expected_permissions"],
         )
+
+    def test_rejects_truncated_variable_length_prefixes(self) -> None:
+        with self.assertRaises(BinaryXmlError):
+            _read_length8(b"\x80", 0, 1)
+        with self.assertRaises(BinaryXmlError):
+            _read_length16(b"\x00\x80", 0, 2)
 
     def test_rejects_plain_text_xml(self) -> None:
         with self.assertRaises(BinaryXmlError):
