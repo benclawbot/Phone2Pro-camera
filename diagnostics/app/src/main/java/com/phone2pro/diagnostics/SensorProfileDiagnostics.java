@@ -97,7 +97,6 @@ final class SensorProfileDiagnostics {
         put(result, "poseTranslation", c.get(CameraCharacteristics.LENS_POSE_TRANSLATION));
         put(result, "poseRotation", c.get(CameraCharacteristics.LENS_POSE_ROTATION));
         put(result, "poseReference", c.get(CameraCharacteristics.LENS_POSE_REFERENCE));
-        put(result, "shadingMapSize", c.get(CameraCharacteristics.LENS_INFO_SHADING_MAP_SIZE));
         put(result, "opticalStabilizationModes",
                 c.get(CameraCharacteristics.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION));
 
