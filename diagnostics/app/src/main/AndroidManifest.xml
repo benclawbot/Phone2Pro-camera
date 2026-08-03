@@ -23,6 +23,10 @@
         android:theme="@style/Theme.Phone2ProDiagnostics">
         <activity
             android:name=".MainActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".FullSpecificationActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
