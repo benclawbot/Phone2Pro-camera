@@ -28,6 +28,13 @@ enum DiagnosticProfile {
             "Opens the full official camera. In Expert mode, take exactly one photo at 0.6x, then 1x, then 2x, and return. The app associates each stock-camera image with that ordered lens setting and records EXIF and routing evidence.",
             false,
             0
+    ),
+    OFFICIAL_EXPERT_DIRECT_ID_LAUNCH(
+            "official-expert-direct-id-launch",
+            "Official Expert direct ID 2 / 0 / 3 launch audit",
+            "Launches the official camera into Expert mode three times while requesting camera IDs 2, 0 and 3. Take one photo after each launch without changing the lens; EXIF verifies whether each requested ultrawide, main or telephoto route was honored.",
+            false,
+            0
     );
 
     final String fileLabel;
