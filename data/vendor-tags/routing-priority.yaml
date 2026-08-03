@@ -1,0 +1,176 @@
+schemaVersion: 1
+updatedAt: 2026-08-03T12:55:00Z
+buildFingerprint: Nothing/GalagaEEA/Galaga:16/BP2A.250605.031.A3/2606151653:user/release-keys
+sourceArtifact: phone2pro-static-hardware-vendor-20260802_223117_378.json
+interpretationRules:
+  - A key being advertised does not prove that an ordinary app may set it.
+  - Request acceptance does not prove an effective sensor or pipeline change.
+  - Session keys must be tested before session creation, preserving stock ordering.
+  - Unknown native types must be recovered before any write probe.
+  - Values must come from a working stock trace or source-confirmed enum; no blind iteration.
+priorityGroups:
+  - id: direct-camera-route
+    objective: Determine whether stock Expert mode opens a different framework camera endpoint.
+    rank: 1
+    signals:
+      - android.hardware.camera2.CameraManager.openCamera
+      - ACameraManager_openCamera
+      - android.hardware.camera2.params.OutputConfiguration.setPhysicalCameraId
+      - android.hardware.camera2.CaptureRequest.Builder.setPhysicalCameraKey
+    decisiveOutcomes:
+      directPhysicalSystemRoute: Different IDs are opened for 0.6x, 1x and 2x.
+      systemLogicalRoute: The same system-only logical ID is opened and physical routing differs.
+      vendorSatRoute: ID 0 is always opened and routing changes through metadata or another service.
+
+  - id: proprietary-initialization
+    objective: Identify opaque initialization payloads applied before stream configuration.
+    rank: 2
+    keys:
+      - name: com.mediatek.configure.setting.initrequest
+        observedDomains: [request, session]
+        nativeType: pending-runtime-recovery
+        characteristicValue: null
+        writePolicy: trace-stock-only
+      - name: com.mediatek.configure.setting.proprietaryRequest
+        observedDomains: [request, session]
+        nativeType: pending-runtime-recovery
+        characteristicValue: null
+        writePolicy: trace-stock-only
+    causalTest: Reproduce the complete stock session configuration without editing opaque payloads, then remove one payload in an isolated test.
+
+  - id: camera-flex-and-multicam
+    objective: Determine whether a MediaTek logical/multicamera feature code creates the rear SAT route.
+    rank: 3
+    keys:
+      - name: com.mediatek.cameraflex.flexibleCapabilities
+        observedDomains: [request, session]
+        nativeType: pending-runtime-recovery
+        characteristicValue: null
+        writePolicy: trace-stock-only
+      - name: com.mediatek.multicamfeature.availableMultiCamFeatureSensorManualUpdated
+        observedDomains: [characteristic]
+        nativeType: int64-array-type-hint
+        typeConfidence: 2
+        typeEvidence: Public MediaTek-derived metadata mirror maps the corresponding internal tag to MINT64; verify on target with dump-camera-key-types.js.
+        characteristicValue:
+          decimal: [983040, 983050, 983046, 983042, 983055, 983062, 917518, 524293, 65559, 65564]
+          hexadecimal: [0x000F0000, 0x000F000A, 0x000F0006, 0x000F0002, 0x000F000F, 0x000F0016, 0x000E000E, 0x00080005, 0x00010017, 0x0001001C]
+        writePolicy: characteristic-only
+    openQuestions:
+      - Does flexibleCapabilities contain one of the advertised feature codes or a structured capability request?
+      - Are the high and low words category and mode fields, or opaque packed identifiers?
+      - Does the stock app write this at session scope before configureStreams?
+
+  - id: in-sensor-zoom
+    objective: Separate optical sensor routing from high-resolution crop/remosaic scenarios within one sensor.
+    rank: 4
+    keys:
+      - name: com.mediatek.insensorzoomfeature.insensorzoomIsInternalAP
+        observedDomains: [characteristic, request, session]
+        nativeType: pending-runtime-recovery
+        characteristicValue: [0]
+        writePolicy: trace-stock-only
+      - name: com.mediatek.insensorzoomfeature.insensorzoomEnableHints
+        observedDomains: [request, result, session]
+        nativeType: pending-runtime-recovery
+        characteristicValue: null
+        writePolicy: trace-stock-only
+      - name: com.mediatek.insensorzoomfeature.insensorzoomPhysicalIdsStatus
+        observedDomains: [request, result, session]
+        nativeType: pending-runtime-recovery
+        characteristicValue: null
+        writePolicy: trace-stock-only
+    interpretationConstraint: These keys may control in-sensor crop/remosaic rather than switching between ultrawide, main and telephoto modules.
+
+  - id: seamless-sensor-configuration
+    objective: Recover sensor-scenario lists and per-route mode selection.
+    rank: 5
+    keys:
+      - name: com.mediatek.seamlessfeature.configCellCropSensorIds
+        observedDomains: [request, session]
+        nativeType: pending-runtime-recovery
+        writePolicy: trace-stock-only
+      - name: com.mediatek.seamlessfeature.configCellFullSensorIds
+        observedDomains: [request, session]
+        nativeType: pending-runtime-recovery
+        writePolicy: trace-stock-only
+      - name: com.mediatek.seamlessfeature.configSensorScenarios
+        observedDomains: [request, session]
+        nativeType: pending-runtime-recovery
+        writePolicy: trace-stock-only
+      - name: com.mediatek.seamlessfeature.sensorScenario
+        observedDomains: [request, result]
+        nativeType: pending-runtime-recovery
+        writePolicy: trace-stock-only
+      - name: com.mediatek.seamlessfeature.forceSensorMode
+        observedDomains: [request, result]
+        nativeType: pending-runtime-recovery
+        writePolicy: trace-stock-only
+    orderingHypothesis:
+      - config* keys define session-level allowed sensor/scenario mappings.
+      - sensorScenario and forceSensorMode select a per-request or repeating-request state.
+      - This hypothesis must be validated by the stock call order and target types.
+
+  - id: pip-and-physical-controls
+    objective: Identify explicit physical-device lists used by MediaTek streaming sessions.
+    rank: 6
+    keys:
+      - name: com.mediatek.streamingfeature.pipDevices
+        observedDomains: [request, session]
+        nativeType: pending-runtime-recovery
+        writePolicy: trace-stock-only
+      - name: com.mediatek.streamingfeature.tnrOffByPhysicalIds
+        observedDomains: [request]
+        nativeType: pending-runtime-recovery
+        writePolicy: trace-stock-only
+    openQuestions:
+      - Are values numeric Camera2 IDs, HAL sensor IDs or packed device-role records?
+      - Is pipDevices used for SAT even when picture-in-picture is not visible to the user?
+
+  - id: remosaic-and-cell-crop
+    objective: Detect whether the 2x path uses a dedicated telephoto sensor or main-sensor in-sensor zoom in any mode.
+    rank: 7
+    keys:
+      - name: com.mediatek.control.capture.remosaicenable
+        observedDomains: [request]
+        nativeType: pending-runtime-recovery
+        writePolicy: trace-stock-only
+      - name: com.mediatek.control.capture.seamless.remosaicenable
+        observedDomains: [request]
+        nativeType: pending-runtime-recovery
+        writePolicy: trace-stock-only
+      - name: com.mediatek.control.capture.scalerCropRegion
+        observedDomains: [result]
+        nativeType: pending-runtime-recovery
+        writePolicy: read-only
+    verification: Optical 2x remains established only when focal length, geometry and field of view agree with the telephoto route.
+
+  - id: nothing-specific-routing-and-tuning
+    objective: Detect OEM wrapper controls not represented by MediaTek names.
+    rank: 8
+    keys:
+      - name: com.nothing.camera.hint.for.custom.tuning
+        observedDomains: [request, session]
+        nativeType: pending-runtime-recovery
+        writePolicy: trace-stock-only
+      - name: com.nothing.camera.insensorzoom.enable
+        observedDomains: [result-observed-in-daylight-audit]
+        nativeType: pending-runtime-recovery
+        observedValue: 0
+        writePolicy: read-only-until-static-call-site-found
+      - name: com.nothing.camera.eis.supereismode
+        observedDomains: [request, session]
+        nativeType: pending-runtime-recovery
+        writePolicy: unrelated-to-still-routing-unless-stock-trace-differs
+      - name: nothing.camera.soisParams.gains
+        observedDomains: [request, result, session]
+        nativeType: pending-runtime-recovery
+        writePolicy: unrelated-to-still-routing-unless-stock-trace-differs
+
+requiredEvidenceBeforeWriteProbe:
+  - Exact Java and native type from dump-camera-key-types.js or target binary metadata.
+  - Working stock value captured in the same camera mode, stream combination and firmware build.
+  - Scope confirmed as session, repeating request or still-capture request.
+  - Positive baseline and rollback path.
+  - Camera service recovery procedure.
+  - Output verification through EXIF, geometry, field of view and result metadata.
