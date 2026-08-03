@@ -1,0 +1,40 @@
+name: Reverse-engineering toolchain container
+
+on:
+  push:
+    paths:
+      - "config/reverse-engineering-toolchain.json"
+      - "containers/re-toolchain/**"
+      - "tools/toolchain/**"
+      - ".github/workflows/re-toolchain-container.yml"
+  pull_request:
+    paths:
+      - "config/reverse-engineering-toolchain.json"
+      - "containers/re-toolchain/**"
+      - "tools/toolchain/**"
+      - ".github/workflows/re-toolchain-container.yml"
+
+concurrency:
+  group: re-toolchain-container-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Build pinned static-analysis image
+        run: |
+          docker build \
+            --file containers/re-toolchain/Containerfile \
+            --tag phone2pro-re-toolchain:${{ github.sha }} \
+            .
+      - name: Verify strict static profile
+        run: |
+          docker run --rm \
+            phone2pro-re-toolchain:${{ github.sha }}
