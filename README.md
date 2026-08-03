@@ -8,7 +8,7 @@ The central reverse-engineering question is how Nothing Camera routes Expert mod
 
 The research backlog covers the public Android API, Nothing Camera APK, dynamic instrumentation, CameraService/Binder, MediaTek provider/HAL/native libraries, firmware configuration, kernel drivers, permissions, SELinux, vendor metadata, computational photography and the replacement application.
 
-Work is active. The evidence repository, schemas, source index, build matrix, acquisition tools, static-analysis pipeline and Camera2 routing instrumentation are in place.
+Work is active. The evidence repository, schemas, source index, build matrix, acquisition tools, static-analysis pipeline, controlled Expert trace runner, Camera2 observers and route classifier are in place.
 
 ## Confirmed device findings
 
@@ -69,7 +69,23 @@ tools/apk/analyze-nothing-camera.sh /path/to/nothing-camera-apks
 
 Runs available manifest, certificate, JADX, apktool, native-symbol/string and routing-keyword analysis with a versioned output manifest.
 
-### Camera2 routing trace
+### Controlled Expert route collection
+
+```bash
+chmod +x tools/device/run-expert-route-trace.sh
+
+for route in 06x 1x 2x; do
+  tools/device/run-expert-route-trace.sh --route "$route" --mode camera2
+done
+
+for route in 06x 1x 2x; do
+  tools/device/run-expert-route-trace.sh --route "$route" --mode key-types
+done
+```
+
+Each invocation starts from a fresh Nothing Camera process and creates a timestamped, hashed local bundle containing Camera2 observations, package/permission evidence, camera-service logs and an empty non-image EXIF association record. The runner does not alter requests, permissions, SELinux policy or application files.
+
+### Camera2 routing observer
 
 ```bash
 frida -U -f com.nothing.camera \
@@ -79,6 +95,35 @@ frida -U -f com.nothing.camera \
 
 Observes camera opens, session parameters, physical output selection, request metadata and request submission. It does not alter requests or bypass Android permissions.
 
+### Vendor-key type observer
+
+```bash
+frida -U -f com.nothing.camera \
+  -l tools/frida/dump-camera-key-types.js \
+  -o traces/nothing-camera-key-types.log
+```
+
+Attempts to recover the installed framework key object's Java generic type, native metadata type, vendor ID, tag and the exact values used by the stock app. Unknown or inaccessible fields remain explicit.
+
+### Expert route classifier
+
+After filling each bundle's `output-association-template.json` from EXIF/MediaStore metadata:
+
+```bash
+python3 tools/trace/analyze-expert-routing-bundles.py \
+  --root traces/expert-routing \
+  --json traces/expert-routing/architecture.json \
+  --markdown traces/expert-routing/architecture.md
+```
+
+The analyzer refuses to classify a route without the correct optical focal length, 35 mm equivalent and output geometry. It distinguishes:
+
+- direct system-camera endpoints;
+- a system logical/SAT endpoint;
+- public ID `0` plus route-specific vendor metadata;
+- a lower Java Camera2 boundary requiring JNI/Binder/provider/HAL tracing;
+- incomplete or mismatched evidence.
+
 ## Immediate discriminator
 
 The next decisive evidence is the stock package grant state and three fresh-process 0.6×/1×/2× traces:
@@ -87,6 +132,8 @@ The next decisive evidence is the stock package grant state and three fresh-proc
 - repeated opening of ID `0` with different vendor/session metadata establishes a public-ID SAT/vendor route;
 - no Camera2 difference moves the investigation to JNI, native services and provider/HAL configuration.
 
+The Android system-camera baseline matters because IDs `2`–`5` are filtered and rejected at CameraService for an ordinary caller. A numerical ID alone does not provide access. If the stock app opens those endpoints directly, a production ordinary APK and a privileged/system deployment must be treated as separate backends.
+
 See:
 
 - `docs/EXECUTION_PLAN.md`
@@ -94,8 +141,11 @@ See:
 - `docs/research/SYSTEM_CAMERA_BOUNDARY.md`
 - `docs/research/PHYSICAL_SENSOR_MAP.md`
 - `docs/research/EXPERT_ROUTE_DISCRIMINATOR.md`
+- `docs/research/EXPERT_ROUTE_RUNNER.md`
+- `docs/research/EXPERT_ROUTE_ANALYZER.md`
 - `data/capabilities/baseline.json`
 - `data/vendor-tags/inventory.json`
+- `data/vendor-tags/routing-priority.yaml`
 - `data/hardware/sensor-map.yaml`
 
 ## Evidence rules
@@ -103,6 +153,8 @@ See:
 Every material claim records source and confidence. Negative tests are scoped to the exact mechanism tested. A failed intent, request or direct ID open does not become a platform-wide impossibility claim without tracing the enforcing layer.
 
 Raw APKs, firmware, personal captures and proprietary binaries remain in controlled local evidence storage. The public repository contains hashes, normalized facts, independently written analysis and legally redistributable source references.
+
+A route-specific vendor value is a discriminator candidate, not causal proof. It becomes production-usable only after exact target types and working stock values are captured and a controlled positive/negative reproducer demonstrates the effect safely.
 
 ## Product constraints
 
