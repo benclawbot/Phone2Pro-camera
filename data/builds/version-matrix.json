@@ -3,7 +3,8 @@
   "updatedAt": "2026-08-03T20:20:00Z",
   "builds": [
     {
-      "id": "nothing-galaga-eea-android16-2606151653",
+      "id": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "identitySha256": "f88325f329b9b0ab721bcc2d68951357ce82f54838485f72bb9ef34ff43f0c85",
       "entryRevision": 1,
       "status": "partial",
       "recordedAt": "2026-08-03T11:24:00Z",
