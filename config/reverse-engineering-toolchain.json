@@ -90,9 +90,9 @@
         "args": ["--version"],
         "versionRegex": "(?:baksmali\\s+)?(3\\.0\\.9)"
       },
-      "source": "https://github.com/baksmali/smali/releases/tag/v3.0.9",
+      "source": "https://github.com/baksmali/smali/releases/tag/3.0.9",
       "artifact": {
-        "url": "https://github.com/baksmali/smali/releases/download/v3.0.9/baksmali-3.0.9-fat-release.jar",
+        "url": "https://github.com/baksmali/smali/releases/download/3.0.9/baksmali-3.0.9-fat-release.jar",
         "sha256": null,
         "mavenCoordinate": "com.android.tools.smali:smali-baksmali:3.0.9",
         "repository": "https://dl.google.com/dl/android/maven2/",
