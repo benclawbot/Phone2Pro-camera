@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-03T20:20:00Z",
+  "builds": [
+    {
+      "id": "nothing-galaga-eea-android16-2606151653",
+      "entryRevision": 1,
+      "status": "partial",
+      "recordedAt": "2026-08-03T11:24:00Z",
+      "device": {
+        "manufacturer": "Nothing",
+        "model": "A001",
+        "device": "Galaga",
+        "product": "GalagaEEA",
+        "socManufacturer": "MediaTek",
+        "socModel": "MT6878"
+      },
+      "platform": {
+        "androidRelease": "16",
+        "sdkInt": 36,
+        "securityPatch": "2026-06-01",
+        "buildFingerprint": "Nothing/GalagaEEA/Galaga:16/BP2A.250605.031.A3/2606151653:user/release-keys",
+        "buildId": "BP2A.250605.031.A3",
+        "buildNumber": "2606151653",
+        "buildType": "user",
+        "buildTags": "release-keys"
+      },
+      "firmware": {
+        "distribution": "Nothing OS",
+        "versionName": null,
+        "region": "EEA",
+        "status": "partial",
+        "notes": "The exact build fingerprint, Android release and security patch are device-observed. The marketing Nothing OS version name was not present in the normalized evidence and remains unknown."
+      },
+      "cameraPackages": [
+        {
+          "packageName": "com.nothing.camera",
+          "versionName": "16.1.01.93.20",
+          "versionCode": null,
+          "sha256": "f78368e303033d49c5564b1287f51ef2bf5dde53db4687a08bfb20aa64a8eeea",
+          "status": "partial",
+          "artifactHandling": "The APK remains in the operator-controlled artifact store. The public repository retains only its version, SHA-256 and derived findings.",
+          "evidence": [
+            {
+              "kind": "normalized-record",
+              "reference": "data/capabilities/baseline.json",
+              "notes": "Records the installed package name and version observed by the diagnostic application."
+            },
+            {
+              "kind": "apk-hash",
+              "reference": "f78368e303033d49c5564b1287f51ef2bf5dde53db4687a08bfb20aa64a8eeea",
+              "notes": "Hash used by the static-analysis reports for Nothing Camera 16.1.01.93.20."
+            }
+          ]
+        }
+      ],
+      "diagnosticBuilds": [
+        {
+          "id": "phone2pro-android16-june2026-diagnostic",
+          "label": "Phone2Pro Android 16 / June 2026 diagnostic build",
+          "status": "partial",
+          "sourceArtifacts": [
+            "diag-capabilities-original",
+            "diag-capabilities-copy",
+            "diag-static-hardware-vendor",
+            "diag-night-low-light",
+            "diag-daylight-lens-routing",
+            "diag-official-expert-routing",
+            "diag-official-widget-focal"
+          ],
+          "notes": "The diagnostic artifacts identify their schemas, profiles, timestamps and hashes. The diagnostic application's package version and source revision were not preserved in the normalized records and remain unknown."
+        }
+      ],
+      "evidence": [
+        {
+          "kind": "normalized-record",
+          "reference": "data/artifacts/diagnostic-manifest.yaml",
+          "notes": "Contains the immutable device fingerprint and diagnostic artifact inventory."
+        },
+        {
+          "kind": "normalized-record",
+          "reference": "data/capabilities/baseline.json",
+          "notes": "Contains the device, Android, security-patch, SoC and installed camera-package context."
+        }
+      ]
+    }
+  ]
+}
