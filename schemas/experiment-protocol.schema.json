@@ -1,0 +1,240 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://phone2pro.local/schemas/experiment-protocol.schema.json",
+  "title": "Phone2Pro repeatable camera experiment protocol",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "version",
+    "title",
+    "objective",
+    "scope",
+    "setup",
+    "launchProcedure",
+    "captureOrder",
+    "controls",
+    "timing",
+    "metadataCollection",
+    "interpretation",
+    "safety"
+  ],
+  "properties": {
+    "id": {"type": "string", "pattern": "^protocol-[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    "version": {"type": "integer", "minimum": 1},
+    "title": {"type": "string", "minLength": 1},
+    "objective": {"type": "string", "minLength": 1},
+    "scope": {"type": "string", "minLength": 1},
+    "setup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scene", "lighting", "motion", "deviceState"],
+      "properties": {
+        "scene": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["description", "subject", "distanceMeters", "background"],
+          "properties": {
+            "description": {"type": "string", "minLength": 1},
+            "subject": {"type": "string", "minLength": 1},
+            "distanceMeters": {"type": ["number", "null"], "exclusiveMinimum": 0},
+            "background": {"type": "string", "minLength": 1}
+          }
+        },
+        "lighting": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "targetLuxMin", "targetLuxMax", "measurementMethod"],
+          "properties": {
+            "mode": {"type": "string", "enum": ["controlled", "ambient", "mixed"]},
+            "targetLuxMin": {"type": ["number", "null"], "minimum": 0},
+            "targetLuxMax": {"type": ["number", "null"], "minimum": 0},
+            "measurementMethod": {"type": "string", "minLength": 1}
+          }
+        },
+        "motion": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["camera", "subject"],
+          "properties": {
+            "camera": {"type": "string", "minLength": 1},
+            "subject": {"type": "string", "minLength": 1}
+          }
+        },
+        "deviceState": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["orientation", "thermalState", "batteryMinimumPercent", "networkState", "other"],
+          "properties": {
+            "orientation": {"type": "string", "minLength": 1},
+            "thermalState": {"type": "string", "minLength": 1},
+            "batteryMinimumPercent": {"type": "integer", "minimum": 0, "maximum": 100},
+            "networkState": {"type": "string", "minLength": 1},
+            "other": {"type": "array", "items": {"type": "string", "minLength": 1}}
+          }
+        }
+      }
+    },
+    "launchProcedure": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/procedureStep"}
+    },
+    "captureOrder": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "allOf": [
+          {"$ref": "#/$defs/procedureStep"},
+          {
+            "type": "object",
+            "required": ["controlRole", "repetitions", "parameters"],
+            "properties": {
+              "controlRole": {"type": "string", "enum": ["positive", "negative", "test"]},
+              "repetitions": {"type": "integer", "minimum": 1},
+              "parameters": {"type": "object"}
+            }
+          }
+        ]
+      }
+    },
+    "controls": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["positive", "negative"],
+      "properties": {
+        "positive": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/control"}
+        },
+        "negative": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/control"}
+        }
+      }
+    },
+    "timing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "timezone",
+        "clockSource",
+        "preconditionStabilizationMs",
+        "interStepDelayMs",
+        "timeoutMs",
+        "requiredTimestamps"
+      ],
+      "properties": {
+        "timezone": {"const": "UTC"},
+        "clockSource": {"type": "string", "minLength": 1},
+        "preconditionStabilizationMs": {"type": "integer", "minimum": 0},
+        "interStepDelayMs": {"type": "integer", "minimum": 0},
+        "timeoutMs": {"type": "integer", "minimum": 1},
+        "requiredTimestamps": {
+          "type": "array",
+          "minItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "experiment-start",
+              "experiment-end",
+              "launch-request",
+              "camera-open",
+              "capture-request",
+              "capture-result",
+              "artifact-write"
+            ]
+          },
+          "allOf": [
+            {"contains": {"const": "experiment-start"}},
+            {"contains": {"const": "experiment-end"}},
+            {"contains": {"const": "capture-request"}},
+            {"contains": {"const": "artifact-write"}}
+          ]
+        }
+      }
+    },
+    "metadataCollection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rawArtifacts",
+        "sha256",
+        "buildMatrixEntry",
+        "packageVersion",
+        "toolVersions",
+        "commands",
+        "captureTimestamps",
+        "cameraMetadata"
+      ],
+      "properties": {
+        "rawArtifacts": {"const": true},
+        "sha256": {"const": true},
+        "buildMatrixEntry": {"const": true},
+        "packageVersion": {"const": true},
+        "toolVersions": {"const": true},
+        "commands": {"const": true},
+        "captureTimestamps": {"const": true},
+        "cameraMetadata": {"const": true}
+      }
+    },
+    "interpretation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "passCriteria",
+        "inconclusiveCriteria",
+        "negativeResultTemplate",
+        "prohibitedGeneralizations",
+        "confidenceUpgradeRequirements"
+      ],
+      "properties": {
+        "passCriteria": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "inconclusiveCriteria": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "negativeResultTemplate": {"const": "<mechanism> failed under <build, identity, state and parameters>"},
+        "prohibitedGeneralizations": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "confidenceUpgradeRequirements": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["deviceRisk", "dataHandling", "stopConditions"],
+      "properties": {
+        "deviceRisk": {"type": "string", "minLength": 1},
+        "dataHandling": {"type": "string", "minLength": 1},
+        "stopConditions": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  },
+  "$defs": {
+    "procedureStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sequence", "action", "expectedObservation"],
+      "properties": {
+        "sequence": {"type": "integer", "minimum": 1},
+        "action": {"type": "string", "minLength": 1},
+        "expectedObservation": {"type": "string", "minLength": 1},
+        "controlRole": {"type": "string", "enum": ["positive", "negative", "test"]},
+        "repetitions": {"type": "integer", "minimum": 1},
+        "parameters": {"type": "object"}
+      }
+    },
+    "control": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "mechanism", "rationale", "expectedObservation", "failureInterpretation"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+        "mechanism": {"type": "string", "minLength": 1},
+        "rationale": {"type": "string", "minLength": 1},
+        "expectedObservation": {"type": "string", "minLength": 1},
+        "failureInterpretation": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

@@ -1,0 +1,269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://phone2pro.local/schemas/experiment-result.schema.json",
+  "title": "Phone2Pro executed camera experiment result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "protocolId",
+    "protocolVersion",
+    "buildMatrixEntryId",
+    "status",
+    "timing",
+    "executionContext",
+    "controls",
+    "captures",
+    "artifacts",
+    "outcome"
+  ],
+  "properties": {
+    "id": {"type": "string", "pattern": "^result-[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    "protocolId": {"type": "string", "pattern": "^protocol-[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    "protocolVersion": {"type": "integer", "minimum": 1},
+    "buildMatrixEntryId": {"type": "string", "minLength": 1},
+    "status": {"type": "string", "enum": ["completed", "partial", "aborted"]},
+    "timing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["startedAt", "endedAt", "timezone", "clockSource", "precision", "notes"],
+      "properties": {
+        "startedAt": {"type": "string", "format": "date-time"},
+        "endedAt": {"type": "string", "format": "date-time"},
+        "timezone": {"const": "UTC"},
+        "clockSource": {"type": "string", "minLength": 1},
+        "precision": {"type": "string", "enum": ["exact", "artifact-generated-at-only", "estimated"]},
+        "notes": {"type": "string", "minLength": 1}
+      }
+    },
+    "executionContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["package", "identity", "state", "parameters", "tools"],
+      "properties": {
+        "package": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["packageName", "versionName", "versionCode"],
+          "properties": {
+            "packageName": {"type": "string", "pattern": "^[A-Za-z0-9_]+(?:\\.[A-Za-z0-9_]+)+$"},
+            "versionName": {"type": "string", "minLength": 1},
+            "versionCode": {"type": ["integer", "null"], "minimum": 0}
+          }
+        },
+        "identity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["uid", "selinuxDomain", "permissions", "appOps"],
+          "properties": {
+            "uid": {"type": ["integer", "null"], "minimum": 0},
+            "selinuxDomain": {"type": ["string", "null"]},
+            "permissions": {"type": "object"},
+            "appOps": {"type": "object"}
+          }
+        },
+        "state": {"type": "object"},
+        "parameters": {"type": "object"},
+        "tools": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "version", "command", "status"],
+            "properties": {
+              "name": {"type": "string", "minLength": 1},
+              "version": {"type": ["string", "null"]},
+              "command": {"type": "string", "minLength": 1},
+              "status": {"type": "string", "enum": ["observed", "unknown"]}
+            }
+          }
+        }
+      }
+    },
+    "controls": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["positive", "negative"],
+      "properties": {
+        "positive": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/controlResult"}
+        },
+        "negative": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/controlResult"}
+        }
+      }
+    },
+    "captures": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "sequence",
+          "controlRole",
+          "action",
+          "route",
+          "startedAt",
+          "endedAt",
+          "timingReference",
+          "parameters",
+          "observations",
+          "artifactIds"
+        ],
+        "properties": {
+          "sequence": {"type": "integer", "minimum": 1},
+          "controlRole": {"type": "string", "enum": ["positive", "negative", "test"]},
+          "action": {"type": "string", "minLength": 1},
+          "route": {"type": "string", "minLength": 1},
+          "startedAt": {"type": ["string", "null"], "format": "date-time"},
+          "endedAt": {"type": ["string", "null"], "format": "date-time"},
+          "timingReference": {"type": "string", "minLength": 1},
+          "parameters": {"type": "object"},
+          "observations": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "artifactIds": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "artifactId",
+          "name",
+          "sizeBytes",
+          "sha256",
+          "acquiredAt",
+          "timezone",
+          "rawPath",
+          "normalizedReference",
+          "transformations"
+        ],
+        "properties": {
+          "artifactId": {"type": "string", "minLength": 1},
+          "name": {"type": "string", "minLength": 1},
+          "sizeBytes": {"type": "integer", "minimum": 0},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "acquiredAt": {"type": "string", "format": "date-time"},
+          "timezone": {"const": "UTC"},
+          "rawPath": {"type": "string", "minLength": 1},
+          "normalizedReference": {"type": "string", "minLength": 1},
+          "transformations": {"type": "array", "items": {"type": "string", "minLength": 1}}
+        }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "verdict",
+        "observedBehavior",
+        "negativeResultStatement",
+        "scopeLimitations",
+        "evidenceClass",
+        "confidence",
+        "passCriteriaSatisfied",
+        "failCriteriaTriggered"
+      ],
+      "properties": {
+        "verdict": {"type": "string", "enum": ["pass", "fail", "inconclusive", "partial"]},
+        "observedBehavior": {"type": "string", "minLength": 1},
+        "negativeResultStatement": {"type": ["string", "null"]},
+        "scopeLimitations": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "evidenceClass": {
+          "type": "string",
+          "enum": [
+            "device-observed",
+            "source-confirmed",
+            "documentation-confirmed",
+            "binary-confirmed",
+            "community-corroborated",
+            "inferred",
+            "unverified"
+          ]
+        },
+        "confidence": {"type": "integer", "minimum": 0, "maximum": 4},
+        "passCriteriaSatisfied": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "failCriteriaTriggered": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  },
+  "$defs": {
+    "controlResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["controlId", "outcome", "observation", "artifactIds"],
+      "properties": {
+        "controlId": {"type": "string", "minLength": 1},
+        "outcome": {"type": "string", "enum": ["pass", "fail", "inconclusive", "not-run"]},
+        "observation": {"type": "string", "minLength": 1},
+        "artifactIds": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"status": {"const": "completed"}},
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "timing": {"properties": {"precision": {"const": "exact"}}},
+          "executionContext": {
+            "properties": {
+              "tools": {
+                "items": {
+                  "properties": {
+                    "version": {"type": "string", "minLength": 1},
+                    "status": {"const": "observed"}
+                  }
+                }
+              }
+            }
+          },
+          "captures": {
+            "items": {
+              "properties": {
+                "startedAt": {"type": "string", "format": "date-time"},
+                "endedAt": {"type": "string", "format": "date-time"}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "verdict": {"enum": ["fail", "inconclusive", "partial"]}
+            },
+            "required": ["verdict"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "negativeResultStatement": {
+                "type": "string",
+                "pattern": "( failed under | was not observed under )"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}
