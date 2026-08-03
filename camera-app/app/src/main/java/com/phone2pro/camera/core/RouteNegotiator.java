@@ -28,7 +28,8 @@ public final class RouteNegotiator {
         for (RouteBackend backend : backends) {
             RouteSupport support = backend.evaluate(route, capabilities);
             if (support.isAvailable()) {
-                return new RouteDecision(route, backend.backendId(), support);
+                ResolvedCameraEndpoint endpoint = backend.resolve(route, capabilities).orElse(null);
+                return new RouteDecision(route, backend.backendId(), support, endpoint);
             }
             rejectionReasons.add(backend.backendId() + ": " + support.reason());
         }

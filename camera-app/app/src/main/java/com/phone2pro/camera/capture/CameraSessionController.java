@@ -21,12 +21,15 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import com.phone2pro.camera.backend.GalagaSystemCameraBackend;
 import com.phone2pro.camera.backend.PublicMainBackend;
+import com.phone2pro.camera.backend.UnverifiedSystemEndpointAccess;
 import com.phone2pro.camera.core.CaptureProfile;
 import com.phone2pro.camera.core.DeviceCapabilitySnapshot;
 import com.phone2pro.camera.core.OpticalRoute;
 import com.phone2pro.camera.core.RouteBackend;
 import com.phone2pro.camera.core.RouteDecision;
+import com.phone2pro.camera.core.ResolvedCameraEndpoint;
 import com.phone2pro.camera.core.RouteNegotiator;
 
 import java.text.SimpleDateFormat;
@@ -93,6 +96,11 @@ public final class CameraSessionController {
         this.mainExecutor = ContextCompat.getMainExecutor(context);
 
         List<RouteBackend> backends = new ArrayList<>();
+        backends.add(new GalagaSystemCameraBackend(
+                new UnverifiedSystemEndpointAccess(
+                        "Static route recovery does not establish package authorization."
+                )
+        ));
         backends.add(new PublicMainBackend());
         this.routeNegotiator = new RouteNegotiator(backends);
     }
@@ -205,7 +213,12 @@ public final class CameraSessionController {
                     .setJpegQuality(captureProfile == CaptureProfile.QUICK ? 92 : 96)
                     .build();
 
-            CameraSelector selector = selectorForCameraId(PublicMainBackend.GALAGA_PUBLIC_REAR_ID);
+            ResolvedCameraEndpoint endpoint = decision.endpoint().orElseThrow(
+                    () -> new IllegalStateException(
+                            "Backend " + decision.backendId() + " did not resolve a Camera2 endpoint."
+                    )
+            );
+            CameraSelector selector = selectorForCameraId(endpoint.cameraId());
             cameraProvider.unbindAll();
             cameraProvider.bindToLifecycle(lifecycleOwner, selector, preview, imageCapture);
             listener.onSessionReady(selectedRoute, decision, captureProfile);

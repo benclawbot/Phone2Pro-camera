@@ -1,5 +1,7 @@
 package com.phone2pro.camera.core;
 
+import java.util.Optional;
+
 /**
  * Capability side of a pluggable camera backend.
  *
@@ -12,4 +14,12 @@ public interface RouteBackend {
     int priority();
 
     RouteSupport evaluate(OpticalRoute route, DeviceCapabilitySnapshot capabilities);
+
+    /** Resolve a concrete endpoint only when this backend can safely bind one. */
+    default Optional<ResolvedCameraEndpoint> resolve(
+            OpticalRoute route,
+            DeviceCapabilitySnapshot capabilities
+    ) {
+        return Optional.empty();
+    }
 }
