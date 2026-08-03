@@ -20,6 +20,10 @@ import jsonschema
 import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "tools" / "matrix"))
+
+from version_matrix import MatrixError, identity_sha256  # noqa: E402
+
 ERRORS: list[str] = []
 
 RAW_ARTIFACT_SUFFIXES = {
@@ -72,41 +76,6 @@ def check_unique(items: list[dict[str, Any]], key: str, label: str) -> None:
             fail(f"{label}: duplicate {key} {value!r} at indexes {seen[value]} and {index}")
         else:
             seen[value] = index
-
-
-def build_identity_sha256(build: dict[str, Any]) -> str:
-    platform = build.get("platform")
-    packages = build.get("cameraPackages")
-    if not isinstance(platform, dict) or not isinstance(packages, list):
-        raise ValueError("platform and cameraPackages are required")
-    fingerprint = platform.get("buildFingerprint")
-    if not isinstance(fingerprint, str) or not fingerprint:
-        raise ValueError("platform.buildFingerprint is required")
-    normalized_packages: list[dict[str, str]] = []
-    for index, package in enumerate(packages):
-        if not isinstance(package, dict):
-            raise ValueError(f"cameraPackages[{index}] must be an object")
-        normalized: dict[str, str] = {}
-        for field in ("packageName", "versionName", "sha256"):
-            value = package.get(field)
-            if not isinstance(value, str) or not value:
-                raise ValueError(f"cameraPackages[{index}].{field} is required")
-            normalized[field] = value
-        normalized_packages.append(normalized)
-    normalized_packages.sort(
-        key=lambda item: (item["packageName"], item["versionName"], item["sha256"])
-    )
-    payload = {
-        "buildFingerprint": fingerprint,
-        "cameraPackages": normalized_packages,
-    }
-    encoded = json.dumps(
-        payload,
-        sort_keys=True,
-        separators=(",", ":"),
-        ensure_ascii=False,
-    ).encode("utf-8")
-    return hashlib.sha256(encoded).hexdigest()
 
 
 def validate_syntax() -> None:
@@ -178,15 +147,14 @@ def validate_version_matrix() -> None:
         if isinstance(build.get("id"), str)
     }
 
-    fingerprints: dict[str, str] = {}
     identities: dict[str, str] = {}
     diagnostic_ids: dict[str, str] = {}
     for index, build in enumerate(object_builds):
         build_id = build.get("id")
         expected_identity = build.get("identitySha256")
         try:
-            actual_identity = build_identity_sha256(build)
-        except ValueError as error:
+            actual_identity = identity_sha256(build)
+        except MatrixError as error:
             fail(f"version matrix builds[{index}]: invalid identity inputs: {error}")
         else:
             if actual_identity != expected_identity:
@@ -207,19 +175,6 @@ def validate_version_matrix() -> None:
                 )
             elif isinstance(build_id, str):
                 identities[actual_identity] = build_id
-
-        platform = build.get("platform")
-        if isinstance(platform, dict):
-            fingerprint = platform.get("buildFingerprint")
-            if isinstance(fingerprint, str):
-                previous = fingerprints.get(fingerprint)
-                if previous is not None:
-                    fail(
-                        f"version matrix builds[{index}]: buildFingerprint duplicates "
-                        f"entry {previous!r}"
-                    )
-                elif isinstance(build_id, str):
-                    fingerprints[fingerprint] = build_id
 
         camera_packages = build.get("cameraPackages")
         if isinstance(camera_packages, list):
