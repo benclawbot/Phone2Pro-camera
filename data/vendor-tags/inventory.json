@@ -1,0 +1,494 @@
+{
+  "schemaVersion": 1,
+  "generatedFrom": "phone2pro-static-hardware-vendor-20260802_223117_378.json",
+  "buildFingerprint": "Nothing/GalagaEEA/Galaga:16/BP2A.250605.031.A3/2606151653:user/release-keys",
+  "summary": {
+    "totalVendorKeys": 162,
+    "families": {
+      "mediatek.3afeature": 25,
+      "mediatek.aovservicefeature": 5,
+      "mediatek.bgservicefeature": 3,
+      "mediatek.cameraflex": 1,
+      "mediatek.camerapreviewcompression": 2,
+      "mediatek.configure": 2,
+      "mediatek.control": 43,
+      "mediatek.cshotfeature": 2,
+      "mediatek.eisfeature": 2,
+      "mediatek.facefeature": 14,
+      "mediatek.flashfeature": 8,
+      "mediatek.hdrfeature": 12,
+      "mediatek.insensorzoomfeature": 3,
+      "mediatek.mdptzfeature": 1,
+      "mediatek.mfnrfeature": 8,
+      "mediatek.multicamfeature": 1,
+      "mediatek.nrfeature": 2,
+      "mediatek.seamlessfeature": 5,
+      "mediatek.smvrfeature": 3,
+      "mediatek.streamingfeature": 14,
+      "mediatek.trackingaffeature": 1,
+      "mediatek.videoainrfeature": 2,
+      "nothing.camera.eis": 1,
+      "nothing.camera.hint": 1,
+      "nothing.camera.soisParams": 1
+    },
+    "rearCounts": {
+      "characteristic": 35,
+      "request": 93,
+      "result": 65,
+      "session": 35,
+      "physical-request": 0
+    },
+    "frontCounts": {
+      "characteristic": 30,
+      "request": 89,
+      "result": 64,
+      "session": 33,
+      "physical-request": 0
+    }
+  },
+  "families": {
+    "mediatek.3afeature": {
+      "request": [
+        "com.mediatek.3afeature.aeCustomPlineMode",
+        "com.mediatek.3afeature.aeIsoSpeed",
+        "com.mediatek.3afeature.aeMeteringMode",
+        "com.mediatek.3afeature.aePlineIndex",
+        "com.mediatek.3afeature.afZoomRatioValue",
+        "com.mediatek.3afeature.afZoomStop",
+        "com.mediatek.3afeature.aishutCapture",
+        "com.mediatek.3afeature.awbValue"
+      ],
+      "result": [
+        "com.mediatek.3afeature.aeAvailableMetering",
+        "com.mediatek.3afeature.aeAverageBrightness",
+        "com.mediatek.3afeature.aeCaptureSelectionISO",
+        "com.mediatek.3afeature.aeCaptureSelectionShutter",
+        "com.mediatek.3afeature.aeHdrRatio",
+        "com.mediatek.3afeature.aeIspGain",
+        "com.mediatek.3afeature.aeLuxIndex",
+        "com.mediatek.3afeature.aeSensorGain",
+        "com.mediatek.3afeature.aeroi",
+        "com.mediatek.3afeature.afroi",
+        "com.mediatek.3afeature.aishutExistMotion",
+        "com.mediatek.3afeature.aishutExposuretime",
+        "com.mediatek.3afeature.aishutISO",
+        "com.mediatek.3afeature.awbAvailableRange",
+        "com.mediatek.3afeature.awbCct",
+        "com.mediatek.3afeature.awbColorTemperature",
+        "com.mediatek.3afeature.awbroi"
+      ]
+    },
+    "mediatek.aovservicefeature": {
+      "characteristic": [
+        "com.mediatek.aovservicefeature.availableAovImageSize",
+        "com.mediatek.aovservicefeature.availableAovModes",
+        "com.mediatek.aovservicefeature.availablePipelineConfig"
+      ],
+      "request": [
+        "com.mediatek.aovservicefeature.aovMode",
+        "com.mediatek.aovservicefeature.pipelineConfig"
+      ],
+      "result": [
+        "com.mediatek.aovservicefeature.aovMode",
+        "com.mediatek.aovservicefeature.pipelineConfig"
+      ],
+      "session": [
+        "com.mediatek.aovservicefeature.aovMode",
+        "com.mediatek.aovservicefeature.pipelineConfig"
+      ]
+    },
+    "mediatek.bgservicefeature": {
+      "characteristic": [
+        "com.mediatek.bgservicefeature.availableprereleasemodes"
+      ],
+      "request": [
+        "com.mediatek.bgservicefeature.imagereaderid",
+        "com.mediatek.bgservicefeature.prerelease"
+      ],
+      "result": [
+        "com.mediatek.bgservicefeature.imagereaderid"
+      ],
+      "session": [
+        "com.mediatek.bgservicefeature.imagereaderid",
+        "com.mediatek.bgservicefeature.prerelease"
+      ]
+    },
+    "mediatek.cameraflex": {
+      "request": [
+        "com.mediatek.cameraflex.flexibleCapabilities"
+      ],
+      "session": [
+        "com.mediatek.cameraflex.flexibleCapabilities"
+      ]
+    },
+    "mediatek.camerapreviewcompression": {
+      "characteristic": [
+        "com.mediatek.camerapreviewcompression.CameraPreviewCompressionModes"
+      ],
+      "request": [
+        "com.mediatek.camerapreviewcompression.CameraPreviewCompression"
+      ],
+      "result": [
+        "com.mediatek.camerapreviewcompression.CameraPreviewCompression"
+      ],
+      "session": [
+        "com.mediatek.camerapreviewcompression.CameraPreviewCompression"
+      ]
+    },
+    "mediatek.configure": {
+      "request": [
+        "com.mediatek.configure.setting.initrequest",
+        "com.mediatek.configure.setting.proprietaryRequest"
+      ],
+      "session": [
+        "com.mediatek.configure.setting.initrequest",
+        "com.mediatek.configure.setting.proprietaryRequest"
+      ]
+    },
+    "mediatek.control": {
+      "characteristic": [
+        "com.mediatek.control.capture.available.zsl.modes",
+        "com.mediatek.control.capture.availablepostviewmodes",
+        "com.mediatek.control.capture.default.zsl.mode",
+        "com.mediatek.control.capture.early.notification.support",
+        "com.mediatek.control.capture.ispMetaSizeForRaw",
+        "com.mediatek.control.capture.ispMetaSizeForYuv"
+      ],
+      "request": [
+        "com.mediatek.control.capture.early.notification.trigger",
+        "com.mediatek.control.capture.exposure.compensation",
+        "com.mediatek.control.capture.flipmode",
+        "com.mediatek.control.capture.hdr.type",
+        "com.mediatek.control.capture.highQualityYuv",
+        "com.mediatek.control.capture.hintForCustomTuning",
+        "com.mediatek.control.capture.hintForIspFrameCount",
+        "com.mediatek.control.capture.hintForIspFrameIndex",
+        "com.mediatek.control.capture.hintForIspFrameTuningIndex",
+        "com.mediatek.control.capture.hintForIspTuning",
+        "com.mediatek.control.capture.hintForRawInputType",
+        "com.mediatek.control.capture.hintForRawReprocess",
+        "com.mediatek.control.capture.ispMetaEnable",
+        "com.mediatek.control.capture.ispTuningRequest",
+        "com.mediatek.control.capture.packedRaw.enable",
+        "com.mediatek.control.capture.performance.optimal.mode",
+        "com.mediatek.control.capture.postviewsize",
+        "com.mediatek.control.capture.preCollectEnable",
+        "com.mediatek.control.capture.processRaw.enable",
+        "com.mediatek.control.capture.raw.bpp",
+        "com.mediatek.control.capture.raw10.convertfmt",
+        "com.mediatek.control.capture.recalculate.mode",
+        "com.mediatek.control.capture.recalculate.mode.ob.val",
+        "com.mediatek.control.capture.recalculateRawType",
+        "com.mediatek.control.capture.regen.shading.map",
+        "com.mediatek.control.capture.remosaicenable",
+        "com.mediatek.control.capture.seamless.remosaicenable",
+        "com.mediatek.control.capture.singleStatMode",
+        "com.mediatek.control.capture.singleYuvNr",
+        "com.mediatek.control.capture.singleYuvNr.mode",
+        "com.mediatek.control.capture.tonegain.input",
+        "com.mediatek.control.capture.zsl.mode",
+        "com.mediatek.control.capture.zsl.timestamp"
+      ],
+      "result": [
+        "com.mediatek.control.capture.exposure.compensation",
+        "com.mediatek.control.capture.hintForIspTuning",
+        "com.mediatek.control.capture.hintForRawReprocess",
+        "com.mediatek.control.capture.ispTuningDataRaw",
+        "com.mediatek.control.capture.ispTuningDataYuv",
+        "com.mediatek.control.capture.ispTuningRequest",
+        "com.mediatek.control.capture.next.ready",
+        "com.mediatek.control.capture.performance.optimal.mode",
+        "com.mediatek.control.capture.raw10.convertfmt",
+        "com.mediatek.control.capture.recalculate.mode",
+        "com.mediatek.control.capture.recalculate.mode.ob.val",
+        "com.mediatek.control.capture.regen.shading.map",
+        "com.mediatek.control.capture.scalerCropRegion",
+        "com.mediatek.control.capture.singleStatMode",
+        "com.mediatek.control.capture.singleYuvNr.mode",
+        "com.mediatek.control.capture.zsl.mode"
+      ],
+      "session": [
+        "com.mediatek.control.capture.ispMetaEnable",
+        "com.mediatek.control.capture.performance.optimal.mode",
+        "com.mediatek.control.capture.postviewsize",
+        "com.mediatek.control.capture.raw10.convertfmt",
+        "com.mediatek.control.capture.singleYuvNr.mode",
+        "com.mediatek.control.capture.zsl.mode"
+      ],
+      "rearOnly": [
+        "com.mediatek.control.capture.remosaicenable",
+        "com.mediatek.control.capture.seamless.remosaicenable"
+      ]
+    },
+    "mediatek.cshotfeature": {
+      "characteristic": [
+        "com.mediatek.cshotfeature.availableCShotModes"
+      ],
+      "request": [
+        "com.mediatek.cshotfeature.capture"
+      ]
+    },
+    "mediatek.eisfeature": {
+      "request": [
+        "com.mediatek.eisfeature.eismode",
+        "com.mediatek.eisfeature.previeweis"
+      ],
+      "session": [
+        "com.mediatek.eisfeature.eismode",
+        "com.mediatek.eisfeature.previeweis"
+      ]
+    },
+    "mediatek.facefeature": {
+      "characteristic": [
+        "com.mediatek.facefeature.availableforceface3a"
+      ],
+      "request": [
+        "com.mediatek.facefeature.additionalresult",
+        "com.mediatek.facefeature.asdmode",
+        "com.mediatek.facefeature.disablefdnode",
+        "com.mediatek.facefeature.facedetectionperiod",
+        "com.mediatek.facefeature.facedetectionstrategy",
+        "com.mediatek.facefeature.forceface3a",
+        "com.mediatek.facefeature.thirdpartyfaceinformation",
+        "com.mediatek.facefeature.thirdpartyfacerectangles",
+        "com.mediatek.facefeature.thirdpartyracegenderlabel",
+        "com.mediatek.facefeature.thirdpartyskinmap",
+        "com.mediatek.facefeature.thirdpartyskinmaptransformmatrix",
+        "com.mediatek.facefeature.thirdpartyyuvsts"
+      ],
+      "result": [
+        "com.mediatek.facefeature.additionalresult",
+        "com.mediatek.facefeature.asdmode",
+        "com.mediatek.facefeature.asdresult",
+        "com.mediatek.facefeature.forceface3a"
+      ],
+      "session": [
+        "com.mediatek.facefeature.disablefdnode",
+        "com.mediatek.facefeature.facedetectionperiod",
+        "com.mediatek.facefeature.facedetectionstrategy"
+      ]
+    },
+    "mediatek.flashfeature": {
+      "characteristic": [
+        "com.mediatek.flashfeature.calibration.available",
+        "com.mediatek.flashfeature.customization.available"
+      ],
+      "request": [
+        "com.mediatek.flashfeature.algo.version",
+        "com.mediatek.flashfeature.calibration.enable",
+        "com.mediatek.flashfeature.customizedTorchDuty"
+      ],
+      "result": [
+        "com.mediatek.flashfeature.algo.version",
+        "com.mediatek.flashfeature.calibration.result",
+        "com.mediatek.flashfeature.calibration.state",
+        "com.mediatek.flashfeature.customizedResult"
+      ]
+    },
+    "mediatek.hdrfeature": {
+      "characteristic": [
+        "com.mediatek.hdrfeature.availableHdrModesPhoto",
+        "com.mediatek.hdrfeature.availableHdrModesVideo",
+        "com.mediatek.hdrfeature.availableMStreamHdrModes",
+        "com.mediatek.hdrfeature.availableVhdrModes"
+      ],
+      "request": [
+        "com.mediatek.hdrfeature.SessionParamhdrMode",
+        "com.mediatek.hdrfeature.bypassFusMode",
+        "com.mediatek.hdrfeature.framesyncBase",
+        "com.mediatek.hdrfeature.hdrMode"
+      ],
+      "result": [
+        "com.mediatek.hdrfeature.aeSmoothResult",
+        "com.mediatek.hdrfeature.hdrDetectionResult",
+        "com.mediatek.hdrfeature.vhdrManualAeAvailable",
+        "com.mediatek.hdrfeature.vhdrResult"
+      ],
+      "session": [
+        "com.mediatek.hdrfeature.framesyncBase",
+        "com.mediatek.hdrfeature.hdrMode"
+      ],
+      "rearOnly": [
+        "com.mediatek.hdrfeature.availableMStreamHdrModes"
+      ]
+    },
+    "mediatek.insensorzoomfeature": {
+      "characteristic": [
+        "com.mediatek.insensorzoomfeature.insensorzoomIsInternalAP"
+      ],
+      "request": [
+        "com.mediatek.insensorzoomfeature.insensorzoomEnableHints",
+        "com.mediatek.insensorzoomfeature.insensorzoomIsInternalAP",
+        "com.mediatek.insensorzoomfeature.insensorzoomPhysicalIdsStatus"
+      ],
+      "result": [
+        "com.mediatek.insensorzoomfeature.insensorzoomEnableHints",
+        "com.mediatek.insensorzoomfeature.insensorzoomPhysicalIdsStatus"
+      ],
+      "session": [
+        "com.mediatek.insensorzoomfeature.insensorzoomEnableHints",
+        "com.mediatek.insensorzoomfeature.insensorzoomIsInternalAP",
+        "com.mediatek.insensorzoomfeature.insensorzoomPhysicalIdsStatus"
+      ]
+    },
+    "mediatek.mdptzfeature": {
+      "characteristic": [
+        "com.mediatek.mdptzfeature.availableMdptzModes"
+      ]
+    },
+    "mediatek.mfnrfeature": {
+      "characteristic": [
+        "com.mediatek.mfnrfeature.availableaismodes",
+        "com.mediatek.mfnrfeature.availablemfbmodes"
+      ],
+      "request": [
+        "com.mediatek.mfnrfeature.aismode",
+        "com.mediatek.mfnrfeature.dozipwithbss",
+        "com.mediatek.mfnrfeature.mfbmode"
+      ],
+      "result": [
+        "com.mediatek.mfnrfeature.aismode",
+        "com.mediatek.mfnrfeature.aisresult",
+        "com.mediatek.mfnrfeature.goldenindex",
+        "com.mediatek.mfnrfeature.mfbmode",
+        "com.mediatek.mfnrfeature.mfbresult"
+      ]
+    },
+    "mediatek.multicamfeature": {
+      "characteristic": [
+        "com.mediatek.multicamfeature.availableMultiCamFeatureSensorManualUpdated"
+      ]
+    },
+    "mediatek.nrfeature": {
+      "characteristic": [
+        "com.mediatek.nrfeature.available3dnrmodes"
+      ],
+      "request": [
+        "com.mediatek.nrfeature.3dnrmode"
+      ],
+      "result": [
+        "com.mediatek.nrfeature.3dnrmode"
+      ]
+    },
+    "mediatek.seamlessfeature": {
+      "request": [
+        "com.mediatek.seamlessfeature.configCellCropSensorIds",
+        "com.mediatek.seamlessfeature.configCellFullSensorIds",
+        "com.mediatek.seamlessfeature.configSensorScenarios",
+        "com.mediatek.seamlessfeature.forceSensorMode",
+        "com.mediatek.seamlessfeature.sensorScenario"
+      ],
+      "result": [
+        "com.mediatek.seamlessfeature.forceSensorMode",
+        "com.mediatek.seamlessfeature.sensorScenario"
+      ],
+      "session": [
+        "com.mediatek.seamlessfeature.configCellCropSensorIds",
+        "com.mediatek.seamlessfeature.configCellFullSensorIds",
+        "com.mediatek.seamlessfeature.configSensorScenarios"
+      ]
+    },
+    "mediatek.smvrfeature": {
+      "characteristic": [
+        "com.mediatek.smvrfeature.availableSmvrModes"
+      ],
+      "request": [
+        "com.mediatek.smvrfeature.smvrMode"
+      ],
+      "result": [
+        "com.mediatek.smvrfeature.smvrResult"
+      ],
+      "session": [
+        "com.mediatek.smvrfeature.smvrMode"
+      ],
+      "rearOnly": [
+        "com.mediatek.smvrfeature.availableSmvrModes"
+      ]
+    },
+    "mediatek.streamingfeature": {
+      "characteristic": [
+        "com.mediatek.streamingfeature.availableHfpsEISMaxResolutions",
+        "com.mediatek.streamingfeature.availableHfpsMaxResolutions",
+        "com.mediatek.streamingfeature.availableHfpsModes",
+        "com.mediatek.streamingfeature.availableRecordStates",
+        "com.mediatek.streamingfeature.cropOuterLinesEnable",
+        "com.mediatek.streamingfeature.hdr10pEisSupport",
+        "com.mediatek.streamingfeature.hdr10pVssSupport"
+      ],
+      "request": [
+        "com.mediatek.streamingfeature.hdr10pCpuControl",
+        "com.mediatek.streamingfeature.hfpsMode",
+        "com.mediatek.streamingfeature.pipDevices",
+        "com.mediatek.streamingfeature.recordState",
+        "com.mediatek.streamingfeature.tnrOffByPhysicalIds"
+      ],
+      "result": [
+        "com.mediatek.streamingfeature.hdr10MaxAverageContentLightLevel",
+        "com.mediatek.streamingfeature.hdr10MaxContentLightLevel",
+        "com.mediatek.streamingfeature.recordState"
+      ],
+      "session": [
+        "com.mediatek.streamingfeature.hdr10pCpuControl",
+        "com.mediatek.streamingfeature.hfpsMode",
+        "com.mediatek.streamingfeature.pipDevices"
+      ],
+      "rearOnly": [
+        "com.mediatek.streamingfeature.availableHfpsEISMaxResolutions",
+        "com.mediatek.streamingfeature.availableHfpsMaxResolutions",
+        "com.mediatek.streamingfeature.availableHfpsModes"
+      ]
+    },
+    "mediatek.trackingaffeature": {
+      "characteristic": [
+        "com.mediatek.trackingaffeature.trackingafAvailableModes"
+      ]
+    },
+    "mediatek.videoainrfeature": {
+      "characteristic": [
+        "com.mediatek.videoainrfeature.videoAinrAvailableModes"
+      ],
+      "request": [
+        "com.mediatek.videoainrfeature.videoAinrModes"
+      ],
+      "result": [
+        "com.mediatek.videoainrfeature.videoAinrModes"
+      ],
+      "session": [
+        "com.mediatek.videoainrfeature.videoAinrModes"
+      ]
+    },
+    "nothing.camera.eis": {
+      "request": [
+        "com.nothing.camera.eis.supereismode"
+      ],
+      "session": [
+        "com.nothing.camera.eis.supereismode"
+      ],
+      "rearOnly": [
+        "com.nothing.camera.eis.supereismode"
+      ]
+    },
+    "nothing.camera.hint": {
+      "request": [
+        "com.nothing.camera.hint.for.custom.tuning"
+      ],
+      "session": [
+        "com.nothing.camera.hint.for.custom.tuning"
+      ]
+    },
+    "nothing.camera.soisParams": {
+      "request": [
+        "nothing.camera.soisParams.gains"
+      ],
+      "result": [
+        "nothing.camera.soisParams.gains"
+      ],
+      "session": [
+        "nothing.camera.soisParams.gains"
+      ],
+      "rearOnly": [
+        "nothing.camera.soisParams.gains"
+      ]
+    }
+  }
+}
