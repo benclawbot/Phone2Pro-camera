@@ -92,8 +92,11 @@
       },
       "source": "https://github.com/baksmali/smali/releases/tag/v3.0.9",
       "artifact": {
+        "url": "https://github.com/baksmali/smali/releases/download/v3.0.9/baksmali-3.0.9-fat-release.jar",
+        "sha256": null,
         "mavenCoordinate": "com.android.tools.smali:smali-baksmali:3.0.9",
-        "repository": "https://dl.google.com/dl/android/maven2/"
+        "repository": "https://dl.google.com/dl/android/maven2/",
+        "integrityNote": "The official fat release jar is self-contained. Record the downloaded digest in the bootstrap receipt."
       },
       "install": "Use the Google-maintained v3 namespace. Do not mix org.jf v2 libraries with com.android.tools.smali v3 in one process."
     },
@@ -105,8 +108,8 @@
       "required": true,
       "probe": {
         "type": "command",
-        "command": "ghidraRun",
-        "args": ["-version"],
+        "command": "ghidra-version",
+        "args": [],
         "versionRegex": "Ghidra\\s+(12\\.1\\.2)"
       },
       "source": "https://github.com/NationalSecurityAgency/ghidra/releases/tag/Ghidra_12.1.2_build",
@@ -114,7 +117,8 @@
         "url": "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.1.2_build/ghidra_12.1.2_PUBLIC_20260605.zip",
         "sha256": "b62e81a0390618466c019c60d8c2f796ced2509c4c1aea4a37644a77272cf99d",
         "integrityNote": "Checksum published in the official release notes."
-      }
+      },
+      "install": "The bootstrap creates a non-GUI ghidra-version wrapper from Ghidra/application.properties so version checks never launch the front end."
     },
     {
       "id": "android-platform-tools",
