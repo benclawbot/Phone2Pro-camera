@@ -1,5 +1,5 @@
 schemaVersion: 1
-updatedAt: 2026-08-03T11:25:00Z
+updatedAt: 2026-08-03T11:46:00Z
 sources:
   - id: android.logical-multi-camera
     title: Multi-camera API
@@ -88,8 +88,60 @@ sources:
     revision: rolling
     license: repository-specific
     targetRelevance: >-
-      Starting point for official kernel and kernel-module releases. The exact Galaga repository/branch remains unresolved and is tracked by CAM-092.
-    status: active-unresolved
+      Official publisher index. The Galaga MT6878 kernel, vendor-module and device-module repositories and branches have been resolved below.
+    status: resolved
+    confidence: 4
+
+  - id: nothing.galaga-kernel
+    title: Nothing MT6878 Linux 6.1 kernel
+    publisher: Nothing Technology Limited
+    url: https://github.com/NothingOSS/android_kernel_6.1_nothing_mt6878
+    sourceType: official-source-code
+    authority: primary
+    revision: mt6878/Galaga/v and mt6878/Galaga/16b; pin commit SHAs during CAM-092
+    license: repository-specific GPL and source-file licences
+    targetRelevance: >-
+      Official common-kernel source family for Galaga. The Android 16 diagnostic baseline should be compared first with mt6878/Galaga/16b, but exact build-to-commit equivalence remains unverified.
+    status: active
+    confidence: 4
+
+  - id: nothing.galaga-kernel-modules
+    title: Nothing MT6878 vendor kernel modules
+    publisher: Nothing Technology Limited
+    url: https://github.com/NothingOSS/android_kernel_modules_nothing_mt6878
+    sourceType: official-source-code
+    authority: primary
+    revision: mt6878/Galaga/v and mt6878/Galaga/16b; pin commit SHAs during CAM-092
+    license: repository-specific GPL and source-file licences
+    targetRelevance: >-
+      Official vendor kernel-module source. Used with the common and device-module trees to reconstruct runtime module composition and match vendor_dlkm artifacts.
+    status: active
+    confidence: 4
+
+  - id: nothing.galaga-device-modules
+    title: Nothing MT6878 device kernel modules
+    publisher: Nothing Technology Limited
+    url: https://github.com/NothingOSS/android_kernel_device_modules_6.1_nothing_mt6878
+    sourceType: official-source-code
+    authority: primary
+    revision: mt6878/Galaga/v and mt6878/Galaga/16b; pin commit SHAs during CAM-092
+    license: repository-specific GPL and source-file licences
+    targetRelevance: >-
+      Contains MediaTek image-sensor, CCU and camera hardware kernel paths. Generic sensor candidates must not be treated as enabled Galaga hardware without build-configuration, device-tree and runtime confirmation.
+    status: active
+    confidence: 4
+
+  - id: nothing.mt6878-kernel-build
+    title: Nothing MT6878 kernel build support
+    publisher: Nothing Technology Limited
+    url: https://github.com/NothingOSS/android_kernel_build_nothing_mt6878
+    sourceType: official-source-code
+    authority: primary
+    revision: default branch; pin commit during CAM-092
+    license: repository-specific
+    targetRelevance: >-
+      Build support and orchestration for the MT6878 source family. No Galaga-named branch was located during the initial branch search.
+    status: active
     confidence: 3
 
   - id: nothingarchive.official-resources
@@ -127,7 +179,7 @@ sources:
     revision: pin commit during CAM-093
     license: repository-specific; firmware rights remain with OEM
     targetRelevance: >-
-      Lists Galaga OTA builds including 2025 Galaga-V3.2 releases and may help acquire build-matched partitions. Every package must be hash-verified and handled under the compliance register.
+      Lists Galaga OTA builds and may help acquire build-matched partitions. Every package must be hash-verified and handled under the compliance register.
     status: active
     confidence: 2
 
