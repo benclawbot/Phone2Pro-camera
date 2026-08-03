@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-03T12:12:00Z",
+  "generatedFrom": "phone2pro-static-hardware-vendor-20260802_223117_378.json",
+  "buildFingerprint": "Nothing/GalagaEEA/Galaga:16/BP2A.250605.031.A3/2606151653:user/release-keys",
+  "interpretationRule": "Values are recorded exactly as advertised by CameraCharacteristics. Numeric meanings are not assigned unless separately confirmed from source, stock-app call sites or controlled tests.",
+  "rearCameraId": "0",
+  "frontCameraId": "1",
+  "rear": {
+    "com.mediatek.facefeature.availableforceface3a": [0, 1],
+    "com.mediatek.nrfeature.available3dnrmodes": [0, 1],
+    "com.mediatek.hdrfeature.availableHdrModesPhoto": [0, 1],
+    "com.mediatek.hdrfeature.availableHdrModesVideo": [0],
+    "com.mediatek.hdrfeature.availableVhdrModes": [0],
+    "com.mediatek.hdrfeature.availableMStreamHdrModes": [0, 6],
+    "com.mediatek.mfnrfeature.availablemfbmodes": [0, 1, 2, 255],
+    "com.mediatek.mfnrfeature.availableaismodes": [0, 1],
+    "com.mediatek.cshotfeature.availableCShotModes": [0, 1],
+    "com.mediatek.streamingfeature.availableRecordStates": [0, 1],
+    "com.mediatek.streamingfeature.availableHfpsModes": [0, 1],
+    "com.mediatek.streamingfeature.availableHfpsMaxResolutions": [1920, 1080, 60],
+    "com.mediatek.streamingfeature.availableHfpsEISMaxResolutions": [1920, 1080, 60],
+    "com.mediatek.streamingfeature.hdr10pVssSupport": [1],
+    "com.mediatek.streamingfeature.hdr10pEisSupport": [1],
+    "com.mediatek.multicamfeature.availableMultiCamFeatureSensorManualUpdated": [
+      983040,
+      983050,
+      983046,
+      983042,
+      983055,
+      983062,
+      917518,
+      524293,
+      65559,
+      65564
+    ],
+    "com.mediatek.control.capture.early.notification.support": [0, 1],
+    "com.mediatek.control.capture.availablepostviewmodes": [0, 1],
+    "com.mediatek.control.capture.available.zsl.modes": [0, 1],
+    "com.mediatek.control.capture.default.zsl.mode": [0],
+    "com.mediatek.control.capture.ispMetaSizeForRaw": [1920, 1088],
+    "com.mediatek.control.capture.ispMetaSizeForYuv": [1280, 720],
+    "com.mediatek.bgservicefeature.availableprereleasemodes": [0, 1],
+    "com.mediatek.flashfeature.calibration.available": [1],
+    "com.mediatek.flashfeature.customization.available": [1],
+    "com.mediatek.smvrfeature.availableSmvrModes": [640, 480, 120, 8],
+    "com.mediatek.trackingaffeature.trackingafAvailableModes": [0],
+    "com.mediatek.aovservicefeature.availableAovModes": [0, 1],
+    "com.mediatek.aovservicefeature.availablePipelineConfig": [0, 1],
+    "com.mediatek.aovservicefeature.availableAovImageSize": [640, 480, 320, 240],
+    "com.mediatek.mdptzfeature.availableMdptzModes": [0],
+    "com.mediatek.videoainrfeature.videoAinrAvailableModes": [0, 1],
+    "com.mediatek.camerapreviewcompression.CameraPreviewCompressionModes": [0, 1],
+    "com.mediatek.insensorzoomfeature.insensorzoomIsInternalAP": [0]
+  },
+  "front": {
+    "com.mediatek.facefeature.availableforceface3a": [0, 1],
+    "com.mediatek.nrfeature.available3dnrmodes": [0, 1],
+    "com.mediatek.hdrfeature.availableHdrModesPhoto": [0, 3, 1],
+    "com.mediatek.hdrfeature.availableHdrModesVideo": [0, 3],
+    "com.mediatek.hdrfeature.availableVhdrModes": [0, 6],
+    "com.mediatek.mfnrfeature.availablemfbmodes": [0, 1, 2, 255],
+    "com.mediatek.mfnrfeature.availableaismodes": [0, 1],
+    "com.mediatek.cshotfeature.availableCShotModes": [0],
+    "com.mediatek.streamingfeature.availableRecordStates": [0, 1],
+    "com.mediatek.streamingfeature.hdr10pVssSupport": [1],
+    "com.mediatek.streamingfeature.hdr10pEisSupport": [1],
+    "com.mediatek.control.capture.early.notification.support": [0, 1],
+    "com.mediatek.control.capture.availablepostviewmodes": [0, 1],
+    "com.mediatek.control.capture.available.zsl.modes": [0, 1],
+    "com.mediatek.control.capture.default.zsl.mode": [0],
+    "com.mediatek.control.capture.ispMetaSizeForRaw": [1920, 1088],
+    "com.mediatek.control.capture.ispMetaSizeForYuv": [1280, 720],
+    "com.mediatek.bgservicefeature.availableprereleasemodes": [0, 1],
+    "com.mediatek.flashfeature.calibration.available": [0],
+    "com.mediatek.flashfeature.customization.available": [1],
+    "com.mediatek.aovservicefeature.availableAovModes": [0, 1],
+    "com.mediatek.aovservicefeature.availablePipelineConfig": [0, 1],
+    "com.mediatek.aovservicefeature.availableAovImageSize": [640, 480, 320, 240],
+    "com.mediatek.mdptzfeature.availableMdptzModes": [0],
+    "com.mediatek.videoainrfeature.videoAinrAvailableModes": [0, 1],
+    "com.mediatek.camerapreviewcompression.CameraPreviewCompressionModes": [0, 1],
+    "com.mediatek.insensorzoomfeature.insensorzoomIsInternalAP": [0]
+  },
+  "derivedRepresentations": {
+    "rearMultiCamFeatureCodesHex": [
+      "0x000F0000",
+      "0x000F000A",
+      "0x000F0006",
+      "0x000F0002",
+      "0x000F000F",
+      "0x000F0016",
+      "0x000E000E",
+      "0x00080005",
+      "0x00010017",
+      "0x0001001C"
+    ]
+  },
+  "notableDifferences": [
+    {
+      "key": "com.mediatek.hdrfeature.availableHdrModesPhoto",
+      "rear": [0, 1],
+      "front": [0, 3, 1]
+    },
+    {
+      "key": "com.mediatek.hdrfeature.availableHdrModesVideo",
+      "rear": [0],
+      "front": [0, 3]
+    },
+    {
+      "key": "com.mediatek.hdrfeature.availableVhdrModes",
+      "rear": [0],
+      "front": [0, 6]
+    },
+    {
+      "key": "com.mediatek.cshotfeature.availableCShotModes",
+      "rear": [0, 1],
+      "front": [0]
+    },
+    {
+      "key": "com.mediatek.flashfeature.calibration.available",
+      "rear": [1],
+      "front": [0]
+    }
+  ],
+  "openQuestions": [
+    "Recover the enum definitions for every advertised numeric mode.",
+    "Determine whether the multicamera feature values are packed subsystem/feature identifiers, bitfields or opaque codes.",
+    "Trace which advertised modes the stock application actually requests in each camera mode.",
+    "Test whether an ordinary application can set the corresponding request/session keys and obtain an effective pipeline change."
+  ]
+}
