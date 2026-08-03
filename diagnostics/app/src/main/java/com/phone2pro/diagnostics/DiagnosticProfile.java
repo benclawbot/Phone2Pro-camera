@@ -29,10 +29,10 @@ enum DiagnosticProfile {
             false,
             0
     ),
-    OFFICIAL_EXPERT_DIRECT_ID_LAUNCH(
-            "official-expert-direct-id-launch",
-            "Official Expert direct ID 2 / 0 / 3 launch audit",
-            "Launches the official camera into Expert mode three times while requesting camera IDs 2, 0 and 3. Take one photo after each launch without changing the lens; EXIF verifies whether each requested ultrawide, main or telephoto route was honored.",
+    OFFICIAL_EXPERT_WIDGET_FOCAL_LAUNCH(
+            "official-expert-widget-focal-launch",
+            "Official Expert preset 15 / 24 / 50 mm launch audit",
+            "Uses Nothing Camera's exported widget preset path to request Expert-mode focal values 15mm, 24mm and 50mm. Take one photo after each automatic launch without changing the lens; EXIF verifies ultrawide, main and telephoto routing.",
             false,
             0
     );
