@@ -11,6 +11,7 @@ import hashlib
 import json
 import re
 import sys
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -46,7 +47,7 @@ def fail(message: str) -> None:
 def load_json(path: Path) -> Any:
     try:
         return json.loads(path.read_text(encoding="utf-8"))
-    except Exception as exc:  # noqa: BLE001 - report every parse failure together
+    except Exception as exc:  # noqa: BLE001 - aggregate all validation errors
         fail(f"{path.relative_to(ROOT)}: invalid JSON: {exc}")
         return None
 
@@ -188,17 +189,14 @@ def validate_keywords() -> None:
     path = ROOT / "tools" / "apk" / "routing-keywords.txt"
     lines = [line.strip() for line in path.read_text(encoding="utf-8").splitlines()]
     keywords = [line for line in lines if line and not line.startswith("#")]
-    duplicates = sorted({keyword for keyword in keywords if keywords.count(keyword) > 1})
+    duplicates = sorted(keyword for keyword, count in Counter(keywords).items() if count > 1)
     if duplicates:
         fail(f"{path.relative_to(ROOT)}: duplicate keywords: {duplicates}")
 
 
 def validate_no_raw_artifacts() -> None:
-    allowlisted = {
-        ROOT / ".github" / "workflows" / "validate.yml",
-    }
     for path in ROOT.rglob("*"):
-        if not path.is_file() or ".git" in path.parts or path in allowlisted:
+        if not path.is_file() or ".git" in path.parts:
             continue
         if path.suffix.lower() in RAW_ARTIFACT_SUFFIXES:
             fail(f"raw/proprietary artifact must not be committed: {path.relative_to(ROOT)}")
@@ -207,18 +205,17 @@ def validate_no_raw_artifacts() -> None:
 def validate_documented_hashes() -> None:
     """Flag malformed literal SHA-256 values in structured files.
 
-    The validator does not try to re-hash external artifacts that are intentionally
-    absent from the public repository.
+    External artifacts are intentionally absent, so this validates syntax only rather
+    than attempting to recalculate their digests.
     """
 
     for path in (ROOT / "data").rglob("*"):
         if not path.is_file() or path.suffix.lower() not in {".json", ".yaml", ".yml"}:
             continue
-        text = path.read_text(encoding="utf-8")
-        for line_number, line in enumerate(text.splitlines(), start=1):
-            if "sha256" not in line.lower():
+        for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+            if "sha256" not in line.lower() or ":" not in line:
                 continue
-            candidate = line.split(":", 1)[-1].strip().strip('"\'')
+            candidate = line.split(":", 1)[-1].strip().strip("\"' ,}")
             if candidate and candidate not in {"unknown", "null"} and not SHA256_PATTERN.fullmatch(candidate):
                 fail(f"{path.relative_to(ROOT)}:{line_number}: malformed SHA-256 value {candidate!r}")
 
