@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-03T20:45:00Z",
+  "results": [
+    {
+      "id": "result-stock-route-isolation-galaga-20260803",
+      "protocolId": "protocol-stock-route-isolation",
+      "protocolVersion": 1,
+      "buildMatrixEntryId": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "status": "partial",
+      "timing": {
+        "startedAt": "2026-08-03T08:07:44.043Z",
+        "endedAt": "2026-08-03T10:38:21.933Z",
+        "timezone": "UTC",
+        "clockSource": "Diagnostic artifact generatedAtEpochMillis values converted to UTC.",
+        "precision": "artifact-generated-at-only",
+        "notes": "The legacy artifacts preserve generation timestamps but not exact per-launch and per-capture timestamps. The result is therefore partial and must not be treated as a fully timed protocol execution."
+      },
+      "executionContext": {
+        "package": {
+          "packageName": "com.nothing.camera",
+          "versionName": "16.1.01.93.20",
+          "versionCode": null
+        },
+        "identity": {
+          "uid": null,
+          "selinuxDomain": null,
+          "permissions": {
+            "status": "not preserved in these legacy result artifacts"
+          },
+          "appOps": {
+            "status": "not preserved in these legacy result artifacts"
+          }
+        },
+        "state": {
+          "internalMode": "Expert",
+          "positiveRouteLabels": ["0.6x", "1x", "2x"],
+          "negativeLaunchPath": "exported widget focal launch",
+          "freshProcessIsolation": "not recorded in the normalized legacy artifacts"
+        },
+        "parameters": {
+          "internalEquivalentFocalLengthsMm": [15, 24, 50],
+          "widgetFocalValuesMm": [15, 24, 50]
+        },
+        "tools": [
+          {
+            "name": "Phone2Pro diagnostic application",
+            "version": null,
+            "command": "official-expert-lens-routing and official-expert-widget-focal-launch profiles",
+            "status": "unknown"
+          }
+        ]
+      },
+      "controls": {
+        "positive": [
+          {
+            "controlId": "internal-expert-main-24mm",
+            "outcome": "pass",
+            "observation": "The internal Expert 1x route produced 5.56 mm physical focal length and 24 mm equivalent metadata.",
+            "artifactIds": ["diag-official-expert-routing"]
+          },
+          {
+            "controlId": "internal-expert-distinct-routes",
+            "outcome": "pass",
+            "observation": "The internal Expert sequence associated 1.64 mm, 5.56 mm and 7.10 mm physical focal lengths with 15 mm, 24 mm and 50 mm equivalent outputs; digital zoom ratio was zero for the three routes.",
+            "artifactIds": ["diag-official-expert-routing"]
+          }
+        ],
+        "negative": [
+          {
+            "controlId": "exported-widget-focal-route",
+            "outcome": "pass",
+            "observation": "The exported widget parser received 15 mm, 24 mm and 50 mm values while the associated audit outputs remained on the 5.56 mm / 24 mm-equivalent route.",
+            "artifactIds": ["diag-official-widget-focal"]
+          }
+        ]
+      },
+      "captures": [
+        {
+          "sequence": 1,
+          "controlRole": "positive",
+          "action": "Internal Expert 0.6x / 1x / 2x route audit.",
+          "route": "internal Expert 15 mm / 24 mm / 50 mm sequence",
+          "startedAt": null,
+          "endedAt": null,
+          "timingReference": "Only the artifact generation timestamp 2026-08-03T08:07:44.043Z is preserved.",
+          "parameters": {
+            "equivalentFocalLengthsMm": [15, 24, 50]
+          },
+          "observations": [
+            "Three associated stock-camera captures were recorded.",
+            "Physical focal lengths were 1.64 mm, 5.56 mm and 7.10 mm.",
+            "Equivalent focal lengths were 15 mm, 24 mm and 50 mm.",
+            "Digital zoom ratio was zero for all three routes."
+          ],
+          "artifactIds": ["diag-official-expert-routing"]
+        },
+        {
+          "sequence": 2,
+          "controlRole": "negative",
+          "action": "Exported widget focal-launch audit using 15 mm, 24 mm and 50 mm values.",
+          "route": "exported widget focal launch",
+          "startedAt": null,
+          "endedAt": null,
+          "timingReference": "Only the artifact generation timestamp 2026-08-03T10:38:21.933Z is preserved.",
+          "parameters": {
+            "focalValuesMm": [15, 24, 50]
+          },
+          "observations": [
+            "The exported widget parser was invoked with all three focal values.",
+            "Associated outputs remained on the 5.56 mm / 24 mm-equivalent route.",
+            "The observation is scoped to the exported widget launch path."
+          ],
+          "artifactIds": ["diag-official-widget-focal"]
+        }
+      ],
+      "artifacts": [
+        {
+          "artifactId": "diag-official-expert-routing",
+          "name": "phone2pro-official-expert-lens-routing-20260803_100744_866.json",
+          "sizeBytes": 98220,
+          "sha256": "6995200e4f2c995c9160464b9300247604bebb2d3e81511f136825fb6934f557",
+          "acquiredAt": "2026-08-03T08:07:44.043Z",
+          "timezone": "UTC",
+          "rawPath": "controlled-artifact-store/phone2pro-official-expert-lens-routing-20260803_100744_866.json",
+          "normalizedReference": "data/artifacts/diagnostic-manifest.yaml#diag-official-expert-routing",
+          "transformations": [
+            "Raw artifact retained unchanged outside the public repository.",
+            "Size, SHA-256, profile, completion state and derived observations indexed in the diagnostic manifest."
+          ]
+        },
+        {
+          "artifactId": "diag-official-widget-focal",
+          "name": "phone2pro-official-expert-widget-focal-launch-20260803_123822_592.json",
+          "sizeBytes": 107605,
+          "sha256": "126586150fd02faf2ad997490813aee5239648bc1849960887188fe37eb86a46",
+          "acquiredAt": "2026-08-03T10:38:21.933Z",
+          "timezone": "UTC",
+          "rawPath": "controlled-artifact-store/phone2pro-official-expert-widget-focal-launch-20260803_123822_592.json",
+          "normalizedReference": "data/artifacts/diagnostic-manifest.yaml#diag-official-widget-focal",
+          "transformations": [
+            "Raw artifact retained unchanged outside the public repository.",
+            "Size, SHA-256, profile, completion state and derived observations indexed in the diagnostic manifest."
+          ]
+        }
+      ],
+      "outcome": {
+        "verdict": "pass",
+        "observedBehavior": "Internal Expert selection produced three distinct optical focal lengths, while the exported widget focal-launch mechanism remained on the 24 mm-equivalent main route in the associated audit outputs.",
+        "negativeResultStatement": "Exported widget focal preset routing failed under build nothing-galaga-eea-android16-2606151653-f88325f3, stock package com.nothing.camera 16.1.01.93.20, the exported widget launch state, and focal parameters 15 mm, 24 mm and 50 mm.",
+        "scopeLimitations": [
+          "The negative result applies only to the exported widget path and does not disprove internal Expert, SAT, hidden logical camera, privileged service or HAL routes.",
+          "Exact process identity, permission state, AppOps, tool version and per-capture timestamps were not preserved in the legacy normalized artifacts.",
+          "The result does not independently trace the selected camera endpoint or downstream physical sensor."
+        ],
+        "evidenceClass": "device-observed",
+        "confidence": 3,
+        "passCriteriaSatisfied": [
+          "The main-route and distinct-route positive controls produced associated captures and focal metadata.",
+          "The external widget mechanism was recorded separately with scoped negative-result language."
+        ],
+        "failCriteriaTriggered": []
+      }
+    }
+  ]
+}
