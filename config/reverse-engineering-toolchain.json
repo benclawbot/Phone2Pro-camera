@@ -1,0 +1,229 @@
+{
+  "schemaVersion": 1,
+  "verifiedAtUtc": "2026-08-03T00:00:00Z",
+  "defaultProfile": "full",
+  "profiles": {
+    "static": "APK, DEX, resource and native-binary analysis",
+    "device": "ADB acquisition and device-state evidence capture",
+    "dynamic": "Frida and Perfetto runtime tracing",
+    "firmware": "Firmware and native-service analysis",
+    "full": "Complete project reverse-engineering workstation"
+  },
+  "tools": [
+    {
+      "id": "python",
+      "displayName": "Python",
+      "version": "3.12",
+      "profiles": ["static", "device", "dynamic", "firmware", "full"],
+      "required": true,
+      "probe": {
+        "type": "command",
+        "command": "python3",
+        "args": ["--version"],
+        "versionRegex": "Python\\s+(3\\.12)(?:\\.|$)"
+      },
+      "source": "https://www.python.org/downloads/",
+      "install": "Install a CPython 3.12.x interpreter. Patch versions may differ when the standard-library behavior used by repository tests remains compatible."
+    },
+    {
+      "id": "java",
+      "displayName": "OpenJDK",
+      "version": "21",
+      "profiles": ["static", "firmware", "full"],
+      "required": true,
+      "probe": {
+        "type": "command",
+        "command": "java",
+        "args": ["-version"],
+        "versionRegex": "version \\\"(21)(?:\\.|\\\")"
+      },
+      "source": "https://adoptium.net/temurin/releases/?version=21",
+      "install": "Ghidra 12.1.x requires a 64-bit JDK 21."
+    },
+    {
+      "id": "jadx",
+      "displayName": "JADX",
+      "version": "1.5.5",
+      "profiles": ["static", "full"],
+      "required": true,
+      "probe": {
+        "type": "command",
+        "command": "jadx",
+        "args": ["--version"],
+        "versionRegex": "(?:jadx\\s+)?(1\\.5\\.5)"
+      },
+      "source": "https://github.com/skylot/jadx/releases/tag/v1.5.5",
+      "artifact": {
+        "url": "https://github.com/skylot/jadx/releases/download/v1.5.5/jadx-1.5.5.zip",
+        "sha256": null,
+        "integrityNote": "The release page does not publish a checksum in machine-readable metadata used by this repository. Record the downloaded digest in the bootstrap receipt."
+      }
+    },
+    {
+      "id": "apktool",
+      "displayName": "Apktool",
+      "version": "3.0.2",
+      "profiles": ["static", "full"],
+      "required": true,
+      "probe": {
+        "type": "command",
+        "command": "apktool",
+        "args": ["--version"],
+        "versionRegex": "(3\\.0\\.2)"
+      },
+      "source": "https://github.com/iBotPeaches/Apktool/releases/tag/v3.0.2",
+      "artifact": {
+        "url": "https://github.com/iBotPeaches/Apktool/releases/download/v3.0.2/apktool_3.0.2.jar",
+        "sha256": null,
+        "integrityNote": "Record the downloaded digest in the bootstrap receipt and retain the immutable release URL."
+      }
+    },
+    {
+      "id": "baksmali",
+      "displayName": "baksmali",
+      "version": "3.0.9",
+      "profiles": ["static", "full"],
+      "required": true,
+      "probe": {
+        "type": "command",
+        "command": "baksmali",
+        "args": ["--version"],
+        "versionRegex": "(?:baksmali\\s+)?(3\\.0\\.9)"
+      },
+      "source": "https://github.com/baksmali/smali/releases/tag/v3.0.9",
+      "artifact": {
+        "mavenCoordinate": "com.android.tools.smali:smali-baksmali:3.0.9",
+        "repository": "https://dl.google.com/dl/android/maven2/"
+      },
+      "install": "Use the Google-maintained v3 namespace. Do not mix org.jf v2 libraries with com.android.tools.smali v3 in one process."
+    },
+    {
+      "id": "ghidra",
+      "displayName": "Ghidra",
+      "version": "12.1.2",
+      "profiles": ["static", "firmware", "full"],
+      "required": true,
+      "probe": {
+        "type": "command",
+        "command": "ghidraRun",
+        "args": ["-version"],
+        "versionRegex": "Ghidra\\s+(12\\.1\\.2)"
+      },
+      "source": "https://github.com/NationalSecurityAgency/ghidra/releases/tag/Ghidra_12.1.2_build",
+      "artifact": {
+        "url": "https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_12.1.2_build/ghidra_12.1.2_PUBLIC_20260605.zip",
+        "sha256": "b62e81a0390618466c019c60d8c2f796ced2509c4c1aea4a37644a77272cf99d",
+        "integrityNote": "Checksum published in the official release notes."
+      }
+    },
+    {
+      "id": "android-platform-tools",
+      "displayName": "Android SDK Platform-Tools / adb",
+      "version": "37.0.1",
+      "profiles": ["device", "dynamic", "firmware", "full"],
+      "required": true,
+      "probe": {
+        "type": "command",
+        "command": "adb",
+        "args": ["version"],
+        "versionRegex": "Android Debug Bridge version (1\\.0\\.41)[\\s\\S]*Version (37\\.0\\.1)"
+      },
+      "versionGroup": 2,
+      "source": "https://developer.android.com/tools/releases/platform-tools",
+      "install": "Install with sdkmanager platform-tools and verify the resolved adb version. Version 37.0.1 was a July 2026 canary; do not silently substitute a later build in evidence runs."
+    },
+    {
+      "id": "bundletool",
+      "displayName": "bundletool",
+      "version": "1.18.3",
+      "profiles": ["static", "full"],
+      "required": true,
+      "probe": {
+        "type": "command",
+        "command": "bundletool",
+        "args": ["version"],
+        "versionRegex": "(1\\.18\\.3)"
+      },
+      "source": "https://github.com/google/bundletool/releases/tag/1.18.3",
+      "artifact": {
+        "url": "https://github.com/google/bundletool/releases/download/1.18.3/bundletool-all-1.18.3.jar",
+        "sha256": null,
+        "integrityNote": "Record the downloaded digest in the bootstrap receipt and retain the immutable release URL."
+      }
+    },
+    {
+      "id": "frida",
+      "displayName": "Frida Python bindings",
+      "version": "17.16.0",
+      "profiles": ["dynamic", "full"],
+      "required": true,
+      "probe": {
+        "type": "pythonDistribution",
+        "distribution": "frida"
+      },
+      "source": "https://pypi.org/project/frida/17.16.0/",
+      "install": "Pin the host bindings and the Android frida-server to the same Frida core version."
+    },
+    {
+      "id": "frida-tools",
+      "displayName": "Frida CLI tools",
+      "version": "14.10.4",
+      "profiles": ["dynamic", "full"],
+      "required": true,
+      "probe": {
+        "type": "pythonDistribution",
+        "distribution": "frida-tools"
+      },
+      "source": "https://pypi.org/project/frida-tools/14.10.4/",
+      "artifact": {
+        "url": "https://files.pythonhosted.org/packages/source/f/frida-tools/frida_tools-14.10.4.tar.gz",
+        "sha256": "7a2c544b545d095040fffbd3768a287a426343dad89095b4a24f4b20382d926a",
+        "integrityNote": "Checksum published by PyPI for the source distribution."
+      }
+    },
+    {
+      "id": "perfetto",
+      "displayName": "Perfetto trace_processor_shell",
+      "version": "55.3",
+      "profiles": ["dynamic", "firmware", "full"],
+      "required": true,
+      "probe": {
+        "type": "command",
+        "command": "trace_processor_shell",
+        "args": ["--version"],
+        "versionRegex": "(?:Perfetto v?|trace_processor_shell version )?(55\\.3)"
+      },
+      "source": "https://github.com/google/perfetto/releases/tag/v55.3",
+      "install": "Use an official host prebuilt or a source build from tag v55.3. Record the binary SHA-256 because official asset names and checksums are host-specific."
+    },
+    {
+      "id": "node",
+      "displayName": "Node.js",
+      "version": "24",
+      "profiles": ["dynamic", "full"],
+      "required": true,
+      "probe": {
+        "type": "command",
+        "command": "node",
+        "args": ["--version"],
+        "versionRegex": "v(24)(?:\\.|$)"
+      },
+      "source": "https://nodejs.org/en/download",
+      "install": "Used for syntax validation of Frida JavaScript hooks. Patch versions may differ within Node 24."
+    }
+  ],
+  "hostUtilities": [
+    "bash",
+    "git",
+    "curl",
+    "unzip",
+    "zipinfo",
+    "sha256sum",
+    "file",
+    "readelf",
+    "nm",
+    "strings",
+    "rg",
+    "jq"
+  ]
+}
