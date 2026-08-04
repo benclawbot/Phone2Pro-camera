@@ -5,6 +5,7 @@ import com.phone2pro.camera.core.OpticalRoute;
 import com.phone2pro.camera.core.ResolvedCameraEndpoint;
 import com.phone2pro.camera.core.RouteBackend;
 import com.phone2pro.camera.core.RouteMechanism;
+import com.phone2pro.camera.core.RouteRendering;
 import com.phone2pro.camera.core.RouteSupport;
 
 import java.util.Optional;
@@ -40,6 +41,7 @@ public final class PublicMainBackend implements RouteBackend {
         }
         return RouteSupport.available(
                 RouteMechanism.PUBLIC_CAMERA,
+                RouteRendering.OPTICAL,
                 "Verified public Camera2 ID 0 main-camera route."
         );
     }
