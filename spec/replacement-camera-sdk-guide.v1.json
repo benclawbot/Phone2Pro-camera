@@ -1,0 +1,225 @@
+{
+  "schemaVersion": 1,
+  "guideVersion": "2026.08.04-1",
+  "device": {
+    "marketingName": "CMF Phone 2 Pro",
+    "codename": "galaga",
+    "soc": "MT6878"
+  },
+  "buildCompatibility": [
+    {
+      "id": "observed-galaga-builds",
+      "policy": "Use public ID 0 and committed portable contracts. Enable vendor or auxiliary features only when an exact-build probe is verified.",
+      "confidence": "PARTIALLY_VERIFIED",
+      "unknownIssues": [54]
+    },
+    {
+      "id": "future-or-untested-builds",
+      "policy": "Start fail-closed, rerun capability and route diagnostics, and keep all vendor and auxiliary features disabled until revalidated.",
+      "confidence": "UNKNOWN",
+      "unknownIssues": [54, 94]
+    }
+  ],
+  "modules": [
+    {
+      "id": "backend-and-routing",
+      "status": "VERIFIED_CONTRACT",
+      "productionUse": "ENABLED_WITH_FALLBACK",
+      "entryPoints": [
+        "camera-app/app/src/main/java/com/phone2pro/camera/core/RouteBackend.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/core/CameraBackendContract.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/core/OpticalRoute.java"
+      ],
+      "documentation": [
+        "docs/architecture/CAMERA_BACKEND_CONTRACTS.md",
+        "docs/CAMERA_ROUTING_SPEC.md"
+      ],
+      "fallback": "Unresolved auxiliary routes return an unavailable result or transparently use public main-camera/digital framing; they never claim optical access.",
+      "buildScope": "observed-galaga-builds",
+      "unknownIssues": [32, 44, 71, 72]
+    },
+    {
+      "id": "capture-session-engine",
+      "status": "VERIFIED_CONTRACT",
+      "productionUse": "ENABLED_WITH_FALLBACK",
+      "entryPoints": [
+        "camera-app/app/src/main/java/com/phone2pro/camera/capture/CaptureSessionPlan.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/capture/CaptureRequestPlanner.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/capture/SessionRecoveryPolicy.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/capture/TimestampCorrelator.java"
+      ],
+      "documentation": [
+        "docs/architecture/CAPTURE_SESSION_REQUEST_ENGINE.md"
+      ],
+      "fallback": "Retry only bounded transient failures, then recreate the session or reopen public ID 0; permanent failures stop without looping.",
+      "buildScope": "observed-galaga-builds",
+      "unknownIssues": [18, 21]
+    },
+    {
+      "id": "capture-modes",
+      "status": "PARTIALLY_VERIFIED",
+      "productionUse": "ENABLED_WITH_FALLBACK",
+      "entryPoints": [
+        "camera-app/app/src/main/java/com/phone2pro/camera/core/CaptureProfile.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/core/CaptureModePolicy.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/core/ResourceBudgetPolicy.java"
+      ],
+      "documentation": [
+        "docs/architecture/RESOURCE_BUDGETS.md"
+      ],
+      "fallback": "Degrade Max Detail to Auto to Quick, then block capture only when the Quick budget cannot fit safely.",
+      "buildScope": "observed-galaga-builds",
+      "unknownIssues": [22, 101]
+    },
+    {
+      "id": "burst-alignment",
+      "status": "VERIFIED_CONTRACT",
+      "productionUse": "DISABLED",
+      "entryPoints": [
+        "camera-app/app/src/main/java/com/phone2pro/camera/imaging/FrameMetadata.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/imaging/TimestampDomain.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/imaging/AlignmentEngine.java"
+      ],
+      "documentation": [
+        "docs/architecture/BURST_ALIGNMENT_CONTRACTS.md"
+      ],
+      "fallback": "Use the selected reference frame when motion calibration, alignment confidence, or local validity is insufficient.",
+      "buildScope": "observed-galaga-builds",
+      "unknownIssues": [22, 25, 81, 101]
+    },
+    {
+      "id": "rendering-pipeline",
+      "status": "VERIFIED_CONTRACT",
+      "productionUse": "DISABLED",
+      "entryPoints": [
+        "camera-app/app/src/main/java/com/phone2pro/camera/imaging/RenderPipelinePlan.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/imaging/ConservativeFallbackPolicy.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/imaging/ImageEncoder.java"
+      ],
+      "documentation": [
+        "docs/architecture/IMAGE_RENDERING_PIPELINE.md"
+      ],
+      "fallback": "Collapse to the reference frame, mask unreliable regions, or disable risky detail stages when artefacts are detected.",
+      "buildScope": "observed-galaga-builds",
+      "unknownIssues": [81, 101]
+    },
+    {
+      "id": "ui-state",
+      "status": "VERIFIED_CONTRACT",
+      "productionUse": "ENABLED",
+      "entryPoints": [
+        "camera-app/app/src/main/java/com/phone2pro/camera/ui/CameraScreenModel.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/ui/CameraUiReducer.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/ui/RoutePresentation.java"
+      ],
+      "documentation": [
+        "docs/architecture/UI_STATE_ARCHITECTURE.md"
+      ],
+      "fallback": "Present unavailable or digital status explicitly and keep the shutter responsive after durable save while background processing continues.",
+      "buildScope": "observed-galaga-builds",
+      "unknownIssues": []
+    },
+    {
+      "id": "storage-gallery",
+      "status": "PARTIALLY_VERIFIED",
+      "productionUse": "ENABLED_WITH_FALLBACK",
+      "entryPoints": [
+        "camera-app/app/src/main/java/com/phone2pro/camera/storage/AssetLifecyclePolicy.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/storage/AssetRecoveryPolicy.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/storage/MetadataPrivacyPolicy.java"
+      ],
+      "documentation": [
+        "docs/architecture/STORAGE_GALLERY_CONTRACTS.md"
+      ],
+      "fallback": "Keep incomplete rows hidden, resume only from durable bytes, otherwise delete the pending row and preserve no corrupt visible asset.",
+      "buildScope": "observed-galaga-builds",
+      "unknownIssues": [101]
+    },
+    {
+      "id": "vendor-adapter",
+      "status": "EXPERIMENTAL_ADAPTER",
+      "productionUse": "DISABLED",
+      "entryPoints": [
+        "camera-app/app/src/main/java/com/phone2pro/camera/vendor/VendorExtensionPlanner.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/vendor/VendorFeaturePolicy.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/vendor/VendorFallbackPolicy.java"
+      ],
+      "documentation": [
+        "docs/architecture/VENDOR_EXTENSION_ADAPTER.md"
+      ],
+      "fallback": "Any build mismatch, unknown probe, rejection, timeout, ineffectiveness, or result mismatch selects the known public Camera2 configuration.",
+      "buildScope": "observed-galaga-builds",
+      "unknownIssues": [55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66]
+    },
+    {
+      "id": "privacy-security",
+      "status": "VERIFIED_CONTRACT",
+      "productionUse": "ENABLED",
+      "entryPoints": [
+        "camera-app/app/src/main/java/com/phone2pro/camera/privacy/DataHandlingPolicy.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/privacy/DiagnosticRedactionPolicy.java",
+        "tools/validate-camera-privacy.py"
+      ],
+      "documentation": [
+        "docs/architecture/PRIVACY_SECURITY.md"
+      ],
+      "fallback": "Deny export, location, network, backup, or sensitive metadata whenever explicit consent or policy evidence is absent.",
+      "buildScope": "observed-galaga-builds",
+      "unknownIssues": []
+    },
+    {
+      "id": "diagnostics",
+      "status": "VERIFIED_CONTRACT",
+      "productionUse": "ENABLED",
+      "entryPoints": [
+        "camera-app/app/src/main/java/com/phone2pro/camera/diagnostics/CaptureDiagnosticReport.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/diagnostics/BugBundle.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/diagnostics/FirmwareValidationPlan.java"
+      ],
+      "documentation": [
+        "docs/architecture/DIAGNOSTICS_CAPABILITY_REPORTING.md"
+      ],
+      "fallback": "Use the no-op hook and pixel-free local reports when diagnostic consent or a safe validation module is unavailable.",
+      "buildScope": "observed-galaga-builds",
+      "unknownIssues": []
+    }
+  ],
+  "examples": [
+    {
+      "id": "public-main-session",
+      "classification": "VERIFIED_INTERFACE",
+      "guideAnchor": "verified-main-camera-session",
+      "usesModules": ["backend-and-routing", "capture-session-engine"],
+      "buildScope": "observed-galaga-builds",
+      "fallback": "Return a typed failure or recreate the public ID 0 session according to SessionRecoveryPolicy.",
+      "unknownIssues": []
+    },
+    {
+      "id": "private-metadata-write-plan",
+      "classification": "VERIFIED_INTERFACE",
+      "guideAnchor": "verified-private-metadata-plan",
+      "usesModules": ["storage-gallery", "privacy-security"],
+      "buildScope": "observed-galaga-builds",
+      "fallback": "Omit optional metadata fields rather than infer consent.",
+      "unknownIssues": []
+    },
+    {
+      "id": "vendor-feature-probe",
+      "classification": "EXPERIMENTAL_ADAPTER",
+      "guideAnchor": "experimental-vendor-adapter",
+      "usesModules": ["vendor-adapter", "diagnostics", "backend-and-routing"],
+      "buildScope": "observed-galaga-builds",
+      "fallback": "Use the public ID 0 Camera2 plan for every non-verified outcome.",
+      "unknownIssues": [55, 56, 57]
+    },
+    {
+      "id": "auxiliary-optical-route",
+      "classification": "EXPERIMENTAL_ADAPTER",
+      "guideAnchor": "experimental-auxiliary-route",
+      "usesModules": ["backend-and-routing", "vendor-adapter", "diagnostics"],
+      "buildScope": "observed-galaga-builds",
+      "fallback": "Report the auxiliary route unavailable or offer a transparently labelled stock handoff/digital main-camera option.",
+      "unknownIssues": [32, 44, 64, 65, 71, 72]
+    }
+  ]
+}
