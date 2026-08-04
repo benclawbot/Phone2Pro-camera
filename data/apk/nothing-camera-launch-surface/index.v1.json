@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "issue": 33,
+  "referenceVersion": "2026.08.04-1",
+  "status": "COMPLETE_STATIC_LAUNCH_AND_STATE_MAP",
+  "apk": {
+    "fileName": "Camera-16.1.01.93.20.apk",
+    "versionName": "16.1.01.93.20",
+    "sha256": "f78368e303033d49c5564b1287f51ef2bf5dde53db4687a08bfb20aa64a8eeea",
+    "manifestSha256": "dd1666377a40051c3f1f5dd60f27646b2043a12efd691ec40447fa6973840eaf"
+  },
+  "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+  "summary": {
+    "launchComponentCount": 14,
+    "exportedLaunchComponentCount": 12,
+    "manifestActionCount": 14,
+    "staticShortcutCount": 3,
+    "literalParameterCallSiteCount": 126,
+    "uniqueLiteralParameterCount": 58,
+    "normalizedParameterCount": 58,
+    "widgetParameterCount": 37,
+    "observedExternalFallbackCaseCount": 3,
+    "parseErrorCount": 0
+  },
+  "parts": {
+    "routes": "routes.v1.json",
+    "parameters": "parameters.v1.tsv"
+  },
+  "sourceLinks": [
+    "data/apk/nothing-camera-manifest/activities.v1.json",
+    "data/stock-camera/behaviour-reference.v1.json",
+    "data/apk/nothing-camera-galaga-config/routes.v1.json"
+  ],
+  "evidenceBoundary": "Complete exact-APK static route, parser, parameter, widget/preset store and restoration map; runtime camera authorization and endpoint execution remain separately classified."
+}
