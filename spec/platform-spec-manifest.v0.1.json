@@ -1,0 +1,332 @@
+{
+  "schemaVersion": 1,
+  "specVersion": "0.1.0",
+  "publishedAt": "2026-08-04",
+  "status": "LIVING_SPECIFICATION",
+  "device": {
+    "marketingName": "CMF Phone 2 Pro",
+    "model": "A001",
+    "codename": "galaga",
+    "soc": "MT6878"
+  },
+  "buildScopes": [
+    {
+      "id": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "fingerprint": "Nothing/GalagaEEA/Galaga:16/BP2A.250605.031.A3/2606151653:user/release-keys",
+      "status": "OBSERVED",
+      "evidence": ["data/artifacts/diagnostic-manifest.yaml"]
+    },
+    {
+      "id": "future-or-untested-galaga-builds",
+      "fingerprint": "UNKNOWN",
+      "status": "UNTESTED",
+      "evidence": ["issue:#54"]
+    }
+  ],
+  "requiredSections": [
+    "hardware",
+    "public-api",
+    "stock-apk",
+    "firmware",
+    "vendor-api",
+    "routing",
+    "security",
+    "processing",
+    "replacement-app"
+  ],
+  "claims": [
+    {
+      "id": "C-HW-001",
+      "section": "hardware",
+      "statement": "The observed rear main route has 5.56 mm physical focal length, 24 mm equivalent focal length, and a verified 4080x3072 output record.",
+      "confidence": "VERIFIED",
+      "implementationUse": "ENABLED",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["spec/camera-capability-matrix.v1.json", "issue:#84"],
+      "unknownIssues": [25]
+    },
+    {
+      "id": "C-HW-002",
+      "section": "hardware",
+      "statement": "The stock camera produced an ultrawide 0.6x route with 1.64 mm physical focal length, 15 mm equivalent focal length, and 3264x2448 output, but the ordinary-app endpoint and active-sensor mechanism are unresolved.",
+      "confidence": "PARTIALLY_VERIFIED",
+      "implementationUse": "DISABLED",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["spec/camera-capability-matrix.v1.json", "spec/camera-routing-spec.v1.json"],
+      "unknownIssues": [32, 39, 44, 64, 65, 71, 72]
+    },
+    {
+      "id": "C-HW-003",
+      "section": "hardware",
+      "statement": "The stock camera produced a telephoto 2x route with 7.1 mm physical focal length, 50 mm equivalent focal length, and 4096x3072 output, but the ordinary-app endpoint and active-sensor mechanism are unresolved.",
+      "confidence": "PARTIALLY_VERIFIED",
+      "implementationUse": "DISABLED",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["spec/camera-capability-matrix.v1.json", "spec/camera-routing-spec.v1.json"],
+      "unknownIssues": [32, 39, 44, 64, 65, 71, 72]
+    },
+    {
+      "id": "C-API-001",
+      "section": "public-api",
+      "statement": "Ordinary-app Camera2 enumeration exposes rear ID 0 and front ID 1 on the observed build.",
+      "confidence": "VERIFIED",
+      "implementationUse": "ENABLED",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["spec/camera-capability-matrix.v1.json", "issue:#17"],
+      "unknownIssues": []
+    },
+    {
+      "id": "C-API-002",
+      "section": "public-api",
+      "statement": "Candidate IDs 2 through 5 are not openable by the ordinary diagnostic application and remain system, privileged, vendor, or otherwise filtered candidates.",
+      "confidence": "PARTIALLY_VERIFIED",
+      "implementationUse": "DISABLED",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["spec/camera-capability-matrix.v1.json", "issue:#17"],
+      "unknownIssues": [32, 40, 46, 47, 51, 69, 71, 72]
+    },
+    {
+      "id": "C-API-003",
+      "section": "public-api",
+      "statement": "The full high-resolution, reprocessing, video, constrained-high-speed, and mandatory stream-combination matrix is not yet verified.",
+      "confidence": "UNKNOWN",
+      "implementationUse": "DIAGNOSTIC_ONLY",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["spec/camera-capability-matrix.v1.json", "issue:#18"],
+      "unknownIssues": [18, 21, 24]
+    },
+    {
+      "id": "C-APK-001",
+      "section": "stock-apk",
+      "statement": "The stock Expert interface produced distinct observed 0.6x, 1x, and 2x output records, while their internal controller-to-camera route remains bounded at an opaque stock or system transition.",
+      "confidence": "PARTIALLY_VERIFIED",
+      "implementationUse": "DIAGNOSTIC_ONLY",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["data/artifacts/diagnostic-manifest.yaml", "spec/camera-routing-spec.v1.json"],
+      "unknownIssues": [30, 32, 39, 42, 43]
+    },
+    {
+      "id": "C-APK-002",
+      "section": "stock-apk",
+      "statement": "External widget focal launches are stock-camera handoffs and the committed audit remained on the 5.56 mm or 24 mm-equivalent route; this does not prove direct auxiliary access.",
+      "confidence": "VERIFIED",
+      "implementationUse": "DIAGNOSTIC_ONLY",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["data/artifacts/diagnostic-manifest.yaml", "spec/camera-routing-spec.v1.json"],
+      "unknownIssues": [33]
+    },
+    {
+      "id": "C-APK-003",
+      "section": "stock-apk",
+      "statement": "Complete stock camera package, split, signature, install-path, runtime package, and decompilation provenance is not yet present in the repository.",
+      "confidence": "UNKNOWN",
+      "implementationUse": "DOCUMENTATION_ONLY",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["data/artifacts/diagnostic-manifest.yaml"],
+      "unknownIssues": [26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]
+    },
+    {
+      "id": "C-FW-001",
+      "section": "firmware",
+      "statement": "The canonical observed build fingerprint is Nothing/GalagaEEA/Galaga Android 16 build 2606151653 with release keys.",
+      "confidence": "VERIFIED",
+      "implementationUse": "DOCUMENTATION_ONLY",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["data/artifacts/diagnostic-manifest.yaml"],
+      "unknownIssues": []
+    },
+    {
+      "id": "C-FW-002",
+      "section": "firmware",
+      "statement": "Build-matched framework camera artifacts, vendor camera libraries, and firmware partitions are missing, so provider, HAL, native, configuration, permission, and SELinux interfaces remain incomplete.",
+      "confidence": "UNKNOWN",
+      "implementationUse": "DOCUMENTATION_ONLY",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["data/artifacts/diagnostic-manifest.yaml"],
+      "unknownIssues": [45, 46, 47, 48, 49, 50, 51, 53, 54, 69, 77, 98]
+    },
+    {
+      "id": "C-VND-001",
+      "section": "vendor-api",
+      "statement": "The diagnostics application enumerates vendor characteristic, request, result, session, physical-request, and default-template entries while leaving unavailable Java types unknown.",
+      "confidence": "VERIFIED",
+      "implementationUse": "DIAGNOSTIC_ONLY",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["diagnostics/app/src/main/java/com/phone2pro/diagnostics/VendorTagDiagnostics.java", "data/artifacts/diagnostic-manifest.yaml"],
+      "unknownIssues": [55]
+    },
+    {
+      "id": "C-VND-002",
+      "section": "vendor-api",
+      "statement": "No MediaTek or Nothing vendor key is production-enabled; exact-build allowlisting and a verified effective probe are mandatory before use.",
+      "confidence": "VERIFIED",
+      "implementationUse": "ENABLED",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["docs/architecture/VENDOR_EXTENSION_ADAPTER.md", "docs/REPLACEMENT_CAMERA_SDK.md"],
+      "unknownIssues": [55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66]
+    },
+    {
+      "id": "C-RT-001",
+      "section": "routing",
+      "statement": "The verified ordinary-app rear route is public camera ID 0 mapped to the main optical route.",
+      "confidence": "VERIFIED",
+      "implementationUse": "ENABLED",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["spec/camera-routing-spec.v1.json", "docs/architecture/CAMERA_BACKEND_CONTRACTS.md"],
+      "unknownIssues": []
+    },
+    {
+      "id": "C-RT-002",
+      "section": "routing",
+      "statement": "Stock ultrawide and telephoto routes are bounded at unresolved stock, system, vendor, logical, or sensor-scenario transitions and are unavailable to production replacement routing.",
+      "confidence": "PARTIALLY_VERIFIED",
+      "implementationUse": "DISABLED",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["spec/camera-routing-spec.v1.json"],
+      "unknownIssues": [32, 39, 40, 44, 64, 65, 71, 72]
+    },
+    {
+      "id": "C-RT-003",
+      "section": "routing",
+      "statement": "Public zoom or crop on ID 0 must be labelled digital unless active-sensor evidence independently proves an optical or in-sensor transition.",
+      "confidence": "VERIFIED",
+      "implementationUse": "ENABLED_WITH_FALLBACK",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["spec/camera-routing-spec.v1.json", "docs/architecture/UI_STATE_ARCHITECTURE.md"],
+      "unknownIssues": [20]
+    },
+    {
+      "id": "C-SEC-001",
+      "section": "security",
+      "statement": "The replacement application requests camera permission only, disables backup and cleartext traffic, and rejects network permissions, imports, and common HTTP dependencies through repository validation.",
+      "confidence": "VERIFIED",
+      "implementationUse": "ENABLED",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["docs/architecture/PRIVACY_SECURITY.md", "tools/validate-camera-privacy.py", "camera-app/app/src/main/AndroidManifest.xml"],
+      "unknownIssues": []
+    },
+    {
+      "id": "C-SEC-002",
+      "section": "security",
+      "statement": "Diagnostic exports are opt-in and exclude image pixels, thumbnails, paths, content URIs, location, serials, user text, and arbitrary metadata values by default.",
+      "confidence": "VERIFIED",
+      "implementationUse": "ENABLED",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["docs/architecture/PRIVACY_SECURITY.md", "docs/architecture/DIAGNOSTICS_CAPABILITY_REPORTING.md"],
+      "unknownIssues": []
+    },
+    {
+      "id": "C-PROC-001",
+      "section": "processing",
+      "statement": "Portable contracts exist for burst metadata, clock calibration, scoring, reference selection, local alignment, rendering stage order, color transitions, artefact detection, and conservative fallback.",
+      "confidence": "VERIFIED",
+      "implementationUse": "DISABLED",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["docs/architecture/BURST_ALIGNMENT_CONTRACTS.md", "docs/architecture/IMAGE_RENDERING_PIPELINE.md"],
+      "unknownIssues": [81, 101]
+    },
+    {
+      "id": "C-PROC-002",
+      "section": "processing",
+      "statement": "Algorithm selection, image quality, motion behavior, resource targets, and stock-versus-replacement performance are not yet verified on the physical device.",
+      "confidence": "UNKNOWN",
+      "implementationUse": "DISABLED",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["docs/architecture/RESOURCE_BUDGETS.md", "issue:#101"],
+      "unknownIssues": [22, 81, 101]
+    },
+    {
+      "id": "C-APP-001",
+      "section": "replacement-app",
+      "statement": "The repository contains validated portable contracts for backend lifecycle, route truthfulness, session/request planning, modes, UI state, storage, vendor isolation, privacy, diagnostics, and resource policy.",
+      "confidence": "VERIFIED",
+      "implementationUse": "ENABLED_WITH_FALLBACK",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["docs/REPLACEMENT_CAMERA_SDK.md", "spec/replacement-camera-sdk-guide.v1.json"],
+      "unknownIssues": []
+    },
+    {
+      "id": "C-APP-002",
+      "section": "replacement-app",
+      "statement": "The current application can use the verified public main route, while auxiliary routing, full processing integration, measured budgets, and complete transactional recovery remain bounded by their active issues.",
+      "confidence": "PARTIALLY_VERIFIED",
+      "implementationUse": "ENABLED_WITH_FALLBACK",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "evidence": ["spec/camera-capability-matrix.v1.json", "docs/REPLACEMENT_CAMERA_SDK.md"],
+      "unknownIssues": [18, 22, 32, 44, 57, 81, 101]
+    }
+  ],
+  "decisions": [
+    {
+      "id": "D-001",
+      "decision": "Use public rear ID 0 as the production baseline camera endpoint.",
+      "status": "ADOPTED",
+      "rationaleClaims": ["C-API-001", "C-RT-001"],
+      "revisitIssues": [54]
+    },
+    {
+      "id": "D-002",
+      "decision": "Do not represent main-camera digital crop as ultrawide or telephoto optical output.",
+      "status": "ADOPTED",
+      "rationaleClaims": ["C-HW-002", "C-HW-003", "C-RT-003"],
+      "revisitIssues": [20, 32, 44]
+    },
+    {
+      "id": "D-003",
+      "decision": "Keep every vendor feature disabled until an exact-build probe verifies effective behavior and a public fallback exists.",
+      "status": "ADOPTED",
+      "rationaleClaims": ["C-VND-001", "C-VND-002"],
+      "revisitIssues": [55, 56, 57]
+    },
+    {
+      "id": "D-004",
+      "decision": "Keep all image processing on-device and deny network capability in the production application.",
+      "status": "ADOPTED",
+      "rationaleClaims": ["C-SEC-001", "C-SEC-002"],
+      "revisitIssues": []
+    },
+    {
+      "id": "D-005",
+      "decision": "Use private-by-default metadata and omit optional sensitive fields when consent is absent.",
+      "status": "ADOPTED",
+      "rationaleClaims": ["C-SEC-002", "C-APP-001"],
+      "revisitIssues": []
+    },
+    {
+      "id": "D-006",
+      "decision": "Use bounded request retry, session recreation, and camera reopen policies; never loop permanent failures.",
+      "status": "ADOPTED",
+      "rationaleClaims": ["C-APP-001"],
+      "revisitIssues": [101]
+    },
+    {
+      "id": "D-007",
+      "decision": "Prefer the selected reference frame or reduced processing over forced multi-frame artefacts.",
+      "status": "ADOPTED",
+      "rationaleClaims": ["C-PROC-001", "C-PROC-002"],
+      "revisitIssues": [81, 101]
+    },
+    {
+      "id": "D-008",
+      "decision": "Treat every untested firmware build as incompatible with existing vendor and auxiliary allowlists until diagnostics are rerun.",
+      "status": "ADOPTED",
+      "rationaleClaims": ["C-FW-001", "C-FW-002", "C-VND-002"],
+      "revisitIssues": [54, 94]
+    },
+    {
+      "id": "D-009",
+      "decision": "Reference private diagnostics and user images by metadata and hashes without redistributing raw artifacts.",
+      "status": "ADOPTED",
+      "rationaleClaims": ["C-APK-001", "C-VND-001"],
+      "revisitIssues": [77]
+    }
+  ],
+  "updateTriggers": [
+    "A new Nothing OS build fingerprint is tested.",
+    "The stock camera package version, splits, signature, or install path changes.",
+    "A vendor or auxiliary route changes from unknown to verified or from verified to rejected.",
+    "New provider, HAL, framework, policy, or native artifacts are acquired.",
+    "Device benchmarks replace hypothetical processing or resource targets.",
+    "A material claim changes confidence, evidence, build scope, or implementation use."
+  ]
+}
