@@ -39,11 +39,24 @@
     "MEDIUM_IMAGE_PROCESSING": 242
   },
   "parts": {
-    "nativeMethods": ["native-methods-01.tsv","native-methods-02.tsv","native-methods-03.tsv","native-methods-04.tsv","native-methods-05.tsv","native-methods-06.tsv","native-methods-07.tsv","native-methods-08.tsv"],
-    "libraries": "libraries.tsv",
-    "loadSites": "load-sites.tsv",
-    "handles": "handles.tsv",
-    "callbacks": "callbacks.tsv"
+    "fullInventoryChunks": [
+      "inventory-01.b64part",
+      "inventory-02.b64part",
+      "inventory-03.b64part",
+      "inventory-04.b64part",
+      "inventory-05.b64part",
+      "inventory-06.b64part",
+      "inventory-07.b64part",
+      "inventory-08.b64part",
+      "inventory-09.b64part"
+    ],
+    "supplemental": [
+      "callbacks.tsv",
+      "handles.tsv",
+      "load-sites.tsv",
+      "libraries-01.tsv",
+      "libraries-02.tsv"
+    ]
   },
   "firmwareIssueLinks": {"libraryInventoryIssue":48,"symbolRecoveryIssue":49,"nativeHookIssue":41},
   "evidenceRules": [
@@ -54,22 +67,28 @@
     "APK libraries are app-bundled processing dependencies; firmware HAL/ISP libraries remain outside this APK-only issue and are linked to issues #48 and #49."
   ],
   "parseErrors": [],
-  "format": {
-    "type": "TAB_SEPARATED_RECORDS",
-    "escaping": "RFC4180 quoting with tab delimiter",
-    "parts": [
-      {"path":"callbacks.tsv","sha256":"335e9e6ef23a767dfc6ab67026a79d1ae0f5ec52608a68d8eead39034a96a525","rows":8,"sizeBytes":1353},
-      {"path":"handles.tsv","sha256":"b068f173477ddc65f34e7e984c372dd9ba9ccbfb7b520b99d82bfc7d87f0f886","rows":52,"sizeBytes":5773},
-      {"path":"libraries.tsv","sha256":"45852085069824dc557dcb9dbc578c6e14adc01152fa8df8ded85b82a07eb549","rows":77,"sizeBytes":25289},
-      {"path":"load-sites.tsv","sha256":"66d2126388a2c69c012a03a8183bbebc4e2614f8d20540f607b0f0c48a94c4e6","rows":69,"sizeBytes":15648},
-      {"path":"native-methods-01.tsv","sha256":"3c67784689483ea64ede1816b1640eaf8480793f7709a0bbfbd0b166d81e13a4","rows":100,"sizeBytes":25715},
-      {"path":"native-methods-02.tsv","sha256":"c947d8595ed795bc78bdade0559856909e402088bee0954f54f099d77d16f392","rows":100,"sizeBytes":31075},
-      {"path":"native-methods-03.tsv","sha256":"ae0565e3f04ad2f59f2cf367765260fd114fe7d2d35d1585c63db3290f098d82","rows":100,"sizeBytes":29610},
-      {"path":"native-methods-04.tsv","sha256":"f7971c0a87e4c0c4f3cc08df21c411b7af805e23d5e2aec3ec6b9793ed9e3d79","rows":100,"sizeBytes":28860},
-      {"path":"native-methods-05.tsv","sha256":"1b48b7effb402135f6ce1b1323a3dc5e87c4511a62852f44ddadf6b35839e9ae","rows":100,"sizeBytes":24872},
-      {"path":"native-methods-06.tsv","sha256":"f09e6572f19c3f5cbac96430aacc7a83e5acfd8de8b8cbb6f6a47d25840a43c2","rows":100,"sizeBytes":19663},
-      {"path":"native-methods-07.tsv","sha256":"93df2b969e20ce1d6310875ea8f72d3dc4bbdf462516d76f9347aaec6ebfc2c2","rows":100,"sizeBytes":13925},
-      {"path":"native-methods-08.tsv","sha256":"c82659ed40b99807dfea989465186748716148884355cc70c9b4908a2fdee13b","rows":94,"sizeBytes":18357}
+  "encoding": {
+    "format": "base64(zlib(utf8-json)) split into ordered chunks",
+    "concatenatedCharacters": 68268,
+    "decodedSha256": "27fcf5bb0eb6fb7b37ec6efe9736d0b264d0adda4ac9849d5597ea4f49ade014",
+    "decodedSizeBytes": 743658,
+    "chunks": [
+      {"path":"inventory-01.b64part","sha256":"3a2f790c24c050c4cca5b96e9482b50d30bbd3cad3f203ae44aa6bd6d642ae86","sizeBytes":8001,"characters":8000},
+      {"path":"inventory-02.b64part","sha256":"188ee1a4e869b622064a332b05fb3b85b7376597646152e78857c7ae00d23220","sizeBytes":8001,"characters":8000},
+      {"path":"inventory-03.b64part","sha256":"93df95bb32b5277eaa5a51bd2194a9be38433a6dfc4e2d279f906e354507556a","sizeBytes":8001,"characters":8000},
+      {"path":"inventory-04.b64part","sha256":"6afcdc59300db732684b6e3ec8d20ad92321b205090f3893d0c5606bb3041fa1","sizeBytes":8001,"characters":8000},
+      {"path":"inventory-05.b64part","sha256":"d133725e9f61de08392f34586a7a17a33983998200ebf52c281a7697ab0c2d68","sizeBytes":8001,"characters":8000},
+      {"path":"inventory-06.b64part","sha256":"724bc9fdb80407e7da2f7eca2f785f056715bdd18af8e1fc24cd01227910e295","sizeBytes":8001,"characters":8000},
+      {"path":"inventory-07.b64part","sha256":"d61724f063d53b5f04968a92828c70fd9d140f4cdad56fc99e1a0ed4dd042b75","sizeBytes":8001,"characters":8000},
+      {"path":"inventory-08.b64part","sha256":"4ebeb977bc0547b87bb4f74d32e45724c9ba9ed12fa333df4b46dbed91912d4b","sizeBytes":8001,"characters":8000},
+      {"path":"inventory-09.b64part","sha256":"bc88a41189ecffd0a2d9c391c917fc413c040c5990ef9313d400a7fd504e3088","sizeBytes":4269,"characters":4268}
     ]
-  }
+  },
+  "supplementalIntegrity": [
+    {"path":"callbacks.tsv","sha256":"335e9e6ef23a767dfc6ab67026a79d1ae0f5ec52608a68d8eead39034a96a525","rows":8,"sizeBytes":1353},
+    {"path":"handles.tsv","sha256":"b068f173477ddc65f34e7e984c372dd9ba9ccbfb7b520b99d82bfc7d87f0f886","rows":52,"sizeBytes":5773},
+    {"path":"load-sites.tsv","sha256":"66d2126388a2c69c012a03a8183bbebc4e2614f8d20540f607b0f0c48a94c4e6","rows":69,"sizeBytes":15648},
+    {"path":"libraries-01.tsv","sha256":"8c351f79419b33b96d83a146a1c9421d2fd7ce8ec20c5eb4c2482424e4b20995","rows":39,"sizeBytes":12645},
+    {"path":"libraries-02.tsv","sha256":"ee26659446badaaa6a61c2cba8c63706c68d911eb25af19c92bd4674eb7e1c28","rows":38,"sizeBytes":12777}
+  ]
 }
