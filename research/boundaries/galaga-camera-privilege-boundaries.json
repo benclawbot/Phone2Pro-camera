@@ -1,0 +1,432 @@
+{
+  "schemaVersion": 1,
+  "device": {
+    "model": "CMF Phone 2 Pro",
+    "codename": "Galaga",
+    "androidVersion": "16",
+    "soc": "MediaTek MT6878"
+  },
+  "accessClasses": [
+    {
+      "id": "PUBLIC",
+      "label": "Public ordinary-app route",
+      "definition": "Callable by an ordinary application through supported Android APIs on the tested build."
+    },
+    {
+      "id": "HIDDEN_CALLABLE",
+      "label": "Hidden or vendor-callable candidate",
+      "definition": "A hidden or vendor interface may be callable without system-camera identity, but the exact route has not been reproduced."
+    },
+    {
+      "id": "PRIVILEGED",
+      "label": "Privileged/system application route",
+      "definition": "Requires caller eligibility beyond an ordinary application, such as SYSTEM_CAMERA plus associated package policy."
+    },
+    {
+      "id": "ROOT_ONLY",
+      "label": "Rooted or custom-ROM route",
+      "definition": "Requires policy, filesystem, service, or firmware changes outside the ordinary application sandbox."
+    },
+    {
+      "id": "FIRMWARE_INTERNAL",
+      "label": "Firmware-internal route",
+      "definition": "Implemented inside provider, HAL, ISP, tuning, or native firmware components with no verified application contract."
+    }
+  ],
+  "layers": [
+    {
+      "id": "APP",
+      "label": "Application route selection"
+    },
+    {
+      "id": "PACKAGE_POLICY",
+      "label": "Package identity, grants, roles, and allowlists"
+    },
+    {
+      "id": "FRAMEWORK",
+      "label": "Camera2 framework / CameraManager"
+    },
+    {
+      "id": "CAMERA_SERVICE_ENUMERATION",
+      "label": "CameraService enumeration and status visibility"
+    },
+    {
+      "id": "CAMERA_SERVICE_CHARACTERISTICS",
+      "label": "CameraService characteristics authorization"
+    },
+    {
+      "id": "CAMERA_SERVICE_CONNECT",
+      "label": "CameraService connection authorization"
+    },
+    {
+      "id": "SESSION_CONFIGURATION",
+      "label": "Session and request configuration"
+    },
+    {
+      "id": "PROVIDER_HAL",
+      "label": "Camera provider / HAL"
+    },
+    {
+      "id": "SELINUX",
+      "label": "SELinux and process-domain policy"
+    },
+    {
+      "id": "ISP",
+      "label": "ISP and tuning firmware"
+    }
+  ],
+  "evidence": {
+    "galaga-expert-route": {
+      "classification": "VERIFIED",
+      "path": "docs/research/GALAGA_EXPERT_DIRECT_ROUTE.md",
+      "supports": "Stock Galaga manual configuration maps 0.6x to ID 2, 1x to ID 0, and 2x through 10x to ID 3."
+    },
+    "authorization-comparison": {
+      "classification": "PARTIALLY_VERIFIED",
+      "path": "docs/research/CAMERA_AUTHORIZATION_COMPARISON.md",
+      "supports": "Defines package permission, AppOps, allowlist, UID, install partition, and SELinux comparison gates without assuming successful endpoint access."
+    },
+    "system-camera-filtering": {
+      "classification": "VERIFIED",
+      "path": "docs/research/SYSTEM_CAMERA_FILTERING_MODEL.md",
+      "supports": "IDs 2 through 5 are omitted from ordinary enumeration and rejected at characteristics as system-only; connect is not independently reached by the current probe."
+    },
+    "camera-error-taxonomy": {
+      "classification": "VERIFIED",
+      "path": "docs/research/CAMERA_ERROR_TAXONOMY.md",
+      "supports": "Separates characteristics, open preflight, connect, session, and request failures and preserves API-specific error namespaces."
+    },
+    "system-camera-contract": {
+      "classification": "PARTIALLY_VERIFIED",
+      "path": "docs/research/SYSTEM_CAMERA_BOUNDARY.md",
+      "supports": "Documents the AOSP system-camera contract and target-aligned rejection vocabulary."
+    },
+    "public-camera-baseline": {
+      "classification": "VERIFIED",
+      "path": "docs/research/SYSTEM_CAMERA_FILTERING_MODEL.md",
+      "supports": "Public IDs 0 and 1 are listed, readable, and openable by the ordinary diagnostic application."
+    }
+  },
+  "deploymentClasses": [
+    {
+      "id": "ordinary-app",
+      "label": "Ordinary public application",
+      "allowedAccessClasses": [
+        "PUBLIC"
+      ],
+      "conditionalAccessClasses": [
+        "HIDDEN_CALLABLE"
+      ],
+      "prohibitedClaims": [
+        "PRIVILEGED",
+        "ROOT_ONLY",
+        "FIRMWARE_INTERNAL"
+      ],
+      "consequence": "Ship only public routes and independently reproduced vendor routes; keep system-camera backends fail-closed."
+    },
+    {
+      "id": "oem-system",
+      "label": "Legitimate OEM/system deployment",
+      "allowedAccessClasses": [
+        "PUBLIC",
+        "PRIVILEGED"
+      ],
+      "conditionalAccessClasses": [
+        "HIDDEN_CALLABLE",
+        "FIRMWARE_INTERNAL"
+      ],
+      "prohibitedClaims": [
+        "ROOT_ONLY"
+      ],
+      "consequence": "Requires an authorized package identity, grants, allowlists, roles, AppOps, and matching SELinux/service policy."
+    },
+    {
+      "id": "root-custom-rom",
+      "label": "Rooted or custom-ROM integration",
+      "allowedAccessClasses": [
+        "PUBLIC",
+        "HIDDEN_CALLABLE",
+        "PRIVILEGED",
+        "ROOT_ONLY"
+      ],
+      "conditionalAccessClasses": [
+        "FIRMWARE_INTERNAL"
+      ],
+      "prohibitedClaims": [],
+      "consequence": "Implement as a separate backend with explicit installation, policy, compatibility, and recovery requirements."
+    },
+    {
+      "id": "stock-handoff",
+      "label": "Stock-camera handoff",
+      "allowedAccessClasses": [
+        "PUBLIC",
+        "PRIVILEGED"
+      ],
+      "conditionalAccessClasses": [],
+      "prohibitedClaims": [
+        "HIDDEN_CALLABLE",
+        "ROOT_ONLY",
+        "FIRMWARE_INTERNAL"
+      ],
+      "consequence": "Can invoke the official app but does not provide in-process frame access or constitute a complete replacement."
+    }
+  ],
+  "features": [
+    {
+      "id": "public-wide",
+      "label": "Public rear main capture",
+      "route": "Wide / Camera2 ID 0",
+      "accessClass": "PUBLIC",
+      "status": "AVAILABLE",
+      "firstBoundary": {
+        "layer": null,
+        "state": "NO_REJECTION_OBSERVED",
+        "classification": "VERIFIED",
+        "reason": "The ordinary diagnostic application enumerates, reads, and opens ID 0."
+      },
+      "evidence": [
+        "public-camera-baseline"
+      ],
+      "replacementConsequence": "Implement in the ordinary Camera2 backend and expose as a real optical wide route.",
+      "supportedDeployments": [
+        "ordinary-app",
+        "oem-system",
+        "root-custom-rom"
+      ]
+    },
+    {
+      "id": "public-digital-zoom",
+      "label": "Public digital zoom",
+      "route": "Wide / ID 0 plus crop",
+      "accessClass": "PUBLIC",
+      "status": "AVAILABLE_WITH_LIMITATION",
+      "firstBoundary": {
+        "layer": null,
+        "state": "NO_REJECTION_OBSERVED",
+        "classification": "VERIFIED",
+        "reason": "Public zoom remains on ID 0 and is a crop, not an auxiliary optical route."
+      },
+      "evidence": [
+        "public-camera-baseline",
+        "galaga-expert-route"
+      ],
+      "replacementConsequence": "Label the result as digital zoom and never substitute it while reporting an optical ultrawide or telephoto route.",
+      "supportedDeployments": [
+        "ordinary-app",
+        "oem-system",
+        "root-custom-rom"
+      ]
+    },
+    {
+      "id": "direct-ultrawide",
+      "label": "Direct ultrawide endpoint",
+      "route": "UltraWide / Camera2 ID 2",
+      "accessClass": "PRIVILEGED",
+      "status": "STATIC_ROUTE_VERIFIED_ACCESS_BLOCKED",
+      "firstBoundary": {
+        "layer": "CAMERA_SERVICE_ENUMERATION",
+        "state": "FILTERED",
+        "classification": "VERIFIED",
+        "reason": "The endpoint is omitted from the ordinary caller camera list and status visibility."
+      },
+      "evidence": [
+        "galaga-expert-route",
+        "system-camera-filtering",
+        "camera-error-taxonomy",
+        "authorization-comparison"
+      ],
+      "replacementConsequence": "Keep the Galaga auxiliary backend fail-closed in ordinary builds; enable only after an independent lawful authorization probe succeeds.",
+      "supportedDeployments": [
+        "oem-system",
+        "root-custom-rom",
+        "stock-handoff"
+      ],
+      "hardRejection": {
+        "layer": "CAMERA_SERVICE_CHARACTERISTICS",
+        "state": "REJECTED",
+        "classification": "VERIFIED",
+        "reason": "The ordinary caller receives the exact system-only-device rejection before connection."
+      }
+    },
+    {
+      "id": "direct-telephoto",
+      "label": "Direct telephoto endpoint",
+      "route": "Telephoto / Camera2 ID 3",
+      "accessClass": "PRIVILEGED",
+      "status": "STATIC_ROUTE_VERIFIED_ACCESS_BLOCKED",
+      "firstBoundary": {
+        "layer": "CAMERA_SERVICE_ENUMERATION",
+        "state": "FILTERED",
+        "classification": "VERIFIED",
+        "reason": "The endpoint is omitted from the ordinary caller camera list and status visibility."
+      },
+      "evidence": [
+        "galaga-expert-route",
+        "system-camera-filtering",
+        "camera-error-taxonomy",
+        "authorization-comparison"
+      ],
+      "replacementConsequence": "Keep the Galaga auxiliary backend fail-closed in ordinary builds; enable only after an independent lawful authorization probe succeeds.",
+      "supportedDeployments": [
+        "oem-system",
+        "root-custom-rom",
+        "stock-handoff"
+      ],
+      "hardRejection": {
+        "layer": "CAMERA_SERVICE_CHARACTERISTICS",
+        "state": "REJECTED",
+        "classification": "VERIFIED",
+        "reason": "The ordinary caller receives the exact system-only-device rejection before connection."
+      }
+    },
+    {
+      "id": "system-sat-logical",
+      "label": "System SAT/logical endpoint",
+      "route": "Candidate logical Camera2 ID 4",
+      "accessClass": "PRIVILEGED",
+      "status": "ROLE_UNRESOLVED_ACCESS_BLOCKED",
+      "firstBoundary": {
+        "layer": "CAMERA_SERVICE_ENUMERATION",
+        "state": "FILTERED",
+        "classification": "VERIFIED",
+        "reason": "The endpoint is omitted from the ordinary caller camera list and status visibility."
+      },
+      "evidence": [
+        "system-camera-filtering",
+        "camera-error-taxonomy",
+        "system-camera-contract"
+      ],
+      "replacementConsequence": "Do not route ordinary captures through ID 4 or present it as available until its role and authorization are independently reproduced.",
+      "supportedDeployments": [
+        "oem-system",
+        "root-custom-rom",
+        "stock-handoff"
+      ],
+      "hardRejection": {
+        "layer": "CAMERA_SERVICE_CHARACTERISTICS",
+        "state": "REJECTED",
+        "classification": "VERIFIED",
+        "reason": "ID 4 is recognized as system-only for the ordinary caller; its precise stock-mode role remains unresolved."
+      }
+    },
+    {
+      "id": "system-portrait-logical",
+      "label": "System portrait/composite endpoint",
+      "route": "Candidate logical Camera2 ID 5",
+      "accessClass": "PRIVILEGED",
+      "status": "ROLE_UNRESOLVED_ACCESS_BLOCKED",
+      "firstBoundary": {
+        "layer": "CAMERA_SERVICE_ENUMERATION",
+        "state": "FILTERED",
+        "classification": "VERIFIED",
+        "reason": "The endpoint is omitted from the ordinary caller camera list and status visibility."
+      },
+      "evidence": [
+        "system-camera-filtering",
+        "camera-error-taxonomy",
+        "system-camera-contract"
+      ],
+      "replacementConsequence": "Treat portrait/composite access as unavailable in the ordinary backend until both role and authorization are reproduced.",
+      "supportedDeployments": [
+        "oem-system",
+        "root-custom-rom",
+        "stock-handoff"
+      ],
+      "hardRejection": {
+        "layer": "CAMERA_SERVICE_CHARACTERISTICS",
+        "state": "REJECTED",
+        "classification": "VERIFIED",
+        "reason": "ID 5 is recognized as system-only for the ordinary caller; its precise composition role remains unresolved."
+      }
+    },
+    {
+      "id": "public-id-vendor-routing",
+      "label": "Public-ID vendor/session routing candidate",
+      "route": "ID 0 plus MediaTek/Nothing session or request state",
+      "accessClass": "HIDDEN_CALLABLE",
+      "status": "UNRESOLVED_CANDIDATE",
+      "firstBoundary": {
+        "layer": "SESSION_CONFIGURATION",
+        "state": "UNRESOLVED",
+        "classification": "UNKNOWN",
+        "reason": "Vendor session, request, and physical-output mechanisms exist, but no exact ordinary-callable route has been reproduced."
+      },
+      "evidence": [
+        "galaga-expert-route",
+        "camera-error-taxonomy"
+      ],
+      "replacementConsequence": "Research only exact typed keys and values; add an ordinary backend solely after controlled positive and negative reproduction.",
+      "supportedDeployments": [
+        "ordinary-app",
+        "oem-system",
+        "root-custom-rom"
+      ]
+    },
+    {
+      "id": "provider-hal-sensor-routing",
+      "label": "Provider/HAL sensor routing",
+      "route": "Vendor provider or HAL internal selection",
+      "accessClass": "FIRMWARE_INTERNAL",
+      "status": "UNRESOLVED_INTERNAL",
+      "firstBoundary": {
+        "layer": "PROVIDER_HAL",
+        "state": "UNRESOLVED",
+        "classification": "UNKNOWN",
+        "reason": "Static application evidence does not identify a verified application contract for provider/HAL sensor selection."
+      },
+      "evidence": [
+        "galaga-expert-route",
+        "system-camera-contract"
+      ],
+      "replacementConsequence": "Keep provider/HAL assumptions out of the ordinary backend and expose only measured capabilities through device-specific adapters.",
+      "supportedDeployments": [
+        "oem-system",
+        "root-custom-rom"
+      ]
+    },
+    {
+      "id": "isp-tuning-controls",
+      "label": "ISP tuning and proprietary imaging controls",
+      "route": "ISP, tuning blobs, native libraries, or firmware services",
+      "accessClass": "FIRMWARE_INTERNAL",
+      "status": "UNRESOLVED_INTERNAL",
+      "firstBoundary": {
+        "layer": "ISP",
+        "state": "UNRESOLVED",
+        "classification": "UNKNOWN",
+        "reason": "No stable application-level contract or causal route-specific tuning interface has been verified."
+      },
+      "evidence": [
+        "camera-error-taxonomy",
+        "system-camera-contract"
+      ],
+      "replacementConsequence": "Build independent on-device imaging stages and treat proprietary tuning access as unavailable until a lawful, reproducible interface is documented.",
+      "supportedDeployments": [
+        "oem-system",
+        "root-custom-rom"
+      ]
+    },
+    {
+      "id": "policy-modified-direct-access",
+      "label": "Policy-modified direct endpoint access",
+      "route": "IDs 2 through 5 after package/service/SELinux policy changes",
+      "accessClass": "ROOT_ONLY",
+      "status": "SEPARATE_DEPLOYMENT_CLASS",
+      "firstBoundary": {
+        "layer": "PACKAGE_POLICY",
+        "state": "REQUIRES_POLICY_CHANGE",
+        "classification": "PARTIALLY_VERIFIED",
+        "reason": "An ordinary package cannot acquire the required system identity, grants, roles, and allowlist eligibility merely by declaring hidden permissions."
+      },
+      "evidence": [
+        "authorization-comparison",
+        "system-camera-filtering",
+        "system-camera-contract"
+      ],
+      "replacementConsequence": "Implement only as a separately packaged rooted/custom-ROM backend; keep SELinux and CameraService policy as independent gates to verify rather than assumed bypasses.",
+      "supportedDeployments": [
+        "root-custom-rom"
+      ]
+    }
+  ]
+}
