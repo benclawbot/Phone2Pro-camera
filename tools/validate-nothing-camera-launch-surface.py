@@ -6,8 +6,12 @@ SUMMARY={'launchComponentCount':14,'exportedLaunchComponentCount':12,'manifestAc
 REQUIRED_ACTIONS={'android.intent.action.MAIN','com.nothing.camera.WIDGET_CAMERA','android.media.action.IMAGE_CAPTURE','android.media.action.VIDEO_CAPTURE','android.media.action.STILL_IMAGE_CAMERA','android.media.action.VIDEO_CAMERA','android.media.action.STILL_IMAGE_CAMERA_SECURE','android.media.action.IMAGE_CAPTURE_SECURE','android.media.action.SHORTCUT_CAMERA_SECURE','android.media.action.SHORTCUT_CAMERA','android.bluetooth.headset.action.OPEN_CAMERA','android.bluetooth.headset.action.OPEN_CAMERA_SECURE','com.google.camera.action.LOCATION_SETTINGS','android.nothing.action.APPCARD_UPDATE'}
 REQUIRED_KEYS={'android.intent.extras.CAMERA_FACING','android.intent.extras.CAMERA_SUB_MODE','android.intent.extras.CAMERA_MAIN_MODE','android.intent.extras.CAMERA_PREFIX_FOCALLENGTH_VALUE','android.intent.extras.CAMERA_PREFIX_FLAG_WIDGET','android.intent.extras.CAMERA_PREFIX_MAIN_MODE','android.intent.extras.CAMERA_PREFIX_SUB_MODE','com.nothing.camera.WIDGET_CAMERA','com.nothing.camera.IS_FROM_WIDGET','com.google.assistant.extra.USE_FRONT_CAMERA','com.google.assistant.extra.CAMERA_MODE','android.intent.extra.videoQuality','android.intent.extra.durationLimit','android.intent.extra.sizeLimit','android.intent.extra.quickCapture','output','widget_id'}
 def load(root=ROOT):
- b=root/'data/apk/nothing-camera-launch-surface'; i=json.loads((b/'index.v1.json').read_text()); r=json.loads((b/i['parts']['routes']).read_text())
- with (b/i['parts']['parameters']).open() as f: p=list(csv.DictReader(f,delimiter='\t'))
+ b=root/'data/apk/nothing-camera-launch-surface'; i=json.loads((b/'index.v1.json').read_text()); parts=i['parts']
+ r=json.loads((b/parts['core']).read_text()); r['normalizers']={}
+ for name in parts['normalizers']: r['normalizers'].update(json.loads((b/name).read_text()))
+ r.update(json.loads((b/parts['state']).read_text())); p=[]
+ for name in parts['parameters']:
+  with (b/name).open() as f: p.extend(csv.DictReader(f,delimiter='\t'))
  return i,r,p
 def validate(v,root=ROOT):
  i,r,p=v
