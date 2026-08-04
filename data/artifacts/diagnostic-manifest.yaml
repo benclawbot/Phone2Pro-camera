@@ -1,5 +1,5 @@
-schemaVersion: 1
-updatedAt: 2026-08-03T20:20:00Z
+schemaVersion: 2
+updatedAt: 2026-08-04T06:21:00Z
 deviceBuild:
   matrixEntryId: nothing-galaga-eea-android16-2606151653-f88325f3
   model: A001
@@ -8,15 +8,19 @@ deviceBuild:
   buildFingerprint: Nothing/GalagaEEA/Galaga:16/BP2A.250605.031.A3/2606151653:user/release-keys
 handling:
   rawArtifacts: Stored in the user's controlled file library; not redistributed in this public repository.
-  repositoryContent: Hashes, metadata and derived findings only.
+  repositoryContent: Hashes, metadata, expected-artifact records and derived findings only.
+  unknownValue: UNKNOWN means the source artifact or required metadata has not been supplied or verified.
 artifacts:
   - id: diag-capabilities-original
     buildMatrixEntryId: nothing-galaga-eea-android16-2606151653-f88325f3
     name: phone2pro-capabilities-20260802_205658.json
+    mediaType: application/json
     sizeBytes: 26604
     sha256: 7bf2e7f7947ea1ed5679c1822aa1443b90e34d74d7f0d72ef75c734699d8de82
     schemaVersion: 1
     generatedAtEpochMillis: 1785697017969
+    source: on-device diagnostics application
+    licenceAndRedistribution: private diagnostic output; metadata only in public repository
     profile: legacy-capability-dump
     status: ingested
     notes: Exact duplicate of diag-capabilities-copy.
@@ -24,10 +28,13 @@ artifacts:
   - id: diag-capabilities-copy
     buildMatrixEntryId: nothing-galaga-eea-android16-2606151653-f88325f3
     name: phone2pro-capabilities-20260802_205658(1).json
+    mediaType: application/json
     sizeBytes: 26604
     sha256: 7bf2e7f7947ea1ed5679c1822aa1443b90e34d74d7f0d72ef75c734699d8de82
     schemaVersion: 1
     generatedAtEpochMillis: 1785697017969
+    source: user-controlled file library copy
+    licenceAndRedistribution: private diagnostic output; metadata only in public repository
     profile: legacy-capability-dump
     status: duplicate
     duplicateOf: diag-capabilities-original
@@ -35,10 +42,13 @@ artifacts:
   - id: diag-static-hardware-vendor
     buildMatrixEntryId: nothing-galaga-eea-android16-2606151653-f88325f3
     name: phone2pro-static-hardware-vendor-20260802_223117_378.json
+    mediaType: application/json
     sizeBytes: 87085
     sha256: 78e2ff4ff20309c1a875983f6d8754c823804c249fc9874dbb9a3c7918ae979e
     schemaVersion: 2
     generatedAtEpochMillis: 1785702676647
+    source: on-device diagnostics application
+    licenceAndRedistribution: private diagnostic output; metadata only in public repository
     profile: static-hardware-vendor
     label: Static hardware & vendor audit
     status: ingested
@@ -46,10 +56,13 @@ artifacts:
   - id: diag-night-low-light
     buildMatrixEntryId: nothing-galaga-eea-android16-2606151653-f88325f3
     name: phone2pro-night-low-light-20260802_223141_739.json
+    mediaType: application/json
     sizeBytes: 226455
     sha256: f0b406a01329e76bed170f734ecc434c573d3f23d2b8c7a11dcea87429bdf151
     schemaVersion: 2
     generatedAtEpochMillis: 1785702689443
+    source: on-device diagnostics application
+    licenceAndRedistribution: private diagnostic output; metadata only in public repository
     profile: night-low-light
     label: Night / low-light capture audit
     status: ingested
@@ -59,10 +72,13 @@ artifacts:
   - id: diag-daylight-lens-routing
     buildMatrixEntryId: nothing-galaga-eea-android16-2606151653-f88325f3
     name: phone2pro-daylight-lens-routing-20260803_092933_170.json
+    mediaType: application/json
     sizeBytes: 389470
     sha256: a4ba4f653490dc927f260a03b0a3b455589b17a020461738327c4270370d9d41
     schemaVersion: 2
     generatedAtEpochMillis: 1785742156428
+    source: on-device diagnostics application
+    licenceAndRedistribution: private diagnostic output; metadata only in public repository
     profile: daylight-lens-routing
     label: Daylight lens-routing audit
     status: ingested
@@ -73,10 +89,13 @@ artifacts:
   - id: diag-official-expert-routing
     buildMatrixEntryId: nothing-galaga-eea-android16-2606151653-f88325f3
     name: phone2pro-official-expert-lens-routing-20260803_100744_866.json
+    mediaType: application/json
     sizeBytes: 98220
     sha256: 6995200e4f2c995c9160464b9300247604bebb2d3e81511f136825fb6934f557
     schemaVersion: 2
     generatedAtEpochMillis: 1785744464043
+    source: on-device diagnostics application plus associated stock-camera captures
+    licenceAndRedistribution: private diagnostic output and user photographs; metadata only in public repository
     profile: official-expert-lens-routing
     label: Official camera Expert 0.6x / 1x / 2x audit
     status: ingested
@@ -90,15 +109,138 @@ artifacts:
   - id: diag-official-widget-focal
     buildMatrixEntryId: nothing-galaga-eea-android16-2606151653-f88325f3
     name: phone2pro-official-expert-widget-focal-launch-20260803_123822_592.json
+    mediaType: application/json
     sizeBytes: 107605
     sha256: 126586150fd02faf2ad997490813aee5239648bc1849960887188fe37eb86a46
     schemaVersion: 2
     generatedAtEpochMillis: 1785753501933
+    source: on-device widget focal-launch audit
+    licenceAndRedistribution: private diagnostic output; metadata only in public repository
     profile: official-expert-widget-focal-launch
     label: Official Expert preset 15 / 24 / 50 mm launch audit
     status: ingested
     complete: false
+    relatedArtifactIds:
+      - widget-focal-15mm-image
+      - widget-focal-24mm-image
+      - widget-focal-50mm-image
     observations:
       - The exported widget parser was invoked with 15mm, 24mm and 50mm values.
       - The associated audit outputs remained on the 5.56 mm / 24 mm-equivalent route.
       - The result is scoped to the external widget path and does not close internal Expert routing research.
+
+missingArtifacts:
+  - id: widget-focal-15mm-image
+    requiredFor: Preserve the stock-camera output associated with the external 15 mm widget launch.
+    expectedName: UNKNOWN
+    expectedMediaType: image/jpeg
+    source: user-controlled widget focal-launch audit
+    licenceAndRedistribution: user photograph; do not redistribute without explicit permission
+    missingFields:
+      - artifact
+      - originalName
+      - sha256
+      - sizeBytes
+      - acquisitionTime
+    status: missing
+
+  - id: widget-focal-24mm-image
+    requiredFor: Preserve the stock-camera output associated with the external 24 mm widget launch.
+    expectedName: UNKNOWN
+    expectedMediaType: image/jpeg
+    source: user-controlled widget focal-launch audit
+    licenceAndRedistribution: user photograph; do not redistribute without explicit permission
+    missingFields:
+      - artifact
+      - originalName
+      - sha256
+      - sizeBytes
+      - acquisitionTime
+    status: missing
+
+  - id: widget-focal-50mm-image
+    requiredFor: Preserve the stock-camera output associated with the external 50 mm widget launch.
+    expectedName: UNKNOWN
+    expectedMediaType: image/jpeg
+    source: user-controlled widget focal-launch audit
+    licenceAndRedistribution: user photograph; do not redistribute without explicit permission
+    missingFields:
+      - artifact
+      - originalName
+      - sha256
+      - sizeBytes
+      - acquisitionTime
+    status: missing
+
+  - id: stock-camera-base-apk-metadata
+    requiredFor: Package provenance, signature, installation path and reproducible static analysis.
+    expectedName: Camera-16.1.01.93.20.apk
+    missingFields:
+      - sha256
+      - sizeBytes
+      - acquisitionTime
+      - packageSignatureDigest
+      - installPath
+    status: metadata-incomplete
+
+  - id: stock-camera-split-apks
+    requiredFor: Complete stock-package resource, ABI and feature reconstruction.
+    expectedName: UNKNOWN
+    missingFields:
+      - originalNames
+      - sha256
+      - sizeBytes
+      - acquisitionTime
+      - source
+    status: missing
+
+  - id: stock-camera-runtime-package-dump
+    requiredFor: UID, permissions, AppOps, process, signing and allowlist comparison.
+    expectedName: dumpsys-package-stock-camera.txt
+    missingFields:
+      - artifact
+      - sha256
+      - sizeBytes
+      - acquisitionTime
+    status: missing
+
+  - id: build-matched-framework-camera-artifacts
+    requiredFor: OEM framework versus AOSP comparison.
+    expectedName: framework.jar, services.jar and camera-service native binaries for the recorded build.
+    missingFields:
+      - artifacts
+      - hashes
+      - partitionPaths
+      - acquisitionTime
+    status: missing
+
+  - id: build-matched-vendor-camera-libraries
+    requiredFor: Provider, HAL, vendor service and native routing analysis.
+    expectedName: Camera and ISP ELF libraries from vendor, odm and system_ext.
+    missingFields:
+      - artifacts
+      - hashes
+      - buildIds
+      - partitionPaths
+      - acquisitionTime
+    status: missing
+
+  - id: build-matched-firmware-partitions
+    requiredFor: Reproducible framework, policy, provider, HAL and configuration analysis.
+    expectedName: system, system_ext, product, vendor, odm and vendor_dlkm images.
+    missingFields:
+      - artifacts
+      - hashes
+      - sourceUrls
+      - legalHandlingNotes
+    status: missing
+
+  - id: synchronized-stock-route-traces
+    requiredFor: Dynamic 0.6x, 1x and 2x Java, Binder, native, metadata and output correlation.
+    expectedName: Per-route logcat, Perfetto, CameraService, Binder, Frida and MediaStore trace bundles.
+    missingFields:
+      - artifacts
+      - hashes
+      - normalizedClockMetadata
+      - scenarioProtocolVersion
+    status: missing
