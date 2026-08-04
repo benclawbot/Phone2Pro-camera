@@ -73,15 +73,15 @@
     "decodedSha256": "27fcf5bb0eb6fb7b37ec6efe9736d0b264d0adda4ac9849d5597ea4f49ade014",
     "decodedSizeBytes": 743658,
     "chunks": [
-      {"path":"inventory-01.b64part","sha256":"3a2f790c24c050c4cca5b96e9482b50d30bbd3cad3f203ae44aa6bd6d642ae86","sizeBytes":8001,"characters":8000},
-      {"path":"inventory-02.b64part","sha256":"188ee1a4e869b622064a332b05fb3b85b7376597646152e78857c7ae00d23220","sizeBytes":8001,"characters":8000},
-      {"path":"inventory-03.b64part","sha256":"93df95bb32b5277eaa5a51bd2194a9be38433a6dfc4e2d279f906e354507556a","sizeBytes":8001,"characters":8000},
-      {"path":"inventory-04.b64part","sha256":"6afcdc59300db732684b6e3ec8d20ad92321b205090f3893d0c5606bb3041fa1","sizeBytes":8001,"characters":8000},
-      {"path":"inventory-05.b64part","sha256":"d133725e9f61de08392f34586a7a17a33983998200ebf52c281a7697ab0c2d68","sizeBytes":8001,"characters":8000},
-      {"path":"inventory-06.b64part","sha256":"724bc9fdb80407e7da2f7eca2f785f056715bdd18af8e1fc24cd01227910e295","sizeBytes":8001,"characters":8000},
-      {"path":"inventory-07.b64part","sha256":"d61724f063d53b5f04968a92828c70fd9d140f4cdad56fc99e1a0ed4dd042b75","sizeBytes":8001,"characters":8000},
-      {"path":"inventory-08.b64part","sha256":"4ebeb977bc0547b87bb4f74d32e45724c9ba9ed12fa333df4b46dbed91912d4b","sizeBytes":8001,"characters":8000},
-      {"path":"inventory-09.b64part","sha256":"bc88a41189ecffd0a2d9c391c917fc413c040c5990ef9313d400a7fd504e3088","sizeBytes":4269,"characters":4268}
+      {"path":"inventory-01.b64part","sha256":"bc96f9247df9c45cbd1b6940cb10db2ab42e89f4d846879f06912a3dab2e6f69","sizeBytes":8000,"characters":8000},
+      {"path":"inventory-02.b64part","sha256":"e864f6eb511469a49844a51c2dd5da091fc6095890505ef0fb3563ee878b1d76","sizeBytes":8000,"characters":8000},
+      {"path":"inventory-03.b64part","sha256":"3ed425bad372d3e22049475dbc1ba416ea49f44a746b30c1bd38da06bda44008","sizeBytes":8000,"characters":8000},
+      {"path":"inventory-04.b64part","sha256":"4ac5719058473b23b0951dad7fe0c03532e868431eb226e8e8021a047068bba7","sizeBytes":8000,"characters":8000},
+      {"path":"inventory-05.b64part","sha256":"ada28947fa8ed04af96d3c616173bbc0606f1286afb8790dd48464719e577c46","sizeBytes":8000,"characters":8000},
+      {"path":"inventory-06.b64part","sha256":"4ee5ed20f435d21af4e3ee690ee71e19b2b561acdb748bd72b134470431b80de","sizeBytes":8000,"characters":8000},
+      {"path":"inventory-07.b64part","sha256":"c2e025c362c493230c8ca0c4fa276886081252d7b670b9371e84456410288eb7","sizeBytes":8000,"characters":8000},
+      {"path":"inventory-08.b64part","sha256":"e13a314382047f3068bca814ef0803b79f0ef609f94b19b22d04e5e667321b8f","sizeBytes":8000,"characters":8000},
+      {"path":"inventory-09.b64part","sha256":"3152b2c195f3eb9d9e83ab310feb91c2adfedb23be3a2f838fdb47ce231bcb4e","sizeBytes":4268,"characters":4268}
     ]
   },
   "supplementalIntegrity": [
