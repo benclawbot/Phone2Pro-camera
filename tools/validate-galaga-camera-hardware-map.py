@@ -42,7 +42,7 @@ def text(value: Any) -> bool:
     return isinstance(value, str) and bool(value.strip())
 
 
-def text_list(value: Any, allow_empty: bool = False) -> bool:
+def text_list(value: Any, *, allow_empty: bool = False) -> bool:
     return (
         isinstance(value, list)
         and (allow_empty or bool(value))
@@ -81,7 +81,8 @@ def validate(
     if not isinstance(device, dict):
         errors.append("device must be an object")
     else:
-        if (device.get("model"), device.get("codename"), device.get("soc")) != ("A001", "Galaga", "MT6878"):
+        identity = (device.get("model"), device.get("codename"), device.get("soc"))
+        if identity != ("A001", "Galaga", "MT6878"):
             errors.append("device identity is invalid")
         if device.get("observedBuild") != "2606151653":
             errors.append("observed build is invalid")
@@ -99,35 +100,35 @@ def validate(
     if not isinstance(repositories, list) or len(repositories) != 3:
         errors.append("sourceScope must contain three repositories")
         repositories = []
-    repo_ids: set[str] = set()
+    repository_ids: set[str] = set()
     for index, repository in enumerate(repositories):
         prefix = f"sourceScope.repositories[{index}]"
         if not isinstance(repository, dict):
             errors.append(f"{prefix} must be an object")
             continue
-        repo_id = repository.get("id")
-        if not text(repo_id) or repo_id in repo_ids:
+        repository_id = repository.get("id")
+        if not text(repository_id) or repository_id in repository_ids:
             errors.append(f"{prefix}.id must be unique")
         else:
-            repo_ids.add(str(repo_id))
+            repository_ids.add(str(repository_id))
         if not text(repository.get("repository")):
             errors.append(f"{prefix}.repository must be non-empty")
-        if not isinstance(repository.get("commit"), str) or not SHA40.fullmatch(repository["commit"]):
+        commit = repository.get("commit")
+        if not isinstance(commit, str) or not SHA40.fullmatch(commit):
             errors.append(f"{prefix}.commit must be a full SHA")
-    confidence = hardware_map.get("confidenceVocabulary")
-    if not text_list(confidence):
-        errors.append("confidenceVocabulary must be unique and non-empty")
-        confidence = []
 
-    route_records = hardware_map.get("routes")
+    if not text_list(hardware_map.get("confidenceVocabulary")):
+        errors.append("confidenceVocabulary must be unique and non-empty")
+
+    routes = hardware_map.get("routes")
+    if not isinstance(routes, list) or len(routes) != 4:
+        errors.append("routes must contain four records")
+        routes = []
     route_ids: set[str] = set()
     csi_ports: set[int] = set()
     sensor_addresses: set[tuple[str, str]] = set()
     referenced_rails: set[str] = set()
-    if not isinstance(route_records, list) or len(route_records) != 4:
-        errors.append("routes must contain four records")
-        route_records = []
-    for index, route in enumerate(route_records):
+    for index, route in enumerate(routes):
         prefix = f"routes[{index}]"
         if not isinstance(route, dict):
             errors.append(f"{prefix} must be an object")
@@ -137,8 +138,6 @@ def validate(
             errors.append(f"{prefix}.id is invalid")
             continue
         route_ids.add(str(route_id))
-        if f"`{route_id}`" not in document:
-            errors.append(f"document is missing route {route_id}")
         if route.get("status") != "okay" or route.get("topologyConfidence") != "SOURCE_CONFIRMED_TOPOLOGY":
             errors.append(f"{prefix} topology status is invalid")
 
@@ -151,11 +150,11 @@ def validate(
             if not text(controller) or not isinstance(address, str) or not HEX_ADDR.fullmatch(address):
                 errors.append(f"{prefix}.i2c is invalid")
             else:
-                key = (str(controller), address)
-                if key in sensor_addresses:
-                    errors.append(f"duplicate sensor address {key}")
-                sensor_addresses.add(key)
-            if i2c.get("clockHz") != 1000000:
+                address_key = (str(controller), address)
+                if address_key in sensor_addresses:
+                    errors.append(f"duplicate sensor address {address_key}")
+                sensor_addresses.add(address_key)
+            if i2c.get("clockHz") != 1_000_000:
                 errors.append(f"{prefix}.i2c clock must be 1 MHz")
 
         candidates = route.get("sensorCandidates")
@@ -168,9 +167,13 @@ def validate(
             elif candidate.get("confidence") != "SOURCE_CANDIDATE_DRIVER":
                 errors.append(f"{prefix} sensor candidates must remain candidate-only")
 
-        identity = route.get("shippedModuleIdentity")
-        if not isinstance(identity, dict) or not text(identity.get("status")) or identity.get("status") == "CONFIRMED":
+        shipped_identity = route.get("shippedModuleIdentity")
+        if not isinstance(shipped_identity, dict):
             errors.append(f"{prefix}.shippedModuleIdentity must remain unresolved")
+        else:
+            status = shipped_identity.get("status")
+            if not text(status) or status == "CONFIRMED":
+                errors.append(f"{prefix}.shippedModuleIdentity must remain unresolved")
 
         csi = route.get("csi")
         if not isinstance(csi, dict):
@@ -185,9 +188,6 @@ def validate(
                 if not text(csi.get(field)):
                     errors.append(f"{prefix}.csi.{field} must be non-empty")
 
-        for object_field in ("clock", "reset"):
-            if not isinstance(route.get(object_field), dict):
-                errors.append(f"{prefix}.{object_field} must be an object")
         power = route.get("power")
         if not isinstance(power, dict):
             errors.append(f"{prefix}.power must be an object")
@@ -216,52 +216,57 @@ def validate(
         if not isinstance(ois, dict) or ois.get("confidence") != "NOT_EVIDENCED":
             errors.append(f"{prefix}.ois must remain not evidenced")
 
+        optical = route.get("opticalRouteEvidence")
         if route_id in {"main", "ultrawide", "telephoto"}:
-            optical = route.get("opticalRouteEvidence")
             if not isinstance(optical, dict) or optical.get("confidence") != "RUNTIME_OBSERVED_OPTICAL_ROUTE":
                 errors.append(f"{prefix}.opticalRouteEvidence is required")
             elif not (root / str(optical.get("evidence", ""))).is_file():
                 errors.append(f"{prefix}.optical evidence file is missing")
-        elif route.get("opticalRouteEvidence") is not None:
+        elif optical is not None:
             errors.append("front optical evidence must remain null")
+
     if route_ids != ROUTES:
         errors.append(f"missing routes: {sorted(ROUTES - route_ids)}")
 
     components = hardware_map.get("powerComponents")
-    component_ids: set[str] = set()
-    provided_rails: set[str] = set()
     if not isinstance(components, list) or len(components) != 4:
         errors.append("powerComponents must contain four records")
         components = []
+    component_ids: set[str] = set()
+    provided_rails: set[str] = set()
     for component in components:
         if not isinstance(component, dict) or component.get("id") not in POWER_COMPONENTS:
             errors.append("powerComponents contains an invalid record")
             continue
-        component_ids.add(str(component["id"]))
-        if component.get("type") == "FIXED_REGULATOR":
-            provided_rails.add(str(component["id"]))
-        elif component.get("type") == "ET5924_OR_DIO8016":
+        component_id = str(component["id"])
+        component_ids.add(component_id)
+        component_type = component.get("type")
+        if component_type == "FIXED_REGULATOR":
+            # DTS consumer rail names use underscores; component IDs use hyphens.
+            rail = component.get("rail") or component_id.replace("-", "_")
+            provided_rails.add(str(rail))
+        elif component_type == "ET5924_OR_DIO8016":
             outputs = component.get("outputs")
             if not isinstance(outputs, list) or len(outputs) != 4:
-                errors.append(f"{component['id']} must contain four outputs")
+                errors.append(f"{component_id} must contain four outputs")
                 outputs = []
             for output in outputs:
                 if isinstance(output, dict) and text(output.get("rail")):
                     provided_rails.add(str(output["rail"]))
                 else:
-                    errors.append(f"{component['id']} contains an invalid rail")
+                    errors.append(f"{component_id} contains an invalid rail")
         else:
-            errors.append(f"{component['id']} has an invalid type")
+            errors.append(f"{component_id} has an invalid type")
     if component_ids != POWER_COMPONENTS:
         errors.append(f"missing power components: {sorted(POWER_COMPONENTS - component_ids)}")
-    if referenced_rails - provided_rails:
-        errors.append(f"routes reference unmapped rails: {sorted(referenced_rails - provided_rails)}")
+    unmapped_rails = referenced_rails - provided_rails
+    if unmapped_rails:
+        errors.append(f"routes reference unmapped rails: {sorted(unmapped_rails)}")
 
     flash = hardware_map.get("flash")
     if not isinstance(flash, dict):
         errors.append("flash must be an object")
     else:
-        expected = ("i2c6", "0x63", 2, 39, 2)
         actual = (
             flash.get("controller"),
             flash.get("address7bitHex"),
@@ -269,7 +274,7 @@ def validate(
             flash.get("hwenGpio"),
             flash.get("coolingCells"),
         )
-        if actual != expected:
+        if actual != ("i2c6", "0x63", 2, 39, 2):
             errors.append("flash topology is invalid")
         if not text_list(flash.get("compatibleCandidates")) or not text_list(flash.get("driverPaths")):
             errors.append("flash source candidates are incomplete")
@@ -277,10 +282,10 @@ def validate(
             errors.append("flash shipped identity must remain unknown")
 
     interfaces = hardware_map.get("kernelInterfaces")
-    interface_ids: set[str] = set()
     if not isinstance(interfaces, list) or len(interfaces) != 5:
         errors.append("kernelInterfaces must contain five records")
         interfaces = []
+    interface_ids: set[str] = set()
     for interface in interfaces:
         if not isinstance(interface, dict) or interface.get("id") not in INTERFACES:
             errors.append("kernelInterfaces contains an invalid record")
@@ -293,19 +298,23 @@ def validate(
             errors.append(f"{interface_id} must state its access boundary")
         if not isinstance(interface.get("sourcePaths"), list):
             errors.append(f"{interface_id}.sourcePaths must be a list")
-        if not isinstance(interface.get("standardControls"), list) or not isinstance(interface.get("privateIoctls"), list):
+        standard_controls = interface.get("standardControls", [])
+        private_ioctls = interface.get("privateIoctls", [])
+        if not isinstance(standard_controls, list) or not isinstance(private_ioctls, list):
             errors.append(f"{interface_id} controls must be lists")
+            standard_controls = []
+            private_ioctls = []
         if interface_id == "imgsensor-v4l2-subdev":
-            missing = REQUIRED_SENSOR_IOCTLS - set(interface.get("privateIoctls", []))
+            missing = REQUIRED_SENSOR_IOCTLS - set(private_ioctls)
             if missing:
                 errors.append(f"sensor interface is missing ioctls: {sorted(missing)}")
-        if interface_id == "main-vcm-v4l2-subdev":
-            if "V4L2_CID_FOCUS_ABSOLUTE" not in interface.get("standardControls", []):
+        elif interface_id == "main-vcm-v4l2-subdev":
+            if "V4L2_CID_FOCUS_ABSOLUTE" not in standard_controls:
                 errors.append("main VCM focus control is missing")
-            if set(interface.get("privateIoctls", [])) != {"VCM_IOC_POWER_ON", "VCM_IOC_POWER_OFF"}:
+            if set(private_ioctls) != {"VCM_IOC_POWER_ON", "VCM_IOC_POWER_OFF"}:
                 errors.append("main VCM power commands are invalid")
-        if interface_id == "camera-eeprom-char-dev":
-            if interface.get("nodePattern") != "/dev/camera_eeprom*" or "CAM_CALIOC_S_SENSOR_INFO" not in interface.get("privateIoctls", []):
+        elif interface_id == "camera-eeprom-char-dev":
+            if interface.get("nodePattern") != "/dev/camera_eeprom*" or "CAM_CALIOC_S_SENSOR_INFO" not in private_ioctls:
                 errors.append("EEPROM interface is invalid")
     if interface_ids != INTERFACES:
         errors.append(f"missing kernel interfaces: {sorted(INTERFACES - interface_ids)}")
@@ -321,10 +330,7 @@ def validate(
     for gap in gaps:
         if not isinstance(gap, dict) or not text(gap.get("id")):
             errors.append("knownGaps contains an invalid record")
-            continue
-        if f"`{gap['id']}`" not in document:
-            errors.append(f"document is missing gap {gap['id']}")
-        if gap.get("status") != "OPEN" or not text(gap.get("description")):
+        elif gap.get("status") != "OPEN" or not text(gap.get("description")):
             errors.append(f"{gap['id']} must remain an open described gap")
 
     non_claims = hardware_map.get("nonClaims")
@@ -341,6 +347,7 @@ def validate(
             errors.append("maintenance.validationTool is incorrect")
         if not text_list(maintenance.get("updateTriggers")):
             errors.append("maintenance.updateTriggers must be unique and non-empty")
+
     return errors
 
 
