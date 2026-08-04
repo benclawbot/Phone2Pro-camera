@@ -1,5 +1,5 @@
 schemaVersion: 2
-updatedAt: 2026-08-04T06:18:00Z
+updatedAt: 2026-08-04T06:21:00Z
 deviceBuild:
   matrixEntryId: nothing-galaga-eea-android16-2606151653-f88325f3
   model: A001
@@ -129,46 +129,49 @@ artifacts:
       - The associated audit outputs remained on the 5.56 mm / 24 mm-equivalent route.
       - The result is scoped to the external widget path and does not close internal Expert routing research.
 
+missingArtifacts:
   - id: widget-focal-15mm-image
-    buildMatrixEntryId: nothing-galaga-eea-android16-2606151653-f88325f3
-    name: UNKNOWN
-    expectedRole: Stock-camera output associated with the external 15 mm widget launch.
-    mediaType: image/jpeg
-    sizeBytes: UNKNOWN
-    sha256: UNKNOWN
-    acquisitionTime: UNKNOWN
+    requiredFor: Preserve the stock-camera output associated with the external 15 mm widget launch.
+    expectedName: UNKNOWN
+    expectedMediaType: image/jpeg
     source: user-controlled widget focal-launch audit
     licenceAndRedistribution: user photograph; do not redistribute without explicit permission
+    missingFields:
+      - artifact
+      - originalName
+      - sha256
+      - sizeBytes
+      - acquisitionTime
     status: missing
-    missingReason: Image bytes and original file name were not present in the accessible artifact set.
 
   - id: widget-focal-24mm-image
-    buildMatrixEntryId: nothing-galaga-eea-android16-2606151653-f88325f3
-    name: UNKNOWN
-    expectedRole: Stock-camera output associated with the external 24 mm widget launch.
-    mediaType: image/jpeg
-    sizeBytes: UNKNOWN
-    sha256: UNKNOWN
-    acquisitionTime: UNKNOWN
+    requiredFor: Preserve the stock-camera output associated with the external 24 mm widget launch.
+    expectedName: UNKNOWN
+    expectedMediaType: image/jpeg
     source: user-controlled widget focal-launch audit
     licenceAndRedistribution: user photograph; do not redistribute without explicit permission
+    missingFields:
+      - artifact
+      - originalName
+      - sha256
+      - sizeBytes
+      - acquisitionTime
     status: missing
-    missingReason: Image bytes and original file name were not present in the accessible artifact set.
 
   - id: widget-focal-50mm-image
-    buildMatrixEntryId: nothing-galaga-eea-android16-2606151653-f88325f3
-    name: UNKNOWN
-    expectedRole: Stock-camera output associated with the external 50 mm widget launch.
-    mediaType: image/jpeg
-    sizeBytes: UNKNOWN
-    sha256: UNKNOWN
-    acquisitionTime: UNKNOWN
+    requiredFor: Preserve the stock-camera output associated with the external 50 mm widget launch.
+    expectedName: UNKNOWN
+    expectedMediaType: image/jpeg
     source: user-controlled widget focal-launch audit
     licenceAndRedistribution: user photograph; do not redistribute without explicit permission
+    missingFields:
+      - artifact
+      - originalName
+      - sha256
+      - sizeBytes
+      - acquisitionTime
     status: missing
-    missingReason: Image bytes and original file name were not present in the accessible artifact set.
 
-missingArtifacts:
   - id: stock-camera-base-apk-metadata
     requiredFor: Package provenance, signature, installation path and reproducible static analysis.
     expectedName: Camera-16.1.01.93.20.apk
