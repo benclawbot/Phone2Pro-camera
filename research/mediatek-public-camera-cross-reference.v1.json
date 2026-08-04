@@ -1,0 +1,656 @@
+{
+  "schemaVersion": 1,
+  "indexVersion": "2026.08.04-1",
+  "device": {
+    "marketingName": "CMF Phone 2 Pro",
+    "model": "A001",
+    "codename": "Galaga",
+    "soc": "MT6878",
+    "observedBuildId": "2606151653",
+    "observedFingerprintEvidence": "data/artifacts/diagnostic-manifest.yaml"
+  },
+  "scope": {
+    "objective": "Cross-reference target MediaTek and Nothing camera metadata families against revision-pinned public MediaTek, ChromiumOS, AOSP and official Galaga kernel sources.",
+    "interpretationRule": "Entries are analogues or name/type/flow matches only. No public source is treated as an exact implementation-equivalent definition of the Galaga Android 16 camera stack.",
+    "targetInventory": "data/vendor-tags/inventory.json",
+    "targetPriorityMap": "data/vendor-tags/routing-priority.yaml",
+    "relatedIssue": 78
+  },
+  "sources": [
+    {
+      "id": "chromeos-platform-camera-head-2026-01",
+      "kind": "CHROMIUMOS_MEDIATEK_HAL_HEAD",
+      "repository": "chromiumos/platform/camera",
+      "revision": "3866159aea9c4927e27ad5aec54cc341ff1fe663",
+      "revisionType": "COMMIT",
+      "url": "https://chromium.googlesource.com/chromiumos/platform/camera/+/3866159aea9c4927e27ad5aec54cc341ff1fe663",
+      "platform": "ChromeOS MediaTek camera HAL repository",
+      "scope": "Current indexed repository head used to bound freshness and confirm the continuing public MediaTek HAL tree.",
+      "targetRelation": "Different product, SoC, operating environment and userspace integration; never an exact Galaga match."
+    },
+    {
+      "id": "chromeos-mtkcam-content-2021",
+      "kind": "CHROMIUMOS_MEDIATEK_HAL_CONTENT",
+      "repository": "chromiumos/platform/camera",
+      "revision": "d2ba4bb97b93bde4cbcdb3fdf95959093f5a8e12",
+      "revisionType": "COMMIT",
+      "url": "https://chromium.googlesource.com/chromiumos/platform/camera/+/d2ba4bb97b93bde4cbcdb3fdf95959093f5a8e12",
+      "platform": "ChromeOS MT8183-era MediaTek camera HAL",
+      "scope": "Revision with indexed logical-camera, feature-policy, capture/streaming, sensor, metadata, IPC and MFB/HDR parameter interfaces.",
+      "targetRelation": "Public architectural analogue from an older SoC and camera middleware generation."
+    },
+    {
+      "id": "chromeos-mtkcam-request-2023",
+      "kind": "CHROMIUMOS_MEDIATEK_IO_REQUEST_FLOW",
+      "repository": "chromiumos/platform/camera",
+      "revision": "238d0bcbcf1df0ea82e0995cf47ea0c137aee127",
+      "revisionType": "COMMIT",
+      "url": "https://chromium.googlesource.com/chromiumos/platform/camera/+/238d0bcbcf1df0ea82e0995cf47ea0c137aee127",
+      "platform": "ChromeOS MediaTek V4L2 request managers",
+      "scope": "Revision indexing pass1 synchronization and pass2 request API managers.",
+      "targetRelation": "Request scheduling analogue only; no Android Camera2 vendor-tag equivalence."
+    },
+    {
+      "id": "chromeos-mtkcam-pipeline-2023",
+      "kind": "CHROMIUMOS_MEDIATEK_CAPTURE_STREAMING_PIPELINE",
+      "repository": "chromiumos/platform/camera",
+      "revision": "87bf21205c86c1b659ac7d883b50c8464a4cd54b",
+      "revisionType": "COMMIT",
+      "url": "https://chromium.googlesource.com/chromiumos/platform/camera/+/87bf21205c86c1b659ac7d883b50c8464a4cd54b",
+      "platform": "ChromeOS MediaTek feature pipeline",
+      "scope": "Revision indexing capture nodes, streaming nodes, pipeline-session construction and stream configuration policy.",
+      "targetRelation": "Feature-graph analogue only; target feature nodes, tuning and scheduling may differ."
+    },
+    {
+      "id": "aosp-system-media-android16",
+      "kind": "AOSP_CAMERA_METADATA_CONTRACT",
+      "repository": "platform/system/media",
+      "revision": "f01e84b958fb6a887dc0e74e4b5ebd159f03860a",
+      "revisionType": "COMMIT",
+      "url": "https://android.googlesource.com/platform/system/media/+/f01e84b958fb6a887dc0e74e4b5ebd159f03860a",
+      "platform": "AOSP Android 16 camera metadata C API",
+      "scope": "Defines vendor-tag boundaries, enumeration callbacks, section naming and runtime type lookup contracts.",
+      "targetRelation": "Normative metadata transport contract; it does not define MediaTek or Nothing tag semantics."
+    },
+    {
+      "id": "nothing-galaga-kernel-2026-04",
+      "kind": "OFFICIAL_GALAGA_KERNEL_SOURCE",
+      "repository": "NothingOSS/android_kernel_device_modules_6.1_nothing_mt6878",
+      "revision": "2b0af666da693dcf4088b583bae7d77f4a4373e3",
+      "revisionType": "COMMIT",
+      "url": "https://github.com/NothingOSS/android_kernel_device_modules_6.1_nothing_mt6878/commit/2b0af666da693dcf4088b583bae7d77f4a4373e3",
+      "platform": "Official Galaga MT6878 kernel/device-module source",
+      "scope": "Target-specific sensor topology, CSI wiring, ISP subsystem, calibration, PDA, clocks and device configuration.",
+      "targetRelation": "Official Galaga source, but release 260415-1710 predates observed build 2606151653 and omits proprietary userspace."
+    }
+  ],
+  "matches": [
+    {
+      "id": "aosp-vendor-tag-contract",
+      "sourceId": "aosp-system-media-android16",
+      "relation": "TYPE_OR_ENUM_ANALOGUE",
+      "targetFamilies": [
+        "vendor-tag-transport"
+      ],
+      "paths": [
+        "camera/include/system/camera_vendor_tags.h",
+        "camera/include/system/camera_metadata.h",
+        "camera/include/system/camera_metadata_tags.h"
+      ],
+      "symbols": [
+        "CAMERA_METADATA_VENDOR_TAG_BOUNDARY",
+        "metadata_vendor_id_t",
+        "vendor_tag_ops",
+        "get_camera_metadata_tag_type",
+        "VENDOR_SECTION_START"
+      ],
+      "finding": "AOSP defines how vendor sections, names, tags and native metadata types are enumerated and transported, while leaving vendor-specific semantics outside the public standard.",
+      "platformDifference": "The target key names and values must be recovered from the Galaga provider/runtime; AOSP supplies no MediaTek or Nothing enum meanings.",
+      "equivalenceClaimed": false
+    },
+    {
+      "id": "mtk-mfb-ais-parameter-family",
+      "sourceId": "chromeos-mtkcam-content-2021",
+      "relation": "NAME_MATCH",
+      "targetFamilies": [
+        "mediatek.mfnrfeature",
+        "MFNR/AIS"
+      ],
+      "paths": [
+        "hal/mediatek/mtkcam/include/mtkcam/utils/fwk/MtkCameraParameters.h"
+      ],
+      "symbols": [
+        "KEY_MFB_MODE",
+        "KEY_MFB_MODE_MFLL",
+        "KEY_MFB_MODE_AIS",
+        "KEY_MFB_MODE_AUTO"
+      ],
+      "finding": "The public MediaTek HAL exposes legacy MFB mode names for MFLL, AIS and automatic selection.",
+      "platformDifference": "These are Camera1-style string parameters from an MT8183-era ChromeOS tree, not the target Camera2 vendor-tag value table.",
+      "equivalenceClaimed": false
+    },
+    {
+      "id": "mtk-hdr-sensor-enums",
+      "sourceId": "chromeos-mtkcam-content-2021",
+      "relation": "TYPE_OR_ENUM_ANALOGUE",
+      "targetFamilies": [
+        "mediatek.hdrfeature",
+        "HDR"
+      ],
+      "paths": [
+        "hal/mediatek/mtkcam/include/mtkcam/drv/IHalSensor.h",
+        "hal/mediatek/mtkcam/custom/mt8183/hal/imgsensor_src/imgsensor_custom_info.h",
+        "hal/mediatek/mtkcam/include/mtkcam/utils/fwk/MtkCameraParameters.h"
+      ],
+      "symbols": [
+        "SENSOR_VHDR_MODE_NONE",
+        "SENSOR_VHDR_MODE_IVHDR",
+        "SENSOR_VHDR_MODE_MVHDR",
+        "SENSOR_VHDR_MODE_ZVHDR",
+        "ZHDR_MODE_G1_R1_B1",
+        "HDR_Support",
+        "KEY_ENG_VIDEO_HDR_MODE"
+      ],
+      "finding": "Public source separates sensor HDR capability/mode enums from higher-level HDR parameters and pipeline policy.",
+      "platformDifference": "The target advertised multi-stream HDR values, including 6, cannot be assigned these historical enum meanings without target runtime evidence.",
+      "equivalenceClaimed": false
+    },
+    {
+      "id": "mtk-logical-camera-and-sync",
+      "sourceId": "chromeos-mtkcam-content-2021",
+      "relation": "FLOW_ANALOGUE",
+      "targetFamilies": [
+        "mediatek.multicamfeature",
+        "CameraFlex/multicam",
+        "logical-camera"
+      ],
+      "paths": [
+        "hal/mediatek/mtkcam/include/mtkcam/utils/LogicalCam/IHalLogicalDeviceList.h",
+        "hal/mediatek/mtkcam/utils/LogicalCam/HalLogicalDeviceList.cpp",
+        "hal/mediatek/mtkcam/include/mtkcam/drv/IHalSensor.h"
+      ],
+      "symbols": [
+        "IHalLogicalDeviceList",
+        "HalLogicalDeviceList",
+        "getSupportedFeature",
+        "getSensorSyncPrimaryDevId",
+        "SENSOR_CMD_SET_SENSOR_SYNC_MODE",
+        "SENSOR_CMD_SET_DUAL_CAM_MODE"
+      ],
+      "finding": "The public HAL has explicit logical-device, supported-feature and multi-sensor synchronization abstractions.",
+      "platformDifference": "Their presence does not prove Galaga exposes auxiliary physical IDs or uses the same logical grouping and feature bits.",
+      "equivalenceClaimed": false
+    },
+    {
+      "id": "mtk-feature-setting-and-zsl-policy",
+      "sourceId": "chromeos-mtkcam-content-2021",
+      "relation": "FLOW_ANALOGUE",
+      "targetFamilies": [
+        "mediatek.control",
+        "ZSL/postview/prerelease",
+        "capture-policy"
+      ],
+      "paths": [
+        "hal/mediatek/mtkcam/include/mtkcam/pipeline/policy/IFeatureSettingPolicy.h",
+        "hal/mediatek/mtkcam/pipeline/policy/FeatureSettingPolicy.cpp",
+        "hal/mediatek/mtkcam/pipeline/policy/RequestSettingPolicyMediator.cpp",
+        "hal/mediatek/mtkcam/include/mtkcam/pipeline/policy/ITopologyPolicy.h"
+      ],
+      "symbols": [
+        "RequestResultParams",
+        "mainFrame",
+        "subFrames",
+        "preFakeFrames",
+        "postFakeFrames",
+        "needZslFlow",
+        "RequestSettingPolicyMediator"
+      ],
+      "finding": "Public policy code represents a main capture frame plus subframes and optional pre/post frames, with an explicit ZSL-flow decision.",
+      "platformDifference": "This does not define target ZSL timestamps, prerelease semantics, postview buffers or frame-count vendor values.",
+      "equivalenceClaimed": false
+    },
+    {
+      "id": "mtk-capture-feature-graph",
+      "sourceId": "chromeos-mtkcam-content-2021",
+      "relation": "FLOW_ANALOGUE",
+      "targetFamilies": [
+        "mediatek.control",
+        "mediatek.mfnrfeature",
+        "mediatek.hdrfeature",
+        "ISP tuning/reprocess"
+      ],
+      "paths": [
+        "hal/mediatek/mtkcam/feature/featureCore/featurePipe/capture/CaptureFeatureInference.cpp",
+        "hal/mediatek/mtkcam/feature/featureCore/featurePipe/capture/CaptureFeatureRequest.cpp",
+        "hal/mediatek/mtkcam/feature/featureCore/featurePipe/capture/CaptureFeaturePipe.cpp",
+        "hal/mediatek/mtkcam/feature/featureCore/featurePipe/capture/nodes/P2ANode.cpp",
+        "hal/mediatek/mtkcam/pipeline/hwnode/p2/P2_CaptureProcessor.cpp"
+      ],
+      "symbols": [
+        "CaptureFeatureInference",
+        "CaptureFeatureRequest",
+        "CaptureFeaturePipe",
+        "P2ANode",
+        "P2_CaptureProcessor"
+      ],
+      "finding": "The public stack uses a policy-selected capture feature graph with P2 processing nodes, per-request inference and multi-frame request objects.",
+      "platformDifference": "Node names and flow shape are architectural analogues; target ISP tuning blobs, feature combinations and vendor keys remain proprietary.",
+      "equivalenceClaimed": false
+    },
+    {
+      "id": "mtk-streaming-feature-graph",
+      "sourceId": "chromeos-mtkcam-pipeline-2023",
+      "relation": "FLOW_ANALOGUE",
+      "targetFamilies": [
+        "mediatek.streamingfeature",
+        "mediatek.eisfeature",
+        "EIS"
+      ],
+      "paths": [
+        "hal/mediatek/mtkcam/feature/featureCore/featurePipe/streaming/StreamingFeatureNode.cpp",
+        "hal/mediatek/mtkcam/pipeline/model/session/PipelineModelSessionFactory.cpp",
+        "hal/mediatek/mtkcam/pipeline/policy/config/ConfigStreamInfoPolicy.cpp"
+      ],
+      "symbols": [
+        "StreamingFeatureNode",
+        "PipelineModelSessionFactory",
+        "ConfigStreamInfoPolicy"
+      ],
+      "finding": "Public code separates streaming feature nodes, session construction and stream-configuration policy.",
+      "platformDifference": "The Nothing EIS and SOIS keys have no proven one-to-one mapping to these ChromeOS feature nodes.",
+      "equivalenceClaimed": false
+    },
+    {
+      "id": "mtk-v4l2-request-managers",
+      "sourceId": "chromeos-mtkcam-request-2023",
+      "relation": "FLOW_ANALOGUE",
+      "targetFamilies": [
+        "request-scheduling",
+        "ISP tuning/reprocess"
+      ],
+      "paths": [
+        "hal/mediatek/mtkcam/drv/iopipe/src/pass1/SyncReqMgr.cpp",
+        "hal/mediatek/mtkcam/drv/iopipe/src/pass2/ReqApiMgr.cpp"
+      ],
+      "symbols": [
+        "SyncReqMgr",
+        "ReqApiMgr"
+      ],
+      "finding": "Public MediaTek code contains separate pass1 synchronization and pass2 request API managers around V4L2 request execution.",
+      "platformDifference": "The target may use a newer ISP7SP request path and different userspace/kernel APIs.",
+      "equivalenceClaimed": false
+    },
+    {
+      "id": "mtk-3a-ipc-boundary",
+      "sourceId": "chromeos-mtkcam-content-2021",
+      "relation": "FLOW_ANALOGUE",
+      "targetFamilies": [
+        "mediatek.3afeature",
+        "3A IPC"
+      ],
+      "paths": [
+        "hal/mediatek/mtkcam/ipc/IPCHal3a.h",
+        "hal/mediatek/mtkcam/ipc/client/Hal3AIpcAdapter.cpp",
+        "hal/mediatek/mtkcam/ipc/server/Hal3aIpcServerAdapter.cpp",
+        "hal/mediatek/mtkcam/include/mtkcam/aaa/IHal3A.h"
+      ],
+      "symbols": [
+        "IPCHal3a",
+        "Hal3AIpcAdapter",
+        "Hal3aIpcServerAdapter",
+        "IHal3A"
+      ],
+      "finding": "The public ChromeOS implementation isolates 3A control behind explicit client/server IPC adapters.",
+      "platformDifference": "ChromeOS uses a sandboxed camera-algorithm IPC model; Galaga Android userspace and daemon boundaries must be observed independently.",
+      "equivalenceClaimed": false
+    },
+    {
+      "id": "mtk-in-sensor-zoom-and-seamless-analogue",
+      "sourceId": "chromeos-mtkcam-content-2021",
+      "relation": "TYPE_OR_ENUM_ANALOGUE",
+      "targetFamilies": [
+        "mediatek.insensorzoomfeature",
+        "mediatek.seamlessfeature",
+        "in-sensor zoom",
+        "seamless"
+      ],
+      "paths": [
+        "hal/mediatek/mtkcam/include/mtkcam/drv/IHalSensor.h",
+        "hal/mediatek/mtkcam/include/mtkcam/pipeline/policy/IFeatureSettingPolicy.h"
+      ],
+      "symbols": [
+        "IHalSensor::ConfigParam",
+        "scenarioId",
+        "isBypassScenario",
+        "isContinuous",
+        "HDRMode",
+        "RequestResultParams"
+      ],
+      "finding": "Public interfaces expose per-session sensor scenarios, continuous configuration and policy-produced request frame sets that could support mode switches without defining target seamless or in-sensor-zoom keys.",
+      "platformDifference": "No exact public symbol matches the target key names; this is a structural hypothesis rather than a semantic match.",
+      "equivalenceClaimed": false
+    },
+    {
+      "id": "galaga-kernel-camera-topology",
+      "sourceId": "nothing-galaga-kernel-2026-04",
+      "relation": "FLOW_ANALOGUE",
+      "targetFamilies": [
+        "CameraFlex/multicam",
+        "in-sensor zoom",
+        "seamless",
+        "logical-camera"
+      ],
+      "paths": [
+        "arch/arm64/boot/dts/mediatek/cust_mt6878_galaga_camera_v4l2.dtsi",
+        "drivers/media/platform/mtk-isp/Kconfig",
+        "drivers/misc/mediatek/imgsensor/Kconfig"
+      ],
+      "symbols": [
+        "sensor0",
+        "sensor1",
+        "sensor2",
+        "sensor3",
+        "VIDEO_MTK_ISP_CAMSYS",
+        "VIDEO_MTK_ISP_HCP",
+        "MTK_V4L2_IMGSENSOR"
+      ],
+      "finding": "Official Galaga source proves four wired sensor nodes and MT6878 camera/ISP interfaces below Android userspace.",
+      "platformDifference": "Kernel topology cannot identify the Android logical-camera policy, public camera IDs, vendor-tag semantics or stock routing decisions.",
+      "equivalenceClaimed": false
+    },
+    {
+      "id": "nothing-specific-no-public-match",
+      "sourceId": "chromeos-platform-camera-head-2026-01",
+      "relation": "STRUCTURAL_ANALOGUE",
+      "targetFamilies": [
+        "nothing.camera.eis",
+        "nothing.camera.hint",
+        "nothing.camera.soisParams"
+      ],
+      "paths": [
+        "hal/mediatek/mtkcam/"
+      ],
+      "symbols": [
+        "NO_EXACT_PUBLIC_SYMBOL_MATCH_RECORDED"
+      ],
+      "finding": "No exact public MediaTek or AOSP symbol match is recorded for the three Nothing-specific target families.",
+      "platformDifference": "These keys remain target-only unknowns; similarly named EIS or tuning components must not be used to infer their types or values.",
+      "equivalenceClaimed": false
+    }
+  ],
+  "platformDifferences": [
+    {
+      "id": "different-soc-and-isp-generation",
+      "statement": "Most indexed ChromiumOS content is MT8183-era, while Galaga uses MT6878 and the official kernel tree exposes ISP7SP-era components.",
+      "consequence": "Class names and flow structure may transfer as hypotheses, but enum values, nodes, metadata layouts and feature support may not."
+    },
+    {
+      "id": "camera1-versus-camera2-control-surfaces",
+      "statement": "Several public matches are legacy Camera1 string parameters, whereas the target inventory is Camera2 characteristic/request/result/session metadata.",
+      "consequence": "Name similarity cannot establish native metadata type, direction, valid values or writeability."
+    },
+    {
+      "id": "chromeos-versus-android-service-boundary",
+      "statement": "ChromeOS integrates the HAL through Mojo and sandboxed camera-algorithm IPC, while the target runs an Android 16 CameraProvider/CameraService stack.",
+      "consequence": "IPC adapters and process boundaries are structural analogues, not target call paths."
+    },
+    {
+      "id": "public-source-age",
+      "statement": "The detailed public MediaTek content revisions predate the 2026 Galaga firmware and may represent older middleware generations.",
+      "consequence": "Every target inference requires runtime or build-matched binary confirmation."
+    },
+    {
+      "id": "kernel-userspace-gap",
+      "statement": "Official Galaga kernel source exposes sensors and ISP interfaces but omits the exact provider, feature graph, vendor-tag table, tuning and stock application.",
+      "consequence": "Kernel source cannot close userspace routing or vendor-key research."
+    },
+    {
+      "id": "logical-camera-not-public-route-proof",
+      "statement": "Public logical-camera abstractions and four wired Galaga sensor nodes do not prove third-party access to auxiliary optics.",
+      "consequence": "Public IDs, physical metadata, package identity and stock-only routes must remain separately tested."
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "hyp-mfnr-ais-mode-selection",
+      "targetFamilies": [
+        "mediatek.mfnrfeature",
+        "MFNR/AIS"
+      ],
+      "evidenceMatchIds": [
+        "mtk-mfb-ais-parameter-family",
+        "mtk-capture-feature-graph"
+      ],
+      "claim": "Target MFB values may select MFNR, AIS or automatic multi-frame policy before capture-graph construction.",
+      "testProtocol": "Use the typed-key runtime trace and guarded probe harness to compare accepted values against burst frame count, exposure spread, motion sensitivity, result metadata and output latency on public camera ID 0.",
+      "expectedObservations": [
+        "Mode-dependent frame count or capture latency",
+        "Consistent request/result value echo or feature-result marker"
+      ],
+      "falsifier": "All accepted values produce indistinguishable single-frame requests and no correlated result or timing change across repeated trials.",
+      "relatedIssues": [
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        64
+      ]
+    },
+    {
+      "id": "hyp-hdr-value-six",
+      "targetFamilies": [
+        "mediatek.hdrfeature",
+        "HDR"
+      ],
+      "evidenceMatchIds": [
+        "mtk-hdr-sensor-enums",
+        "mtk-capture-feature-graph"
+      ],
+      "claim": "The target advertised HDR value 6 may select a middleware feature mode rather than directly reuse historical sensor VHDR enum values.",
+      "testProtocol": "Record stock and guarded-probe requests with synchronized capture results, sensor exposure times, gains, frame count, sensor mode/scenario and output histograms.",
+      "expectedObservations": [
+        "Multiple exposure groups or HDR-specific feature frames",
+        "A stable value-to-result or value-to-sensor-scenario correlation"
+      ],
+      "falsifier": "Value 6 is rejected, ignored, or consistently produces no metadata, exposure, frame-count or output difference from value 0.",
+      "relatedIssues": [
+        55,
+        56,
+        57,
+        58,
+        59,
+        61,
+        64
+      ]
+    },
+    {
+      "id": "hyp-zsl-prerelease-policy",
+      "targetFamilies": [
+        "mediatek.control",
+        "ZSL/postview/prerelease"
+      ],
+      "evidenceMatchIds": [
+        "mtk-feature-setting-and-zsl-policy"
+      ],
+      "claim": "Target ZSL, postview and prerelease keys may govern buffer selection and request-policy branches rather than optical routing.",
+      "testProtocol": "Trace request creation, image/result timestamps, selected ZSL timestamp, postview stream configuration and background-service request keys during stock still capture.",
+      "expectedObservations": [
+        "ZSL timestamp selects a prior converged frame",
+        "Postview or prerelease changes buffer/session behavior without changing physical focal length"
+      ],
+      "falsifier": "The keys never appear in stock requests/results and guarded changes do not alter timestamps, buffers, session configuration or latency.",
+      "relatedIssues": [
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        64
+      ]
+    },
+    {
+      "id": "hyp-cameraflex-logical-policy",
+      "targetFamilies": [
+        "mediatek.cameraflex",
+        "mediatek.multicamfeature",
+        "CameraFlex/multicam"
+      ],
+      "evidenceMatchIds": [
+        "mtk-logical-camera-and-sync",
+        "galaga-kernel-camera-topology"
+      ],
+      "claim": "CameraFlex and multicamera metadata may configure a proprietary logical-device policy over the four wired Galaga sensors.",
+      "testProtocol": "Compare stock 0.6x/1x/2x sessions using key-type traces, CameraService/Binder metadata, logical/physical result IDs, sensor timestamps and package-identity-controlled launches.",
+      "expectedObservations": [
+        "Session-only key changes correlate with physical sensor activation",
+        "Logical result or synchronization behavior differs by stock route"
+      ],
+      "falsifier": "Stock optical route changes occur with no CameraFlex/multicam metadata, logical/physical metadata, or sensor-activation correlation.",
+      "relatedIssues": [
+        26,
+        28,
+        29,
+        31,
+        35,
+        55,
+        57,
+        58,
+        69
+      ]
+    },
+    {
+      "id": "hyp-insensorzoom-seamless-scenario",
+      "targetFamilies": [
+        "mediatek.insensorzoomfeature",
+        "mediatek.seamlessfeature",
+        "in-sensor zoom",
+        "seamless"
+      ],
+      "evidenceMatchIds": [
+        "mtk-in-sensor-zoom-and-seamless-analogue",
+        "galaga-kernel-camera-topology"
+      ],
+      "claim": "In-sensor zoom and seamless keys may select sensor scenarios or crop/remosaic modes while retaining one logical session.",
+      "testProtocol": "Trace stock zoom transitions and guarded probes while recording sensor mode IDs, crop regions, active physical sensor, focal length, remosaic metadata, session recreation and frame discontinuities.",
+      "expectedObservations": [
+        "Scenario/crop changes without a full camera reopen",
+        "A vendor-key transition precedes or accompanies sensor-mode or physical-route change"
+      ],
+      "falsifier": "All optical transitions require full reopen or occur without any target key, sensor-scenario, crop or remosaic correlation.",
+      "relatedIssues": [
+        28,
+        31,
+        35,
+        55,
+        57,
+        58,
+        59,
+        60,
+        61
+      ]
+    },
+    {
+      "id": "hyp-isp-tuning-reprocess-graph",
+      "targetFamilies": [
+        "mediatek.control",
+        "ISP tuning/reprocess"
+      ],
+      "evidenceMatchIds": [
+        "mtk-capture-feature-graph",
+        "mtk-v4l2-request-managers"
+      ],
+      "claim": "Target ISP tuning, raw-reprocess and frame-index hints may feed feature-graph/P2 request construction rather than directly control the sensor.",
+      "testProtocol": "Correlate stock request keys and result blobs with capture graph frame indices, raw/YUV inputs, P2 request timing, output format and ISP metadata sizes.",
+      "expectedObservations": [
+        "Frame-index/tuning-index sequences align with a multi-frame capture",
+        "ISP metadata appears on P2/reprocess paths rather than sensor controls"
+      ],
+      "falsifier": "The keys map only to sensor controls or show no consistent relation to P2, reprocess, frame indexing or ISP metadata.",
+      "relatedIssues": [
+        31,
+        48,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        64
+      ]
+    },
+    {
+      "id": "hyp-nothing-eis-sois-private-extension",
+      "targetFamilies": [
+        "nothing.camera.eis",
+        "nothing.camera.soisParams"
+      ],
+      "evidenceMatchIds": [
+        "mtk-streaming-feature-graph",
+        "nothing-specific-no-public-match"
+      ],
+      "claim": "Nothing-specific EIS/SOIS metadata likely extends or parameterizes a streaming stabilization path but has no safe public enum mapping.",
+      "testProtocol": "Capture stock video/preview traces with stabilization toggles and compare key types, request values, crop margins, gyro/EIS metadata, frame latency and session configuration.",
+      "expectedObservations": [
+        "Nothing key changes correlate with stabilization mode or crop/latency",
+        "The native type remains stable across routes and builds"
+      ],
+      "falsifier": "The keys are absent from stock stabilization flows or changes do not correlate with stabilization, crop, gyro, latency or output motion.",
+      "relatedIssues": [
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        63
+      ]
+    },
+    {
+      "id": "hyp-3a-ipc-target-boundary",
+      "targetFamilies": [
+        "mediatek.3afeature",
+        "3A IPC"
+      ],
+      "evidenceMatchIds": [
+        "mtk-3a-ipc-boundary"
+      ],
+      "claim": "Galaga may retain a separate MediaTek 3A control boundary even though its Android process and transport differ from ChromeOS.",
+      "testProtocol": "Use build-matched process maps, Binder/IPC traces, library imports and synchronized 3A request/result metadata to identify the first userspace component consuming AE/AWB/AF vendor controls.",
+      "expectedObservations": [
+        "A distinct 3A service/library boundary receives per-frame controls",
+        "3A result metadata is emitted after that boundary"
+      ],
+      "falsifier": "All 3A logic is in-process with the provider and no separate transport, service or library boundary is observable.",
+      "relatedIssues": [
+        47,
+        48,
+        53,
+        55,
+        58,
+        69
+      ]
+    }
+  ],
+  "nonClaims": [
+    "A matching class, parameter or enum name does not prove identical numeric values, native metadata types or runtime effects on Galaga.",
+    "The public MT8183-era ChromeOS implementation is not treated as source for the Android 16 MT6878 proprietary HAL.",
+    "Four wired sensors in the Galaga device tree do not prove that third-party applications can open four public or physical camera IDs.",
+    "The index does not authorize writing unknown vendor keys; guarded probes remain subject to typed-key and safety policies.",
+    "The absence of an exact public symbol match does not prove that a target feature is implemented only by Nothing.",
+    "This cross-reference does not close the typed vendor-tag database, build-matched firmware, stock-app or target-binary issues."
+  ],
+  "maintenance": {
+    "updateTriggers": [
+      "A new official Galaga source release or exact 2606151653 source drop appears",
+      "The target firmware or stock camera package changes",
+      "Runtime traces establish native types, values or effects for an indexed family",
+      "A newer public MediaTek implementation exposes a closer MT6878/ISP7SP analogue"
+    ],
+    "validationTool": "tools/validate-mediatek-public-cross-reference.py",
+    "document": "docs/MEDIATEK_PUBLIC_CAMERA_CROSS_REFERENCE.md"
+  }
+}
