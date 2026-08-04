@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "issue": 36,
+  "referenceVersion": "2026.08.04-1",
+  "status": "STATIC_APK_JNI_AND_LIBRARY_INVENTORY",
+  "apk": {
+    "fileName": "Camera-16.1.01.93.20.apk",
+    "versionName": "16.1.01.93.20",
+    "sha256": "f78368e303033d49c5564b1287f51ef2bf5dde53db4687a08bfb20aa64a8eeea",
+    "sizeBytes": 139444700
+  },
+  "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+  "summary": {
+    "dexFileCount": 7,
+    "nativeMethodCount": 794,
+    "nativeOwningClassCount": 90,
+    "loadSiteCount": 69,
+    "packagedArm64LibraryCount": 77,
+    "exportedJniSymbolCount": 524,
+    "exactExportMatchedMethodCount": 501,
+    "unresolvedNativeMethodCount": 293,
+    "dynamicRegistrationCandidateLibraryCount": 6,
+    "candidateNativeHandleFieldCount": 52,
+    "candidateCallbackSurfaceCount": 8,
+    "parseErrorCount": 0
+  },
+  "dexFiles": [
+    {
+      "name": "classes.dex",
+      "sizeBytes": 13419500,
+      "sha256": "a326b44d924bfe0d679db9450d2a7bf1a3385b12c59e91c8bb3fdc91fd524661",
+      "definedMethodCount": 57895,
+      "nativeMethodCount": 6
+    },
+    {
+      "name": "classes2.dex",
+      "sizeBytes": 560,
+      "sha256": "b3717bf7a09f8a414a094f93fdd36cfc02bcd61b1b78a55bfe9e197dff0b7632",
+      "definedMethodCount": 1,
+      "nativeMethodCount": 0
+    },
+    {
+      "name": "classes3.dex",
+      "sizeBytes": 9766472,
+      "sha256": "059045cdbf6651e25b0393dd59a832898eb25ba161f33e946cf580bc98c475fd",
+      "definedMethodCount": 55060,
+      "nativeMethodCount": 8
+    },
+    {
+      "name": "classes4.dex",
+      "sizeBytes": 9386616,
+      "sha256": "2c02f2c501ca87f253a30eb8aa7cc29b92a007dbf7ff66f7a81b2f0e7b2ce0fc",
+      "definedMethodCount": 52182,
+      "nativeMethodCount": 416
+    },
+    {
+      "name": "classes5.dex",
+      "sizeBytes": 7600320,
+      "sha256": "46f7266c3294b63c4958cdf672d20dd6de72351b6819901acae9437179b66fd0",
+      "definedMethodCount": 42799,
+      "nativeMethodCount": 306
+    },
+    {
+      "name": "classes6.dex",
+      "sizeBytes": 9211472,
+      "sha256": "ec8622ad999c50e85d0821d5c3e4bec53e577f7d1ea5f3365069efbba24e0604",
+      "definedMethodCount": 57681,
+      "nativeMethodCount": 58
+    },
+    {
+      "name": "classes7.dex",
+      "sizeBytes": 5476564,
+      "sha256": "c487b7049af55405a0c4ec770c042167eb93128c5ce1ec37f69684102384c230",
+      "definedMethodCount": 54603,
+      "nativeMethodCount": 0
+    }
+  ],
+  "priorityCounts": {
+    "GENERAL_NATIVE_DEPENDENCY": 345,
+    "HIGH_CAMERA_ROUTING_OR_ISP": 207,
+    "MEDIUM_IMAGE_PROCESSING": 242
+  },
+  "parts": {
+    "compressedInventory": "inventory.v1.json.zlib.b64"
+  },
+  "firmwareIssueLinks": {
+    "libraryInventoryIssue": 48,
+    "symbolRecoveryIssue": 49,
+    "nativeHookIssue": 41
+  },
+  "evidenceRules": [
+    "EXACT_EXPORTED_JNI_SYMBOL_MATCH links a Java declaration to a packaged APK library export and records its ELF virtual-address offset.",
+    "UNRESOLVED_OR_DYNAMIC_REGISTRATION does not mean unimplemented; RegisterNatives, JNI_OnLoad, reflection, generated bindings, stripped exports or firmware libraries may own the method.",
+    "System.loadLibrary literal candidates are method-local static strings; only exact packaged-library stem matches are promoted.",
+    "Candidate native handles and callbacks are naming-based hook targets, not proof of native ownership or runtime use.",
+    "APK libraries are app-bundled processing dependencies; firmware HAL/ISP libraries remain outside this APK-only issue and are linked to issues #48 and #49."
+  ],
+  "parseErrors": [],
+  "encoding": {
+    "format": "base64(zlib(utf8-json))",
+    "decodedSha256": "27fcf5bb0eb6fb7b37ec6efe9736d0b264d0adda4ac9849d5597ea4f49ade014",
+    "decodedSizeBytes": 743658
+  }
+}
