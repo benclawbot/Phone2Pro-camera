@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "referenceVersion": "2026.08.04-1",
+  "interfaces": [
+    {
+      "id": "permission-system-camera",
+      "category": "PERMISSION",
+      "layer": "PACKAGE_POLICY",
+      "owner": "Android framework / OEM permission policy",
+      "process": "package manager, AppOps, cameraserver",
+      "interfaceType": "manifest permission / policy check",
+      "methodOrSymbol": "android.permission.SYSTEM_CAMERA and related caller eligibility",
+      "direction": "policy",
+      "identityRequirements": ["Privileged/system authorization; exact stock grants, allowlists, roles and AppOps remain unresolved"],
+      "status": "BOUNDARY_OBSERVED",
+      "confidence": "PARTIALLY_VERIFIED",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "description": "Ordinary callers are denied system-only characteristics. The precise stock package authorization recipe is not yet recovered.",
+      "evidence": ["system-camera-filtering", "privilege-boundaries"],
+      "opaqueBoundary": false,
+      "replacementUse": "DEPLOYMENT_SEPARATION",
+      "versionDifferences": "No second exact firmware build is available for behavioral comparison."
+    },
+    {
+      "id": "selinux-camera-boundary",
+      "category": "SELINUX",
+      "layer": "MANDATORY_ACCESS_CONTROL",
+      "owner": "Nothing/MediaTek SELinux policy",
+      "process": "app domain, cameraserver, provider/HAL, vendor services and kernel device domains",
+      "interfaceType": "SELinux allow rules / service_manager / binder / chr_file",
+      "methodOrSymbol": "Exact target types and allow rules UNKNOWN",
+      "direction": "policy",
+      "identityRequirements": ["Caller/process domain and object type; independent from package permissions"],
+      "status": "UNRESOLVED",
+      "confidence": "UNKNOWN",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "description": "No target policy extraction or runtime AVC denial set is committed. SELinux must not be claimed as the first rejection for IDs 2 through 5.",
+      "evidence": ["privilege-boundaries", "system-camera-filtering"],
+      "opaqueBoundary": true,
+      "replacementUse": "NO_POLICY_BYPASS_ASSUMPTION",
+      "versionDifferences": "No second exact firmware build is available for behavioral comparison."
+    },
+    {
+      "id": "isp-tuning-firmware",
+      "category": "ISP_TUNING",
+      "layer": "PROPRIETARY_PIPELINE",
+      "owner": "MediaTek/Nothing ISP and tuning owners",
+      "process": "provider/HAL, ISP services and firmware processors",
+      "interfaceType": "proprietary metadata buffers, tuning blobs and native service calls",
+      "methodOrSymbol": "Exact services, symbols, layouts and contracts UNKNOWN",
+      "direction": "internal",
+      "identityRequirements": ["Vendor service/HAL identity; proprietary firmware contracts; potentially signed tuning data"],
+      "status": "UNRESOLVED",
+      "confidence": "UNKNOWN",
+      "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "description": "No stable application-level ISP/tuning contract has been causally reproduced. Independent processing remains the replacement path.",
+      "evidence": ["privilege-boundary-document", "vendor-api-reference"],
+      "opaqueBoundary": true,
+      "replacementUse": "INDEPENDENT_PROCESSING_ONLY",
+      "versionDifferences": "No second exact firmware build is available for behavioral comparison."
+    }
+  ]
+}
