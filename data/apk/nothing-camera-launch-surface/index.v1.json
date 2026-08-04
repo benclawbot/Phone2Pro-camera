@@ -23,8 +23,21 @@
     "parseErrorCount": 0
   },
   "parts": {
-    "routes": "routes.v1.json",
-    "parameters": "parameters.v1.tsv"
+    "core": "core.v1.json",
+    "normalizers": [
+      "normalizers-01.v1.json",
+      "normalizers-02.v1.json",
+      "normalizers-03.v1.json",
+      "normalizers-04.v1.json"
+    ],
+    "state": "state.v1.json",
+    "parameters": [
+      "parameters-01.v1.tsv",
+      "parameters-02.v1.tsv",
+      "parameters-03.v1.tsv",
+      "parameters-04.v1.tsv",
+      "parameters-05.v1.tsv"
+    ]
   },
   "sourceLinks": [
     "data/apk/nothing-camera-manifest/activities.v1.json",
