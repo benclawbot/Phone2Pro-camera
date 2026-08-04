@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "referenceVersion": "2026.08.04-1",
+  "issue": 97,
+  "status": "GENERATED_FROM_TYPED_VENDOR_TAG_DATABASE",
+  "sourceDatabaseManifest": "data/vendor-tags/database.v1.json",
+  "sourceDatabaseBuilder": "tools/build-vendor-tag-database.py",
+  "builder": "tools/build-vendor-api-reference.py",
+  "validator": "tools/validate-vendor-api-reference.py",
+  "document": "docs/VENDOR_API_REFERENCE.md",
+  "confidenceVocabulary": [
+    "VERIFIED",
+    "PARTIALLY_VERIFIED",
+    "HYPOTHESIS",
+    "UNKNOWN"
+  ],
+  "orderingProfiles": {
+    "characteristic": {
+      "phase": "AFTER_CAMERA_CHARACTERISTICS_QUERY",
+      "rule": "Read only after CameraManager returns CameraCharacteristics for the named camera ID.",
+      "confidence": "VERIFIED"
+    },
+    "session": {
+      "phase": "BEFORE_SESSION_CREATION",
+      "rule": "Apply only as a session parameter before createCaptureSession; changing it requires session recreation unless a target trace proves otherwise.",
+      "confidence": "PARTIALLY_VERIFIED"
+    },
+    "request": {
+      "phase": "BEFORE_REQUEST_BUILD",
+      "rule": "Apply to the intended CaptureRequest.Builder after template creation and before build or submission.",
+      "confidence": "PARTIALLY_VERIFIED"
+    },
+    "physical-request": {
+      "phase": "BEFORE_REQUEST_BUILD_FOR_PHYSICAL_ID",
+      "rule": "Apply only through a physical-camera request path for the named physical ID; ordinary logical-camera use is unsupported until verified.",
+      "confidence": "HYPOTHESIS"
+    },
+    "result": {
+      "phase": "AFTER_CAPTURE_RESULT",
+      "rule": "Read only from the matching CaptureResult or TotalCaptureResult after result delivery.",
+      "confidence": "VERIFIED"
+    }
+  },
+  "failureTaxonomy": [
+    {
+      "id": "TYPE_MISMATCH",
+      "description": "The Java/native metadata type or array shape does not match the target implementation.",
+      "confidence": "VERIFIED"
+    },
+    {
+      "id": "UNSUPPORTED_VALUE",
+      "description": "The value is rejected, clamped, ignored or outside the advertised target-build domain.",
+      "confidence": "PARTIALLY_VERIFIED"
+    },
+    {
+      "id": "SESSION_CONFIGURATION_FAILURE",
+      "description": "A session-scoped key or incompatible stream combination prevents session configuration.",
+      "confidence": "HYPOTHESIS"
+    },
+    {
+      "id": "REQUEST_REJECTION",
+      "description": "The framework, service or HAL rejects a request containing the key.",
+      "confidence": "HYPOTHESIS"
+    },
+    {
+      "id": "ACCEPTED_NO_EFFECT",
+      "description": "Metadata is accepted but no effective image-pipeline or routing change is measured.",
+      "confidence": "PARTIALLY_VERIFIED"
+    },
+    {
+      "id": "DEVICE_ERROR_OR_TIMEOUT",
+      "description": "The camera device disconnects, errors, stalls or exceeds the guarded probe timeout.",
+      "confidence": "HYPOTHESIS"
+    }
+  ],
+  "productionPolicy": {
+    "currentProductionWriteKeys": [],
+    "requireTargetVerifiedType": true,
+    "requireTargetVerifiedValue": true,
+    "requireMeasuredEffect": true,
+    "requireRollbackTest": true,
+    "requireBuildFingerprintMatch": true,
+    "fallback": "PUBLIC_CAMERA2_WITHOUT_VENDOR_WRITES"
+  },
+  "interpretationRules": [
+    "Every materialized vendor-tag record must have explicit type, value, ordering, dependency, effect, error, build-scope and safety fields even when the value is UNKNOWN.",
+    "Advertisement in CameraCharacteristics is read evidence only and never proves that an ordinary application may write a key.",
+    "Public MediaTek source matches are PARTIALLY_VERIFIED hints until the target firmware metadata or matching target binary confirms them.",
+    "Candidate routing objectives remain HYPOTHESIS until a one-variable target-device probe measures a causal effect.",
+    "No key may expose write sample configuration unless its type, value, effect, rollback and exact-build scope are VERIFIED.",
+    "Unsupported or unknown writes must remain disabled and must name the public Camera2 fallback."
+  ]
+}
