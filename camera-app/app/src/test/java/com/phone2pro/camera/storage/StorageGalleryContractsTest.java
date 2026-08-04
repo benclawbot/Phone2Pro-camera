@@ -14,12 +14,18 @@ public final class StorageGalleryContractsTest {
 
     @Test
     public void pendingAssetRemainsHiddenUntilAtomicPublication() {
-        CaptureAssetRecord record = reserved(100L);
-        assertFalse(record.lifecycle().visibleToOtherApps());
-        expectIllegalState(() -> ThumbnailReference.fromPublished(record));
-        expectIllegalState(() -> ViewerIntentSpec.forPublished(record));
+        CaptureAssetRecord reserved = reserved(100L);
+        assertFalse(reserved.lifecycle().visibleToOtherApps());
+        expectIllegalState(() -> ThumbnailReference.fromPublished(reserved));
+        expectIllegalState(() -> ViewerIntentSpec.forPublished(reserved));
 
-        record = lifecycle.transition(record, AssetLifecycle.WRITING, false, 110L, null);
+        CaptureAssetRecord record = lifecycle.transition(
+                reserved,
+                AssetLifecycle.WRITING,
+                false,
+                110L,
+                null
+        );
         record = lifecycle.transition(record, AssetLifecycle.PROCESSING, true, 120L, null);
         record = lifecycle.transition(record, AssetLifecycle.READY_TO_PUBLISH, true, 130L, null);
         assertFalse(record.lifecycle().visibleToOtherApps());
@@ -95,6 +101,22 @@ public final class StorageGalleryContractsTest {
         assertTrue(plan.included().contains(MetadataField.PROCESSING_XMP));
         assertTrue(plan.omittedForPrivacy().contains(MetadataField.DEVICE_MAKE_MODEL));
         assertTrue(plan.omittedForPrivacy().contains(MetadataField.DIAGNOSTIC_XMP));
+    }
+
+    @Test
+    public void fullyEnabledMetadataPolicyAllowsEmptyPrivacyOmissionSet() {
+        MetadataWritePlan plan = MetadataWritePlan.from(new MetadataPrivacyPolicy(
+                true,
+                true,
+                true,
+                true
+        ));
+
+        assertTrue(plan.omittedForPrivacy().isEmpty());
+        assertTrue(plan.included().contains(MetadataField.LOCATION));
+        assertTrue(plan.included().contains(MetadataField.DEVICE_MAKE_MODEL));
+        assertTrue(plan.included().contains(MetadataField.DIAGNOSTIC_XMP));
+        assertTrue(plan.included().contains(MetadataField.PROCESSING_XMP));
     }
 
     @Test
