@@ -1,0 +1,440 @@
+{
+  "schemaVersion": 1,
+  "routingVersion": "2026.08.04-1",
+  "device": {
+    "marketingName": "CMF Phone 2 Pro",
+    "codename": "galaga",
+    "buildScope": "galaga-observed-builds"
+  },
+  "routes": [
+    {
+      "id": "stock.expert.main.1x",
+      "trigger": {
+        "surface": "STOCK_EXPERT_UI",
+        "action": "SELECT_1X"
+      },
+      "status": "BOUNDED",
+      "privilege": {
+        "required": true,
+        "identity": "STOCK_CAMERA_PACKAGE"
+      },
+      "mechanism": "STOCK_INTERNAL_ROUTE",
+      "rendering": "OPTICAL",
+      "target": {
+        "opticalRoute": "main",
+        "cameraId": "0",
+        "activePhysicalSensor": "UNKNOWN",
+        "sensorScenario": "UNKNOWN"
+      },
+      "steps": [
+        {
+          "order": 1,
+          "layer": "USER_INTENT",
+          "action": "Expert mode 1× button selected",
+          "evidence": ["camera-app/app/src/main/java/com/phone2pro/camera/core/OpticalRoute.java"]
+        },
+        {
+          "order": 2,
+          "layer": "STOCK_APP",
+          "action": "Stock controller selects the main route state",
+          "evidence": ["issue:#30", "issue:#32"]
+        },
+        {
+          "order": 3,
+          "layer": "PUBLIC_API",
+          "action": "Public rear endpoint 0 is the verified ordinary-app main route",
+          "evidence": ["issue:#17", "docs/architecture/CAMERA_BACKEND_CONTRACTS.md"]
+        },
+        {
+          "order": 4,
+          "layer": "OUTPUT",
+          "action": "Observed main output geometry is 4080x3072",
+          "evidence": ["camera-app/app/src/main/java/com/phone2pro/camera/core/OpticalRoute.java"]
+        }
+      ],
+      "opaqueBoundary": {
+        "afterStep": 2,
+        "beforeStep": 3,
+        "description": "The exact stock controller, session-builder and request sequence that resolves the 1× state to the concrete endpoint remains incompletely traced."
+      },
+      "fallback": null,
+      "unknownIssues": [30, 34, 39, 43]
+    },
+    {
+      "id": "stock.expert.ultrawide.0.6x",
+      "trigger": {
+        "surface": "STOCK_EXPERT_UI",
+        "action": "SELECT_0_6X"
+      },
+      "status": "BOUNDED",
+      "privilege": {
+        "required": true,
+        "identity": "STOCK_CAMERA_PACKAGE"
+      },
+      "mechanism": "STOCK_INTERNAL_ROUTE",
+      "rendering": "OPTICAL",
+      "target": {
+        "opticalRoute": "ultrawide",
+        "cameraId": "UNKNOWN_SYSTEM_OR_VENDOR_ROUTE",
+        "activePhysicalSensor": "UNKNOWN",
+        "sensorScenario": "UNKNOWN"
+      },
+      "steps": [
+        {
+          "order": 1,
+          "layer": "USER_INTENT",
+          "action": "Expert mode 0.6× button selected",
+          "evidence": ["camera-app/app/src/main/java/com/phone2pro/camera/core/OpticalRoute.java"]
+        },
+        {
+          "order": 2,
+          "layer": "STOCK_APP",
+          "action": "Stock controller selects the ultrawide route state",
+          "evidence": ["issue:#30", "issue:#32"]
+        },
+        {
+          "order": 3,
+          "layer": "OPAQUE_BOUNDARY",
+          "action": "Stock identity reaches a system, vendor or hidden routing mechanism unavailable to an ordinary app",
+          "evidence": ["docs/architecture/CAMERA_BACKEND_CONTRACTS.md", "issue:#17"]
+        },
+        {
+          "order": 4,
+          "layer": "OUTPUT",
+          "action": "Observed ultrawide output geometry is 3264x2448",
+          "evidence": ["camera-app/app/src/main/java/com/phone2pro/camera/core/OpticalRoute.java"]
+        }
+      ],
+      "opaqueBoundary": {
+        "afterStep": 2,
+        "beforeStep": 4,
+        "description": "The concrete camera ID, logical/SAT policy, sensor scenario and active physical sensor are not yet reproduced outside the stock identity."
+      },
+      "fallback": null,
+      "unknownIssues": [32, 39, 40, 44, 64, 65, 71, 72]
+    },
+    {
+      "id": "stock.expert.telephoto.2x",
+      "trigger": {
+        "surface": "STOCK_EXPERT_UI",
+        "action": "SELECT_2X"
+      },
+      "status": "BOUNDED",
+      "privilege": {
+        "required": true,
+        "identity": "STOCK_CAMERA_PACKAGE"
+      },
+      "mechanism": "STOCK_INTERNAL_ROUTE",
+      "rendering": "OPTICAL",
+      "target": {
+        "opticalRoute": "telephoto",
+        "cameraId": "UNKNOWN_SYSTEM_OR_VENDOR_ROUTE",
+        "activePhysicalSensor": "UNKNOWN",
+        "sensorScenario": "UNKNOWN"
+      },
+      "steps": [
+        {
+          "order": 1,
+          "layer": "USER_INTENT",
+          "action": "Expert mode 2× button selected",
+          "evidence": ["camera-app/app/src/main/java/com/phone2pro/camera/core/OpticalRoute.java"]
+        },
+        {
+          "order": 2,
+          "layer": "STOCK_APP",
+          "action": "Stock controller selects the telephoto route state",
+          "evidence": ["issue:#30", "issue:#32"]
+        },
+        {
+          "order": 3,
+          "layer": "OPAQUE_BOUNDARY",
+          "action": "Stock identity reaches a system, vendor or hidden routing mechanism unavailable to an ordinary app",
+          "evidence": ["docs/architecture/CAMERA_BACKEND_CONTRACTS.md", "issue:#17"]
+        },
+        {
+          "order": 4,
+          "layer": "OUTPUT",
+          "action": "Observed telephoto output geometry is 4096x3072",
+          "evidence": ["camera-app/app/src/main/java/com/phone2pro/camera/core/OpticalRoute.java"]
+        }
+      ],
+      "opaqueBoundary": {
+        "afterStep": 2,
+        "beforeStep": 4,
+        "description": "The concrete camera ID, logical/SAT policy, sensor scenario and active physical sensor are not yet reproduced outside the stock identity."
+      },
+      "fallback": null,
+      "unknownIssues": [32, 39, 40, 44, 64, 65, 71, 72]
+    },
+    {
+      "id": "external.widget.stock-handoff",
+      "trigger": {
+        "surface": "EXTERNAL_WIDGET_OR_SHORTCUT",
+        "action": "LAUNCH_STOCK_CAMERA_WITH_ROUTE_STATE"
+      },
+      "status": "BOUNDED",
+      "privilege": {
+        "required": false,
+        "identity": "ORDINARY_CALLER_TO_EXPORTED_HANDOFF"
+      },
+      "mechanism": "STOCK_CAMERA_HANDOFF",
+      "rendering": "UNKNOWN",
+      "target": {
+        "opticalRoute": "REQUEST_DEPENDENT",
+        "cameraId": "NOT_DIRECTLY_EXPOSED",
+        "activePhysicalSensor": "UNKNOWN",
+        "sensorScenario": "UNKNOWN"
+      },
+      "steps": [
+        {
+          "order": 1,
+          "layer": "USER_INTENT",
+          "action": "External widget or shortcut launches a stock-camera entry point",
+          "evidence": ["issue:#33"]
+        },
+        {
+          "order": 2,
+          "layer": "STOCK_APP",
+          "action": "Stock app parses and normalizes route or mode state",
+          "evidence": ["issue:#33"]
+        },
+        {
+          "order": 3,
+          "layer": "OPAQUE_BOUNDARY",
+          "action": "Internal stock route selection proceeds under stock identity",
+          "evidence": ["docs/architecture/CAMERA_BACKEND_CONTRACTS.md"]
+        }
+      ],
+      "opaqueBoundary": {
+        "afterStep": 2,
+        "beforeStep": 3,
+        "description": "External launch proves a handoff mechanism, not direct ordinary-app access to the selected camera endpoint."
+      },
+      "fallback": {
+        "routeId": "public.direct.id0.main",
+        "condition": "Stock handoff unavailable or user declines leaving the replacement app",
+        "transparency": "REQUIRED"
+      },
+      "unknownIssues": [33, 96]
+    },
+    {
+      "id": "public.direct.id0.main",
+      "trigger": {
+        "surface": "ORDINARY_APP",
+        "action": "OPEN_CAMERA_ID_0"
+      },
+      "status": "COMPLETE",
+      "privilege": {
+        "required": false,
+        "identity": "ORDINARY_APP"
+      },
+      "mechanism": "PUBLIC_CAMERA2",
+      "rendering": "OPTICAL",
+      "target": {
+        "opticalRoute": "main",
+        "cameraId": "0",
+        "activePhysicalSensor": "MAIN_ROUTE",
+        "sensorScenario": "PUBLIC_DEFAULT"
+      },
+      "steps": [
+        {
+          "order": 1,
+          "layer": "APP",
+          "action": "Route backend resolves main to public endpoint 0",
+          "evidence": ["docs/architecture/CAMERA_BACKEND_CONTRACTS.md"]
+        },
+        {
+          "order": 2,
+          "layer": "PUBLIC_API",
+          "action": "CameraManager opens camera ID 0 under ordinary-app identity",
+          "evidence": ["issue:#17"]
+        },
+        {
+          "order": 3,
+          "layer": "SESSION",
+          "action": "CameraX public or direct Camera2 binder creates a verified public configuration",
+          "evidence": ["docs/architecture/CAPTURE_SESSION_REQUEST_ENGINE.md"]
+        },
+        {
+          "order": 4,
+          "layer": "OUTPUT",
+          "action": "Main-route capture is stored through the replacement pipeline",
+          "evidence": ["docs/architecture/STORAGE_GALLERY_CONTRACTS.md"]
+        }
+      ],
+      "opaqueBoundary": null,
+      "fallback": null,
+      "unknownIssues": []
+    },
+    {
+      "id": "public.direct.id1.front",
+      "trigger": {
+        "surface": "ORDINARY_APP",
+        "action": "OPEN_CAMERA_ID_1"
+      },
+      "status": "COMPLETE",
+      "privilege": {
+        "required": false,
+        "identity": "ORDINARY_APP"
+      },
+      "mechanism": "PUBLIC_CAMERA2",
+      "rendering": "OPTICAL",
+      "target": {
+        "opticalRoute": "front",
+        "cameraId": "1",
+        "activePhysicalSensor": "FRONT_ROUTE",
+        "sensorScenario": "PUBLIC_DEFAULT"
+      },
+      "steps": [
+        {
+          "order": 1,
+          "layer": "PUBLIC_API",
+          "action": "CameraManager enumerates and opens camera ID 1",
+          "evidence": ["issue:#17"]
+        },
+        {
+          "order": 2,
+          "layer": "OUTPUT",
+          "action": "Front-camera output remains outside the current rear-route product scope",
+          "evidence": ["spec/camera-capability-matrix.v1.json"]
+        }
+      ],
+      "opaqueBoundary": null,
+      "fallback": null,
+      "unknownIssues": []
+    },
+    {
+      "id": "public.zoom.id0.digital",
+      "trigger": {
+        "surface": "ORDINARY_APP",
+        "action": "SET_PUBLIC_ZOOM_OR_CROP_ON_ID_0"
+      },
+      "status": "BOUNDED",
+      "privilege": {
+        "required": false,
+        "identity": "ORDINARY_APP"
+      },
+      "mechanism": "PUBLIC_ZOOM_OR_CROP",
+      "rendering": "DIGITAL",
+      "target": {
+        "opticalRoute": "main",
+        "cameraId": "0",
+        "activePhysicalSensor": "MAIN_ROUTE_UNLESS_PROVEN_OTHERWISE",
+        "sensorScenario": "UNKNOWN"
+      },
+      "steps": [
+        {
+          "order": 1,
+          "layer": "APP",
+          "action": "Replacement app requests CONTROL_ZOOM_RATIO or crop on public ID 0",
+          "evidence": ["issue:#20"]
+        },
+        {
+          "order": 2,
+          "layer": "PUBLIC_API",
+          "action": "Framework clamps, accepts or ignores the requested zoom/crop value",
+          "evidence": ["issue:#20"]
+        },
+        {
+          "order": 3,
+          "layer": "OUTPUT",
+          "action": "Result must be labelled digital unless sensor switching is independently proven",
+          "evidence": ["camera-app/app/src/main/java/com/phone2pro/camera/core/RouteRendering.java"]
+        }
+      ],
+      "opaqueBoundary": {
+        "afterStep": 2,
+        "beforeStep": 3,
+        "description": "Exact crop geometry, clamping, stabilization interaction and any sensor switching remain unmeasured."
+      },
+      "fallback": {
+        "routeId": "public.direct.id0.main",
+        "condition": "Zoom request rejected or ineffective",
+        "transparency": "REQUIRED"
+      },
+      "unknownIssues": [20]
+    },
+    {
+      "id": "replacement.ultrawide.request",
+      "trigger": {
+        "surface": "REPLACEMENT_APP",
+        "action": "REQUEST_ULTRAWIDE"
+      },
+      "status": "UNAVAILABLE",
+      "privilege": {
+        "required": true,
+        "identity": "UNREPRODUCED_STOCK_OR_SYSTEM_IDENTITY"
+      },
+      "mechanism": "UNAVAILABLE",
+      "rendering": "UNKNOWN",
+      "target": {
+        "opticalRoute": "ultrawide",
+        "cameraId": "UNRESOLVED",
+        "activePhysicalSensor": "UNRESOLVED",
+        "sensorScenario": "UNRESOLVED"
+      },
+      "steps": [
+        {
+          "order": 1,
+          "layer": "APP",
+          "action": "Route selector evaluates public, verified vendor, system handoff and unavailable backends",
+          "evidence": ["docs/architecture/CAMERA_BACKEND_CONTRACTS.md"]
+        },
+        {
+          "order": 2,
+          "layer": "APP",
+          "action": "No verified ordinary-app optical endpoint is selected",
+          "evidence": ["spec/camera-capability-matrix.v1.json"]
+        }
+      ],
+      "opaqueBoundary": null,
+      "fallback": {
+        "routeId": "public.direct.id0.main",
+        "condition": "User chooses a main-camera fallback instead of stock handoff",
+        "transparency": "REQUIRED_DIGITAL_OR_MAIN_LABEL"
+      },
+      "unknownIssues": [32, 44, 57, 64, 65, 71, 72]
+    },
+    {
+      "id": "replacement.telephoto.request",
+      "trigger": {
+        "surface": "REPLACEMENT_APP",
+        "action": "REQUEST_TELEPHOTO"
+      },
+      "status": "UNAVAILABLE",
+      "privilege": {
+        "required": true,
+        "identity": "UNREPRODUCED_STOCK_OR_SYSTEM_IDENTITY"
+      },
+      "mechanism": "UNAVAILABLE",
+      "rendering": "UNKNOWN",
+      "target": {
+        "opticalRoute": "telephoto",
+        "cameraId": "UNRESOLVED",
+        "activePhysicalSensor": "UNRESOLVED",
+        "sensorScenario": "UNRESOLVED"
+      },
+      "steps": [
+        {
+          "order": 1,
+          "layer": "APP",
+          "action": "Route selector evaluates public, verified vendor, system handoff and unavailable backends",
+          "evidence": ["docs/architecture/CAMERA_BACKEND_CONTRACTS.md"]
+        },
+        {
+          "order": 2,
+          "layer": "APP",
+          "action": "No verified ordinary-app optical endpoint is selected",
+          "evidence": ["spec/camera-capability-matrix.v1.json"]
+        }
+      ],
+      "opaqueBoundary": null,
+      "fallback": {
+        "routeId": "public.zoom.id0.digital",
+        "condition": "User explicitly accepts digital 2× framing",
+        "transparency": "REQUIRED_DIGITAL_LABEL"
+      },
+      "unknownIssues": [32, 44, 57, 64, 65, 71, 72]
+    }
+  ]
+}
