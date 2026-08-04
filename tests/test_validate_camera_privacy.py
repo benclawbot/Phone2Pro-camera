@@ -4,7 +4,8 @@ import tempfile
 import unittest
 
 
-SCRIPT = pathlib.Path(__file__).resolve().parents[1] / "tools" / "validate-camera-privacy.py"
+REPOSITORY_ROOT = pathlib.Path(__file__).resolve().parents[1]
+SCRIPT = REPOSITORY_ROOT / "tools" / "validate-camera-privacy.py"
 SPEC = importlib.util.spec_from_file_location("validate_camera_privacy", SCRIPT)
 MODULE = importlib.util.module_from_spec(SPEC)
 assert SPEC.loader is not None
@@ -33,6 +34,9 @@ class CameraPrivacyValidatorTest(unittest.TestCase):
   <application android:allowBackup="false" android:usesCleartextTraffic="false" />
 </manifest>
 """
+
+    def test_current_repository_passes(self):
+        self.assertEqual([], MODULE.validate(REPOSITORY_ROOT))
 
     def test_safe_camera_app_passes(self):
         self.assertEqual([], MODULE.validate(self.make_repo(self.safe_manifest())))
