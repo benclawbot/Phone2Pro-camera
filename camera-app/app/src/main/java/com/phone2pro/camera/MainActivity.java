@@ -27,6 +27,7 @@ import com.phone2pro.camera.core.CaptureProfile;
 import com.phone2pro.camera.core.DeviceCapabilitySnapshot;
 import com.phone2pro.camera.core.OpticalRoute;
 import com.phone2pro.camera.core.RouteDecision;
+import com.phone2pro.camera.ui.RoutePresentation;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -266,7 +267,7 @@ public final class MainActivity extends ComponentActivity
 
         showStatus(
                 "Public camera IDs: " + capabilities.publicCameraIds()
-                        + ". Optical auxiliary routes stay unavailable until a verified backend exists."
+                        + ". Auxiliary routes stay unavailable until a verified backend exists."
         );
     }
 
@@ -276,11 +277,13 @@ public final class MainActivity extends ComponentActivity
             RouteDecision decision,
             CaptureProfile profile
     ) {
+        RoutePresentation presentation = RoutePresentation.from(decision);
         updateRouteSelection(route);
         updateProfileSelection(profile);
         captureButton.setEnabled(true);
         showStatus(
-                route + " via " + decision.support().mechanism()
+                route + " / " + presentation.renderingLabel()
+                        + " via " + decision.support().mechanism()
                         + ". " + profile.implementationStatus() + "."
         );
     }
@@ -312,13 +315,10 @@ public final class MainActivity extends ComponentActivity
         if (button == null) {
             return;
         }
-        if (decision.support().isAvailable()) {
-            button.setText(route.label() + "\nOptical");
-            button.setAlpha(1f);
-        } else {
-            button.setText(route.label() + "\nUnavailable");
-            button.setAlpha(0.62f);
-        }
+        RoutePresentation presentation = RoutePresentation.from(decision);
+        button.setText(presentation.controlLabel());
+        button.setContentDescription(presentation.accessibilityLabel());
+        button.setAlpha(presentation.available() ? 1f : 0.62f);
         // Keep unavailable routes clickable so the exact reason remains visible.
         button.setEnabled(true);
     }
