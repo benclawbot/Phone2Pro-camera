@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "issue": 35,
+  "evidenceVersion": "2026.08.04-1",
+  "apk": {
+    "versionName": "16.1.01.93.20",
+    "sha256": "f78368e303033d49c5564b1287f51ef2bf5dde53db4687a08bfb20aa64a8eeea"
+  },
+  "buildContext": {
+    "matrixEntryId": "nothing-galaga-eea-android16-2606151653-f88325f3",
+    "firmwareBuild": "2606151653"
+  },
+  "dexFiles": [
+    {"name":"classes.dex","sizeBytes":13419500,"sha256":"a326b44d924bfe0d679db9450d2a7bf1a3385b12c59e91c8bb3fdc91fd524661","stringCount":82702,"methodReferenceCount":65405,"definedMethodCount":57895},
+    {"name":"classes2.dex","sizeBytes":560,"sha256":"b3717bf7a09f8a414a094f93fdd36cfc02bcd61b1b78a55bfe9e197dff0b7632","stringCount":6,"methodReferenceCount":2,"definedMethodCount":1},
+    {"name":"classes3.dex","sizeBytes":9766472,"sha256":"059045cdbf6651e25b0393dd59a832898eb25ba161f33e946cf580bc98c475fd","stringCount":71713,"methodReferenceCount":65504,"definedMethodCount":55060},
+    {"name":"classes4.dex","sizeBytes":9386616,"sha256":"2c02f2c501ca87f253a30eb8aa7cc29b92a007dbf7ff66f7a81b2f0e7b2ce0fc","stringCount":74040,"methodReferenceCount":64850,"definedMethodCount":52182},
+    {"name":"classes5.dex","sizeBytes":7600320,"sha256":"46f7266c3294b63c4958cdf672d20dd6de72351b6819901acae9437179b66fd0","stringCount":62997,"methodReferenceCount":51294,"definedMethodCount":42799},
+    {"name":"classes6.dex","sizeBytes":9211472,"sha256":"ec8622ad999c50e85d0821d5c3e4bec53e577f7d1ea5f3365069efbba24e0604","stringCount":53365,"methodReferenceCount":64715,"definedMethodCount":57681},
+    {"name":"classes7.dex","sizeBytes":5476564,"sha256":"c487b7049af55405a0c4ec770c042167eb93128c5ce1ec37f69684102384c230","stringCount":21254,"methodReferenceCount":57248,"definedMethodCount":54603}
+  ],
+  "scan": {
+    "exactStringTables": "All seven DEX string tables were checked for every one of the 162 inventory names.",
+    "fieldTables": "All seven DEX field tables were checked for resolved SettingCharacteristics key fields.",
+    "methodBodies": "Only classes4.dex and classes5.dex contained the six exact literals or resolved fields; every defined method in those two DEX files was scanned for literal and field references.",
+    "methodClassification": "Method-level roles are based on co-occurring Camera2 API invokes and field access; they do not prove runtime execution."
+  },
+  "summary": {
+    "inventoryKeyCount": 162,
+    "exactLiteralKeyCount": 6,
+    "resolvedFieldKeyCount": 6,
+    "noExactStaticReferenceCount": 156,
+    "literalReferenceEventCount": 9,
+    "fieldAccessEventCount": 26,
+    "parseErrorCount": 0,
+    "referencedUniqueMethodCount": 18
+  },
+  "limitations": [
+    "Inventory directions come from device-observed Camera2 metadata and are not inferred from stock APK usage.",
+    "CaptureRequest.Key declarations confirm the Java key class and value type for four exact literals only.",
+    "No exact static reference does not prove runtime non-use; reflection, dynamic strings, JNI/native code, firmware-side code and missing split APKs remain outside this analysis.",
+    "Method-level field access classification is static and does not prove the branch executed on Galaga."
+  ]
+}
