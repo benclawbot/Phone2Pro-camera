@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "issue": 29,
+  "referenceVersion": "2026.08.04-1",
+  "status": "COMPLETE_STATIC_GALAGA_APP_CONFIGURATION",
+  "apk": {
+    "fileName": "Camera-16.1.01.93.20.apk",
+    "versionName": "16.1.01.93.20",
+    "sha256": "f78368e303033d49c5564b1287f51ef2bf5dde53db4687a08bfb20aa64a8eeea",
+    "sizeBytes": 139444700
+  },
+  "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+  "summary": {
+    "configMapEntryCount": 223,
+    "valueTypeCounts": {
+      "float": 5,
+      "boolean": 103,
+      "string": 12,
+      "integer": 102,
+      "range_or_list": 1
+    },
+    "bundledConfigAssetCount": 2,
+    "bundledConfigAssetFeatureCount": 23,
+    "directConsumerMethodCount": 17,
+    "simpleZoomModeCount": 5,
+    "conditionedZoomBuilderCount": 3,
+    "backFocalPointCount": 9,
+    "frontFocalPointCount": 2,
+    "systemPropertySelectorCount": 8,
+    "sensorScenarioStaticMatchCount": 0,
+    "parseErrorCount": 0
+  },
+  "dexFiles": [
+    {
+      "name": "classes.dex",
+      "sha256": "a326b44d924bfe0d679db9450d2a7bf1a3385b12c59e91c8bb3fdc91fd524661",
+      "sizeBytes": 13419500
+    },
+    {
+      "name": "classes2.dex",
+      "sha256": "b3717bf7a09f8a414a094f93fdd36cfc02bcd61b1b78a55bfe9e197dff0b7632",
+      "sizeBytes": 560
+    },
+    {
+      "name": "classes3.dex",
+      "sha256": "059045cdbf6651e25b0393dd59a832898eb25ba161f33e946cf580bc98c475fd",
+      "sizeBytes": 9766472
+    },
+    {
+      "name": "classes4.dex",
+      "sha256": "2c02f2c501ca87f253a30eb8aa7cc29b92a007dbf7ff66f7a81b2f0e7b2ce0fc",
+      "sizeBytes": 9386616
+    },
+    {
+      "name": "classes5.dex",
+      "sha256": "46f7266c3294b63c4958cdf672d20dd6de72351b6819901acae9437179b66fd0",
+      "sizeBytes": 7600320
+    },
+    {
+      "name": "classes6.dex",
+      "sha256": "ec8622ad999c50e85d0821d5c3e4bec53e577f7d1ea5f3365069efbba24e0604",
+      "sizeBytes": 9211472
+    },
+    {
+      "name": "classes7.dex",
+      "sha256": "c487b7049af55405a0c4ec770c042167eb93128c5ce1ec37f69684102384c230",
+      "sizeBytes": 5476564
+    }
+  ],
+  "parts": {
+    "entries": "entries.v1.tsv",
+    "assets": "assets.v1.json",
+    "routes": "routes.v1.json"
+  },
+  "firmwareIssueLinks": {
+    "packageAndSplitInventory": 26,
+    "firmwareLibraryInventory": 48,
+    "firmwareSymbolRecovery": 49
+  },
+  "evidenceBoundary": "APK static configuration is complete for the exact package. Firmware overlays and live runtime resolution are explicitly not promoted to verified app configuration."
+}

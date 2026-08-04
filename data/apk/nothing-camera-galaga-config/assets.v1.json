@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "assets": [
+    {
+      "path": "assets/config/trunk/config_A065.xml",
+      "sha256": "e9835d9d0bdf458ac0e69fc081ca76a0116dc5b2c210cbc75106efe6fa71e3cd",
+      "sizeBytes": 418,
+      "features": [
+        {
+          "id": "FEATURE_FRONT_CAM_USE_QCFA_SIZE_DEFAULT",
+          "valueType": "bool",
+          "name": "FEATURE_FRONT_CAM_USE_QCFA_SIZE_DEFAULT",
+          "value": "true",
+          "title": null
+        },
+        {
+          "id": "FEATURE_CAMERA_SUPER_RESOLUTION",
+          "valueType": "bool",
+          "name": "FEATURE_CAMERA_SUPER_RESOLUTION",
+          "value": "false",
+          "title": null
+        }
+      ]
+    },
+    {
+      "path": "assets/config/trunk/dev_camera_feature.xml",
+      "sha256": "114d848d031c48c78f200fe9945fb93b110f091d02046a04b301c4c55f06797c",
+      "sizeBytes": 3168,
+      "features": [
+        {"id":"FEATURE_MEDIA_CAMERA_PANORAMA_SUPPORTED","valueType":"bool","name":"FEATURE_MEDIA_CAMERA_PANORAMA_SUPPORTED","value":"false","title":null},
+        {"id":"FEATURE_MEDIA_CAMERA_BEAUTYSHOT_SUPPORTED","valueType":"bool","name":"FEATURE_MEDIA_CAMERA_BEAUTYSHOT_SUPPORTED","value":"false","title":null},
+        {"id":"FEATURE_MEDIA_CAMERA_PORTRAIT_SUPPORTED","valueType":"bool","name":"FEATURE_MEDIA_CAMERA_PORTRAIT_SUPPORTED","value":"false","title":null},
+        {"id":"FEATURE_MEDIA_CAMERA_PORTRAIT_SUPPORTED_FRONT","valueType":"bool","name":"FEATURE_MEDIA_CAMERA_PORTRAIT_SUPPORTED_FRONT","value":"false","title":null},
+        {"id":"FEATURE_MEDIA_SCREEN_FLASH_SUPPORTED","valueType":"bool","name":"FEATURE_MEDIA_SCREEN_FLASH_SUPPORTED","value":"true","title":"Screen Flash"},
+        {"id":"FEATURE_CAPTURE_PREVIEW_THUMBNAIL","valueType":"string","name":"FEATURE_CAPTURE_PREVIEW_THUMBNAIL","value":"true","title":null},
+        {"id":"FEATURE_CONTINUOUS_MODE_CHANGING","valueType":"bool","name":"FEATURE_CONTINUOUS_MODE_CHANGING","value":"false","title":null},
+        {"id":"FEATURE_MEDIA_SOFT_LIGHT","valueType":"bool","name":"FEATURE_MEDIA_SOFT_LIGHT","value":"false","title":null},
+        {"id":"FEATURE_BLUR_IN_SETTING_FRAGMENT","valueType":"bool","name":"FEATURE_BLUR_IN_SETTING_FRAGMENT","value":"false","title":null},
+        {"id":"FEATURE_PICTURE_STRUCT","valueType":"bool","name":"FEATURE_PICTURE_STRUCT","value":"true","title":null},
+        {"id":"FEATURE_MEDIA_CAMERA_RESTORE_DEFAULT","valueType":"string","name":"FEATURE_MEDIA_CAMERA_RESTORE_DEFAULT","value":"true","title":null},
+        {"id":"FEATURE_MEDIA_CAMERA_LOCATION_KEY","valueType":"string","name":"FEATURE_MEDIA_CAMERA_LOCATION_KEY","value":"true","title":null},
+        {"id":"FEATURE_MEDIA_CAMERA_SET_VOLUME_KEY","valueType":"string","name":"FEATURE_MEDIA_CAMERA_SET_VOLUME_KEY","value":"true","title":null},
+        {"id":"FEATURE_MEDIA_CAMERA_NIGHTSHOT_SUPPORTED","valueType":"bool","name":"FEATURE_MEDIA_CAMERA_NIGHTSHOT_SUPPORTED","value":"FEATURE_PLATFORM","title":null},
+        {"id":"FEATURE_MEDIA_CAMERA_PROFESSIONAL_MODE_SUPPORTED","valueType":"bool","name":"FEATURE_MEDIA_CAMERA_PROFESSIONAL_MODE_SUPPORTED","value":"true","title":null},
+        {"id":"FEATURE_MEDIA_CAMERA_STORAGE_SUPPORTED","valueType":"bool","name":"FEATURE_MEDIA_CAMERA_STORAGE_SUPPORTED","value":"true","title":null},
+        {"id":"FEATURE_LINEAR_LAYOUT_SETTING_UI","valueType":"bool","name":"FEATURE_LINEAR_LAYOUT_SETTING_UI","value":"true","title":null},
+        {"id":"FEATURE_NEW_ZOOM_UI","valueType":"bool","name":"FEATURE_NEW_ZOOM_UI","value":"false","title":null},
+        {"id":"FEATURE_SCROLLABLE_BOTTOM_MODE_SUPPORTED","valueType":"bool","name":"FEATURE_SCROLLABLE_BOTTOM_MODE_SUPPORTED","value":"true","title":null},
+        {"id":"FEATURE_FRONT_CAMERA_ZOOM","valueType":"bool","name":"FEATURE_FRONT_CAMERA_ZOOM","value":"true","title":null},
+        {"id":"FEATURE_BOTTOM_MODE_ITEM_STYLE_TEXT","valueType":"bool","name":"FEATURE_BOTTOM_MODE_ITEM_STYLE_TEXT","value":"true","title":null}
+      ]
+    }
+  ]
+}
