@@ -47,4 +47,13 @@ public enum CaptureProfile {
     public String implementationStatus() {
         return implementationStatus;
     }
+
+    /** Future pipeline contract; current CameraX capture remains described by implementationStatus(). */
+    public CaptureModePolicy policy() {
+        return CaptureModePolicy.forProfile(this);
+    }
+
+    public CapturePlan plan(CaptureEnvironment environment) {
+        return policy().plan(environment);
+    }
 }
