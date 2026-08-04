@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "indexVersion": "2026.08.04-1",
+  "status": "BLOCKED_PENDING_LOCAL_ARTIFACTS",
+  "issue": 77,
+  "device": {
+    "marketingName": "CMF Phone 2 Pro",
+    "model": "A001",
+    "codename": "Galaga",
+    "region": "EEA",
+    "fingerprint": "Nothing/GalagaEEA/Galaga:16/BP2A.250605.031.A3/2606151653:user/release-keys",
+    "buildId": "2606151653",
+    "release": "Galaga-B4.1-260615-1653"
+  },
+  "sources": [
+    {
+      "id": "nothing-support-release-note",
+      "kind": "OFFICIAL_RELEASE_NOTE",
+      "authority": "Nothing Technology Limited",
+      "url": "https://support.nothing.tech/hc/en-us/articles/36402283466129-Nothing-OS-4-1-Changelog",
+      "status": "VERIFIED_METADATA",
+      "redistribution": "LINK_ONLY",
+      "notes": "Confirms the Galaga-B4.1-260615-1653 release family. Region wording must not be used to replace the EEA fingerprint recorded by the diagnostic device."
+    },
+    {
+      "id": "oem-incremental-ota",
+      "kind": "OEM_INCREMENTAL_OTA",
+      "authority": "OEM package distributed through Google Android OTA infrastructure",
+      "url": "https://android.googleapis.com/packages/ota-api/package/be9f18a33428eb63d616f7bc01d2a7bef494ea5d.zip",
+      "status": "LOCATED_NOT_HASHED",
+      "fromBuild": "Galaga-B4.1-260415-1710",
+      "toBuild": "Galaga-B4.1-260615-1653",
+      "fullOta": false,
+      "sha256": null,
+      "sizeBytes": null,
+      "redistribution": "DO_NOT_COMMIT_OR_MIRROR",
+      "notes": "The URL token is not treated as a SHA-256 digest. The package must be downloaded by an authorized operator and hashed locally. Incremental reconstruction also requires the exact base build."
+    },
+    {
+      "id": "nothing-archive-index",
+      "kind": "COMMUNITY_INDEX",
+      "authority": "Nothing Archive community project",
+      "url": "https://nothingarchive.tech/docs/firmware",
+      "status": "VERIFIED_INDEX_ENTRY",
+      "releaseTag": "Galaga_B4.1-260615-1653",
+      "repository": "spike0en/nothing_archive",
+      "fullOta": false,
+      "otaImagesPublished": true,
+      "assetDigestsVerified": false,
+      "redistribution": "LINK_AND_METADATA_ONLY",
+      "notes": "The community index states that OEM OTA links are direct official-server links and that partition images are extracted or reconstructed by its pipeline. Community-produced images remain third-party derived artifacts until independently reproduced and hashed."
+    }
+  ],
+  "requiredPartitionCoverage": [
+    {
+      "partition": "system",
+      "group": "LOGICAL",
+      "cameraRelevance": "Framework services, permissions, framework libraries and public API behavior",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "partition": "system_ext",
+      "group": "LOGICAL",
+      "cameraRelevance": "System extensions and possible camera framework overlays/services",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "partition": "product",
+      "group": "LOGICAL",
+      "cameraRelevance": "Product overlays, permissions, configuration and stock package dependencies",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "partition": "vendor",
+      "group": "LOGICAL",
+      "cameraRelevance": "Camera provider, HAL libraries, vendor configuration, tuning and SELinux policy",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "partition": "odm",
+      "group": "LOGICAL",
+      "cameraRelevance": "Device-specific HAL/configuration/tuning and permissions",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "partition": "vendor_dlkm",
+      "group": "LOGICAL",
+      "cameraRelevance": "Vendor kernel modules and module metadata",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "partition": "odm_dlkm",
+      "group": "LOGICAL",
+      "cameraRelevance": "Device-specific kernel modules and module metadata",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "partition": "system_dlkm",
+      "group": "LOGICAL",
+      "cameraRelevance": "System kernel modules and module metadata",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "partition": "boot",
+      "group": "BOOT",
+      "cameraRelevance": "Kernel/ramdisk provenance and command line",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "partition": "init_boot",
+      "group": "BOOT",
+      "cameraRelevance": "Android init ramdisk and early service policy where present",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "partition": "vendor_boot",
+      "group": "BOOT",
+      "cameraRelevance": "Vendor ramdisk, modules, fstab and service configuration",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "partition": "dtbo",
+      "group": "BOOT",
+      "cameraRelevance": "Runtime device-tree overlays and hardware topology",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "partition": "vbmeta",
+      "group": "VERIFICATION",
+      "cameraRelevance": "Verified-boot chain and exact partition provenance",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "partition": "vbmeta_system",
+      "group": "VERIFICATION",
+      "cameraRelevance": "Logical system partition verification chain",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "partition": "vbmeta_vendor",
+      "group": "VERIFICATION",
+      "cameraRelevance": "Vendor/ODM partition verification chain",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "partition": "ccu",
+      "group": "CAMERA_FIRMWARE",
+      "cameraRelevance": "Camera control unit firmware where present in the build",
+      "status": "NOT_VERIFIED"
+    },
+    {
+      "partition": "apusys",
+      "group": "ACCELERATOR_FIRMWARE",
+      "cameraRelevance": "MediaTek accelerator firmware potentially used by imaging workloads",
+      "status": "NOT_VERIFIED"
+    }
+  ],
+  "verificationRequirements": {
+    "artifactStatusForVerified": "VERIFIED_LOCAL_SHA256",
+    "hashAlgorithm": "SHA-256",
+    "requiredFields": [
+      "sourceId",
+      "relativePath",
+      "partition",
+      "sizeBytes",
+      "sha256",
+      "collectedAt",
+      "collector"
+    ],
+    "prohibited": [
+      "Do not treat URL tokens, Git blob IDs, ETags or release tags as partition hashes.",
+      "Do not mark an incremental OTA as a full target image set without deterministic reconstruction from the exact base build.",
+      "Do not commit proprietary partition bytes to this repository.",
+      "Do not claim EEA partition provenance from a different regional build."
+    ]
+  },
+  "completionBlockers": [
+    "The OEM incremental OTA bytes have not been downloaded and hashed in the controlled workspace.",
+    "The exact base build Galaga-B4.1-260415-1710 image set has not been acquired for independent target reconstruction.",
+    "Community release asset names, sizes and digests have not been independently retrieved and verified.",
+    "No locally generated partition inventory with SHA-256 values exists for the target build.",
+    "Required partitions remain NOT_VERIFIED and therefore CAM-093 cannot close."
+  ]
+}
