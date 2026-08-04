@@ -41,6 +41,10 @@ public final class RouteDecision {
         return support;
     }
 
+    public RouteRendering rendering() {
+        return support.rendering();
+    }
+
     public Optional<ResolvedCameraEndpoint> endpoint() {
         return Optional.ofNullable(endpoint);
     }
