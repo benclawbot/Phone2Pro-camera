@@ -5,6 +5,7 @@ import com.phone2pro.camera.core.OpticalRoute;
 import com.phone2pro.camera.core.ResolvedCameraEndpoint;
 import com.phone2pro.camera.core.RouteBackend;
 import com.phone2pro.camera.core.RouteMechanism;
+import com.phone2pro.camera.core.RouteRendering;
 import com.phone2pro.camera.core.RouteSupport;
 
 import java.util.Objects;
@@ -67,6 +68,7 @@ public final class GalagaSystemCameraBackend implements RouteBackend {
 
         return RouteSupport.available(
                 RouteMechanism.SYSTEM_CAMERA,
+                RouteRendering.OPTICAL,
                 "Authorized direct endpoint " + cameraId.get() + ". " + ROUTE_EVIDENCE + "."
         );
     }
