@@ -1,0 +1,160 @@
+{
+  "schemaVersion": 1,
+  "issue": 27,
+  "source": {
+    "inputKind": "apk",
+    "fileName": "Camera-16.1.01.93.20.apk",
+    "apkSha256": "f78368e303033d49c5564b1287f51ef2bf5dde53db4687a08bfb20aa64a8eeea",
+    "manifestSha256": "dd1666377a40051c3f1f5dd60f27646b2043a12efd691ec40447fa6973840eaf",
+    "certificate": {
+      "subject": "CN=platform, OU=nothing, O=nothing, L=ShenZhen, ST=GuangDong, C=zh",
+      "issuer": "CN=platform, OU=nothing, O=nothing, L=ShenZhen, ST=GuangDong, C=zh",
+      "sha256": "2c4e1f8eb95d96f760336f03b92bc3858111e987c59703f9873c8dc7faa4119d",
+      "method": "keytool -printcert -jarfile Camera-16.1.01.93.20.apk",
+      "classification": "VERIFIED"
+    }
+  },
+  "package": {
+    "name": "com.nothing.camera",
+    "versionCode": 161019320,
+    "versionName": "16.1.01.93.20",
+    "minSdk": 34,
+    "targetSdk": 36,
+    "applicationClass": "com.nothing.camera.app.CameraApp",
+    "backupAgent": "com.nothing.camera.activity.CameraBackUpAgent"
+  },
+  "requestedPermissions": [
+    "android.permission.ACCESS_COARSE_LOCATION",
+    "android.permission.ACCESS_FINE_LOCATION",
+    "android.permission.CAMERA",
+    "android.permission.RECORD_AUDIO",
+    "android.permission.VIBRATE",
+    "android.permission.ACCESS_WIFI_STATE",
+    "android.permission.CHANGE_WIFI_STATE",
+    "android.permission.READ_MEDIA_IMAGES",
+    "android.permission.READ_MEDIA_VIDEO",
+    "android.permission.WRITE_SETTINGS",
+    "android.permission.WRITE_SYNC_SETTINGS",
+    "android.permission.CONTROL_DISPLAY_BRIGHTNESS",
+    "android.permission.HIGH_SAMPLING_RATE_SENSORS",
+    "android.permission.MODIFY_AUDIO_SETTINGS",
+    "android.permission.CONTROL_DEVICE_LIGHTS",
+    "android.permission.DEVICE_POWER",
+    "com.nothing.experience.PERMISSION",
+    "nothing.permission.NT_ADVANCED_THERMAL_MITIGATION",
+    "android.permission.SYSTEM_CAMERA",
+    "mediatek.permission.ACCESS_APU_SYS",
+    "android.permission.RECEIVE_BOOT_COMPLETED",
+    "android.permission.STATUS_BAR",
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.FOREGROUND_SERVICE_CAMERA",
+    "android.permission.WRITE_SECURE_SETTINGS",
+    "com.nothing.gallery.permission.VIEW_CAMERA_MEDIA",
+    "android.permission.READ_GLOBAL_SETTINGS",
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.INTERNET",
+    "com.nothing.soundrecorder.permission.RECORD",
+    "android.permission.WAKE_LOCK",
+    "com.nothing.camera.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+    "com.nothing.permission.BIND_CARD_SERVICE"
+  ],
+  "declaredPermissions": [
+    {
+      "name": "com.nothing.camera.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+      "protectionLevel": "0x00000002"
+    }
+  ],
+  "queryPackages": [
+    "com.google.android.googlequicksearchbox",
+    "com.google.android.apps.photos",
+    "com.nothing.gallery",
+    "com.nothing.cardservice"
+  ],
+  "summary": {
+    "requestedPermissionCount": 33,
+    "componentCount": 46,
+    "activityCount": 14,
+    "serviceCount": 13,
+    "receiverCount": 12,
+    "providerCount": 7,
+    "exportedCount": 21,
+    "intentFilterCount": 34,
+    "nativeLibraryCount": 74
+  },
+  "componentFiles": {
+    "activity": "activities.v1.json",
+    "service": "services.v1.json",
+    "receiver": "receivers.v1.json",
+    "provider": "providers.v1.json"
+  },
+  "libraryFile": "libraries.v1.json",
+  "referenceVersion": "2026.08.04-1",
+  "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+  "permissionAssessment": {
+    "platformOrSpecialAccessCandidates": [
+      "android.permission.CONTROL_DEVICE_LIGHTS",
+      "android.permission.CONTROL_DISPLAY_BRIGHTNESS",
+      "android.permission.DEVICE_POWER",
+      "android.permission.READ_GLOBAL_SETTINGS",
+      "android.permission.STATUS_BAR",
+      "android.permission.SYSTEM_CAMERA",
+      "android.permission.WRITE_SECURE_SETTINGS",
+      "android.permission.WRITE_SETTINGS",
+      "android.permission.WRITE_SYNC_SETTINGS"
+    ],
+    "oemOrVendorPermissions": [
+      "com.nothing.experience.PERMISSION",
+      "nothing.permission.NT_ADVANCED_THERMAL_MITIGATION",
+      "mediatek.permission.ACCESS_APU_SYS",
+      "com.nothing.gallery.permission.VIEW_CAMERA_MEDIA",
+      "com.nothing.soundrecorder.permission.RECORD",
+      "com.nothing.camera.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+      "com.nothing.permission.BIND_CARD_SERVICE"
+    ],
+    "manifestDeclaredCustomPermission": {
+      "name": "com.nothing.camera.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+      "protectionLevel": "0x00000002"
+    },
+    "boundary": "Manifest requests and signing certificate are verified. Installed grants, privapp allowlists, UID/shared-UID, AppOps, process SELinux domain, and service-side authorization remain UNKNOWN until build-matched package/runtime evidence is captured."
+  },
+  "launchRouteIndex": [
+    {"component":"com.nothing.camera.BootBroadCaseReceiver","type":"receiver","exported":true,"permission":null,"actions":["android.intent.action.BOOT_COMPLETED"],"categories":[]},
+    {"component":"com.nothing.camera.provider.SpecialTypeProvider","type":"provider","exported":true,"permission":null,"actions":["com.google.android.apps.photos.OEM_PROVIDER"],"categories":[]},
+    {"component":"com.nothing.camera.activity.WidgetCameraActivity","type":"activity","exported":true,"permission":null,"actions":[],"categories":["android.intent.category.DEFAULT","android.intent.category.LAUNCHER"]},
+    {"component":"com.nothing.camera.activity.CameraActivity","type":"activity","exported":true,"permission":null,"actions":["android.intent.action.MAIN","com.nothing.camera.WIDGET_CAMERA","android.media.action.IMAGE_CAPTURE","android.bluetooth.headset.action.OPEN_CAMERA","android.media.action.VIDEO_CAPTURE"],"categories":["android.intent.category.DEFAULT","android.intent.category.LAUNCHER","android.intent.category.DEFAULT","android.intent.category.DEFAULT","android.intent.category.DEFAULT"]},
+    {"component":"com.nothing.camera.activity.VoiceCameraActivity","type":"activity","exported":true,"permission":null,"actions":["android.media.action.STILL_IMAGE_CAMERA","android.media.action.VIDEO_CAMERA"],"categories":["android.intent.category.DEFAULT","android.intent.category.VOICE","android.intent.category.DEFAULT","android.intent.category.VOICE"]},
+    {"component":"com.nothing.camera.activity.CameraSettingsDialogueActivity","type":"activity","exported":true,"permission":null,"actions":["com.google.camera.action.LOCATION_SETTINGS"],"categories":["android.intent.category.DEFAULT"]},
+    {"component":"com.nothing.camera.activity.CameraShortCutActivity","type":"activity","exported":false,"permission":null,"actions":["android.media.action.SHORTCUT_CAMERA"],"categories":["android.intent.category.DEFAULT"]},
+    {"component":"com.nothing.camera.activity.SecureCameraActivity","type":"activity","exported":true,"permission":null,"actions":["android.media.action.STILL_IMAGE_CAMERA_SECURE","android.media.action.IMAGE_CAPTURE_SECURE","android.media.action.SHORTCUT_CAMERA_SECURE","android.bluetooth.headset.action.OPEN_CAMERA_SECURE"],"categories":["android.intent.category.DEFAULT","android.intent.category.DEFAULT","android.intent.category.DEFAULT","android.intent.category.DEFAULT"]},
+    {"component":"com.nothing.camera.pipeline.ExtensionsInterfaceProxyImplService","type":"service","exported":true,"permission":null,"actions":[],"categories":[]},
+    {"component":"com.nothing.common.shortcutwidget.provider.CameraWidgetProvider","type":"provider","exported":true,"permission":null,"actions":["android.nothing.action.APPCARD_UPDATE"],"categories":[]},
+    {"component":"com.nothing.camera.preset.create.CreatePresetActivity","type":"activity","exported":true,"permission":null,"actions":[],"categories":["android.intent.category.DEFAULT"]},
+    {"component":"com.nothing.camera.preset.PresetSettingsActivity","type":"activity","exported":true,"permission":null,"actions":[],"categories":["android.intent.category.DEFAULT"]},
+    {"component":"com.nothing.camera.preset.home.PresetsAboutActivity","type":"activity","exported":true,"permission":null,"actions":[],"categories":["android.intent.category.DEFAULT"]},
+    {"component":"com.nothing.camera.activity.SettingsWrapperActivity","type":"activity","exported":true,"permission":null,"actions":[],"categories":["android.intent.category.DEFAULT"]},
+    {"component":"com.nothing.camera.preset.widget.CameraPresetWidgetActivity","type":"activity","exported":true,"permission":null,"actions":[],"categories":["android.intent.category.DEFAULT"]},
+    {"component":"com.nothing.camera.preset.about.PresetAboutActivity","type":"activity","exported":true,"permission":null,"actions":[],"categories":["android.intent.category.DEFAULT"]},
+    {"component":"com.nothing.camera.CustomizedRecordBroadcastReceiver","type":"receiver","exported":true,"permission":null,"actions":["com.nothing.ntessentialrecorder.action.RECORD_CUSTOMIZED","com.nothing.ntessentialrecorder.action.RECORD_CUSTOMIZED_RESULT"],"categories":[]},
+    {"component":"com.nothing.algolib.cameraufs.UFSService","type":"service","exported":true,"permission":null,"actions":[],"categories":[]},
+    {"component":"com.nothing.cardclient.FilePermissionProvider","type":"provider","exported":true,"permission":"com.nothing.permission.BIND_CARD_SERVICE","actions":[],"categories":[]},
+    {"component":"androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryChargingProxy","type":"receiver","exported":false,"permission":null,"actions":["android.intent.action.ACTION_POWER_CONNECTED","android.intent.action.ACTION_POWER_DISCONNECTED"],"categories":[]},
+    {"component":"androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryNotLowProxy","type":"receiver","exported":false,"permission":null,"actions":["android.intent.action.BATTERY_OKAY","android.intent.action.BATTERY_LOW"],"categories":[]},
+    {"component":"androidx.work.impl.background.systemalarm.ConstraintProxy$StorageNotLowProxy","type":"receiver","exported":false,"permission":null,"actions":["android.intent.action.DEVICE_STORAGE_LOW","android.intent.action.DEVICE_STORAGE_OK"],"categories":[]},
+    {"component":"androidx.work.impl.background.systemalarm.ConstraintProxy$NetworkStateProxy","type":"receiver","exported":false,"permission":null,"actions":["android.net.conn.CONNECTIVITY_CHANGE"],"categories":[]},
+    {"component":"androidx.work.impl.background.systemalarm.RescheduleReceiver","type":"receiver","exported":false,"permission":null,"actions":["android.intent.action.BOOT_COMPLETED","android.intent.action.TIME_SET","android.intent.action.TIMEZONE_CHANGED"],"categories":[]},
+    {"component":"androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver","type":"receiver","exported":false,"permission":null,"actions":["androidx.work.impl.background.systemalarm.UpdateProxies"],"categories":[]},
+    {"component":"androidx.work.impl.diagnostics.DiagnosticsReceiver","type":"receiver","exported":true,"permission":"android.permission.DUMP","actions":["androidx.work.diagnostics.REQUEST_DIAGNOSTICS"],"categories":[]},
+    {"component":"androidx.profileinstaller.ProfileInstallReceiver","type":"receiver","exported":true,"permission":"android.permission.DUMP","actions":["androidx.profileinstaller.action.INSTALL_PROFILE","androidx.profileinstaller.action.SKIP_FILE","androidx.profileinstaller.action.SAVE_PROFILE","androidx.profileinstaller.action.BENCHMARK_OPERATION"],"categories":[]}
+  ],
+  "securityReview": {
+    "exportedFirstPartyWithoutComponentPermission": ["com.nothing.camera.BootBroadCaseReceiver","com.nothing.camera.provider.SpecialTypeProvider","com.nothing.camera.activity.WidgetCameraActivity","com.nothing.camera.activity.CameraActivity","com.nothing.camera.activity.VoiceCameraActivity","com.nothing.camera.activity.CameraSettingsDialogueActivity","com.nothing.camera.activity.SecureCameraActivity","com.nothing.camera.pipeline.ExtensionsInterfaceProxyImplService","com.nothing.common.shortcutwidget.provider.CameraWidgetProvider","com.nothing.camera.preset.create.CreatePresetActivity","com.nothing.camera.preset.PresetSettingsActivity","com.nothing.camera.preset.home.PresetsAboutActivity","com.nothing.camera.activity.SettingsWrapperActivity","com.nothing.camera.preset.widget.CameraPresetWidgetActivity","com.nothing.camera.preset.about.PresetAboutActivity","com.nothing.camera.CustomizedRecordBroadcastReceiver","com.nothing.algolib.cameraufs.UFSService"],
+    "exportedFirstPartyPermissionGuarded": [{"name":"com.nothing.cardclient.FilePermissionProvider","permission":"com.nothing.permission.BIND_CARD_SERVICE"}],
+    "explicitlyNonExportedCameraRoutes": ["com.nothing.camera.AlgoForegroundService","com.nothing.camera.ScreenOffWatchForegroundService","com.nothing.camera.activity.CameraShortCutActivity","com.nothing.camera.preset.importdata.ScanActivity"],
+    "interpretation": "Exported does not imply unauthenticated functionality: code-level caller checks, URI grants, intent validation, service bindings, platform permission grants, and SELinux remain outside static manifest proof."
+  },
+  "scope": {
+    "included": "Complete AndroidManifest.xml from the supplied monolithic/base APK, including permissions, application attributes, every component, intent filter, metadata record, package query, uses-library and uses-native-library declaration.",
+    "excluded": "Package-manager runtime state, external privapp allowlists, split APK manifests not supplied, framework permission definitions, AppOps, SELinux and code-level caller validation.",
+    "splitStatus": "UNKNOWN_TRACKED_BY_CAM_020"
+  }
+}
