@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "issue": 34,
+  "referenceVersion": "2026.08.04-1",
+  "status": "COMPLETE_STATIC_CAMERA2_SETUP_MAP",
+  "apk": {
+    "fileName": "Camera-16.1.01.93.20.apk",
+    "versionName": "16.1.01.93.20",
+    "sha256": "f78368e303033d49c5564b1287f51ef2bf5dde53db4687a08bfb20aa64a8eeea",
+    "sizeBytes": 139444700
+  },
+  "buildScope": "nothing-galaga-eea-android16-2606151653-f88325f3",
+  "summary": {
+    "directOperationRowCount": 357,
+    "directOperationMethodCount": 252,
+    "categoryCallCounts": {
+      "CAMERA_OPEN": 1,
+      "CAPTURE_SUBMIT": 42,
+      "IMAGE_READER": 94,
+      "OUTPUT_CONFIGURATION": 23,
+      "REPEATING": 8,
+      "REQUEST_BUILD": 39,
+      "REQUEST_TARGET": 134,
+      "SESSION_CONTROL": 12,
+      "SESSION_CREATE": 2,
+      "SESSION_PARAMETER": 2
+    },
+    "categoryMethodCounts": {
+      "CAMERA_OPEN": 1,
+      "SESSION_CREATE": 2,
+      "SESSION_PARAMETER": 1,
+      "OUTPUT_CONFIGURATION": 17,
+      "REQUEST_BUILD": 39,
+      "REQUEST_TARGET": 103,
+      "REPEATING": 6,
+      "CAPTURE_SUBMIT": 41,
+      "SESSION_CONTROL": 12,
+      "IMAGE_READER": 92
+    },
+    "apiCallCounts": {
+      "openCamera": 1,
+      "capture": 25,
+      "captureBurst": 17,
+      "newInstance": 44,
+      "setOnImageAvailableListener": 50,
+      "finalizeOutputConfigurations": 5,
+      "addSurface": 5,
+      "setPhysicalCameraId": 12,
+      "setStreamUseCase": 1,
+      "createHighSpeedRequestList": 2,
+      "setRepeatingBurst": 2,
+      "setRepeatingRequest": 4,
+      "createReprocessCaptureRequest": 14,
+      "createCaptureRequest": 25,
+      "removeTarget": 57,
+      "addTarget": 67,
+      "setTag": 10,
+      "abortCaptures": 7,
+      "prepare": 3,
+      "stopRepeating": 2,
+      "createCaptureSession": 1,
+      "createCaptureSessionByOutputConfigurations": 1,
+      "setInputConfiguration": 1,
+      "setSessionParameters": 1
+    },
+    "cameraOpenCallSiteCount": 1,
+    "sessionCreateCallSiteCount": 2,
+    "requestBuilderCallSiteCount": 39,
+    "reprocessBuilderCallSiteCount": 14,
+    "physicalOutputConfigurationCallSiteCount": 12,
+    "physicalIdRequestBuilderCallSiteCount": 12,
+    "repeatingCallSiteCount": 8,
+    "captureSubmissionCallSiteCount": 42,
+    "parseErrorCount": 0
+  },
+  "parts": {
+    "core": [
+      "core-01.b64part"
+    ],
+    "operations": [
+      "operations-01.b64part",
+      "operations-02.b64part"
+    ]
+  },
+  "sourceLinks": [
+    "data/apk/nothing-camera-jni/index.v1.json",
+    "data/vendor-tags/callsites/index.v1.json",
+    "data/apk/nothing-camera-galaga-config/index.v1.json"
+  ],
+  "evidenceBoundary": "Complete exact-APK static direct Camera2 setup and modifier map. Runtime session acceptance, HAL validation and proprietary processing remain separately classified.",
+  "encoding": {
+    "format": "base64(gzip(utf8-tsv)) split into ordered chunks",
+    "concatenatedCharacters": 14500,
+    "encodedSha256": "e529f24b2fcc26c4d938aced43d33de845f437fa642687ff63a07f7dd82e87ab",
+    "decodedRowCount": 357
+  },
+  "coreEncoding": {
+    "format": "base64(gzip(utf8-json))",
+    "concatenatedCharacters": 4592,
+    "encodedSha256": "651f74149df0262124ae4938f76d58f008dc24467eb450f2a9b499f604473e57"
+  }
+}
