@@ -2,6 +2,7 @@ package com.phone2pro.camera.storage;
 
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.Objects;
 import java.util.Set;
 
 /** Exact metadata allowlist generated before final asset publication. */
@@ -13,11 +14,12 @@ public final class MetadataWritePlan {
             Set<MetadataField> included,
             Set<MetadataField> omittedForPrivacy
     ) {
-        this.included = Collections.unmodifiableSet(EnumSet.copyOf(included));
-        this.omittedForPrivacy = Collections.unmodifiableSet(EnumSet.copyOf(omittedForPrivacy));
+        this.included = immutableCopy(included);
+        this.omittedForPrivacy = immutableCopy(omittedForPrivacy);
     }
 
     public static MetadataWritePlan from(MetadataPrivacyPolicy policy) {
+        Objects.requireNonNull(policy, "policy");
         EnumSet<MetadataField> included = EnumSet.of(
                 MetadataField.ORIENTATION,
                 MetadataField.CAPTURE_TIMESTAMP,
@@ -53,6 +55,14 @@ public final class MetadataWritePlan {
 
     public Set<MetadataField> included() { return included; }
     public Set<MetadataField> omittedForPrivacy() { return omittedForPrivacy; }
+
+    private static Set<MetadataField> immutableCopy(Set<MetadataField> values) {
+        Objects.requireNonNull(values, "values");
+        EnumSet<MetadataField> copy = values.isEmpty()
+                ? EnumSet.noneOf(MetadataField.class)
+                : EnumSet.copyOf(values);
+        return Collections.unmodifiableSet(copy);
+    }
 
     private static void includeOrOmit(
             boolean enabled,
