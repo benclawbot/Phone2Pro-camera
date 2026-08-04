@@ -1,0 +1,598 @@
+{
+  "schemaVersion": 1,
+  "indexVersion": "2026.08.04-1",
+  "issue": 52,
+  "device": {
+    "marketingName": "CMF Phone 2 Pro",
+    "model": "A001",
+    "codename": "Galaga",
+    "soc": "MT6878",
+    "observedBuild": "2606151653",
+    "fingerprintEvidence": "data/artifacts/diagnostic-manifest.yaml"
+  },
+  "sourceScope": {
+    "release": "Galaga-B4.1-260415-1710",
+    "freshness": "BUILD_MISMATCH",
+    "mismatchNotes": "The official source drop predates the observed 2606151653 firmware. Topology is direct Galaga evidence; exact shipped binaries and later source changes remain unverified.",
+    "repositories": [
+      {
+        "id": "kernel",
+        "repository": "NothingOSS/android_kernel_6.1_nothing_mt6878",
+        "commit": "6bed54e9d8b14850bb867ccba6607329cd6eaa06"
+      },
+      {
+        "id": "kernel-modules",
+        "repository": "NothingOSS/android_kernel_modules_nothing_mt6878",
+        "commit": "2866afdd56e09debbe373d919f17bacebcc4b765"
+      },
+      {
+        "id": "device-modules",
+        "repository": "NothingOSS/android_kernel_device_modules_6.1_nothing_mt6878",
+        "commit": "2b0af666da693dcf4088b583bae7d77f4a4373e3"
+      }
+    ],
+    "primaryDeviceTree": "arch/arm64/boot/dts/mediatek/cust_mt6878_galaga_camera_v4l2.dtsi",
+    "existingSensorConfidenceMap": "data/hardware/sensor-map.yaml"
+  },
+  "confidenceVocabulary": [
+    "SOURCE_CONFIRMED_TOPOLOGY",
+    "SOURCE_CANDIDATE_DRIVER",
+    "RUNTIME_OBSERVED_OPTICAL_ROUTE",
+    "UNKNOWN_SHIPPED_IDENTITY",
+    "NOT_EVIDENCED"
+  ],
+  "routes": [
+    {
+      "id": "front",
+      "role": "FRONT",
+      "deviceTreeNode": "sensor1",
+      "status": "okay",
+      "i2c": {
+        "controller": "i2c4",
+        "clockHz": 1000000,
+        "address7bitHex": "0x10"
+      },
+      "sensorCandidates": [
+        {
+          "name": "gc16b3c2_mipi_raw",
+          "sourcePath": "mtkcam/imgsensor/src-v4l2/common/gc16b3c2_mipi_raw/gc16b3c2mipiraw_Sensor.c",
+          "confidence": "SOURCE_CANDIDATE_DRIVER"
+        },
+        {
+          "name": "gc16b3cofilm_mipi_raw",
+          "sourcePath": "mtkcam/imgsensor/src-v4l2/common/gc16b3cofilm_mipi_raw/gc16b3cofilmmipiraw_Sensor.c",
+          "confidence": "SOURCE_CANDIDATE_DRIVER"
+        }
+      ],
+      "shippedModuleIdentity": {
+        "status": "UNKNOWN",
+        "confidence": "UNKNOWN_SHIPPED_IDENTITY",
+        "requiredEvidence": "Build-matched runtime sensor ID or EEPROM/module-vendor evidence"
+      },
+      "csi": {
+        "port": 0,
+        "endpoint": "seninf_csi_port_0_in",
+        "remoteEndpoint": "sensor1_out",
+        "nvmemCell": "csi_efuse0",
+        "timing": {
+          "dphySettleDelayDt": 17,
+          "hsTrailParameterHex": null
+        }
+      },
+      "clock": {
+        "mclkGpio": 96,
+        "pinFunction": "CMMCLK4",
+        "topSelector": "CLK_TOP_CAMTG5_SEL",
+        "availableDriveStatesMa": [2, 4, 6, 8],
+        "offState": "camera_pins_cam1_mclk_off"
+      },
+      "reset": {
+        "gpio": 24,
+        "lowState": "camera_pins_cam1_rst_0",
+        "highState": "camera_pins_cam1_rst_1"
+      },
+      "power": {
+        "avdd": "ldo_avdd_front",
+        "dvdd": "ldo_dvdd_front",
+        "dovdd": "camera_common_dovdd",
+        "afvdd": null,
+        "sequenceStatus": "CANDIDATE_DRIVER_DEFINED",
+        "sequenceSourcePaths": [
+          "mtkcam/imgsensor/src-v4l2/common/gc16b3c2_mipi_raw/gc16b3c2mipiraw_Sensor.c",
+          "mtkcam/imgsensor/src-v4l2/common/gc16b3cofilm_mipi_raw/gc16b3cofilmmipiraw_Sensor.c"
+        ],
+        "knownSequenceInputs": ["mclk_off/drive states", "reset_low/high", "AVDD", "DVDD", "DOVDD"],
+        "unknowns": "Exact active candidate, ordered delays and build-matched regulator programming"
+      },
+      "eeprom": {
+        "controller": "i2c4",
+        "address7bitHex": "0x50",
+        "compatible": "mediatek,camera_eeprom",
+        "deviceTreeNode": "mtk_camera_eeprom1",
+        "runtimeNodePattern": "/dev/camera_eeprom*"
+      },
+      "actuator": null,
+      "ois": {
+        "confidence": "NOT_EVIDENCED",
+        "status": "No front OIS node or compatible is present in the indexed Galaga camera device tree."
+      },
+      "opticalRouteEvidence": null,
+      "topologyConfidence": "SOURCE_CONFIRMED_TOPOLOGY"
+    },
+    {
+      "id": "main",
+      "role": "REAR_MAIN",
+      "deviceTreeNode": "sensor0",
+      "status": "okay",
+      "i2c": {
+        "controller": "i2c8",
+        "clockHz": 1000000,
+        "address7bitHex": "0x2d"
+      },
+      "sensorCandidates": [
+        {
+          "name": "s5kgn9sp_mipi_raw",
+          "sourcePath": "mtkcam/imgsensor/src-v4l2/common/s5kgn9sp_mipi_raw/s5kgn9spmipiraw_Sensor.c",
+          "confidence": "SOURCE_CANDIDATE_DRIVER"
+        }
+      ],
+      "shippedModuleIdentity": {
+        "status": "DTS_SELECTED_FAMILY_NOT_RUNTIME_CONFIRMED",
+        "confidence": "SOURCE_CANDIDATE_DRIVER",
+        "requiredEvidence": "Build-matched sensor ID, module-vendor and EEPROM confirmation"
+      },
+      "csi": {
+        "port": 1,
+        "endpoint": "seninf_csi_port_1_in",
+        "remoteEndpoint": "sensor0_out",
+        "nvmemCell": "csi_efuse1",
+        "timing": {
+          "dphySettleDelayDt": null,
+          "hsTrailParameterHex": "0x20"
+        }
+      },
+      "clock": {
+        "mclkGpio": 93,
+        "pinFunction": "CMMCLK1",
+        "topSelector": "CLK_TOP_CAMTG2_SEL",
+        "availableDriveStatesMa": [2, 4, 6, 8],
+        "offState": "camera_pins_cam0_mclk_off"
+      },
+      "reset": {
+        "gpio": 25,
+        "lowState": "camera_pins_cam0_rst_0",
+        "highState": "camera_pins_cam0_rst_1"
+      },
+      "power": {
+        "avdd": "ldo_avdd_m",
+        "dvdd": "ldo_dvdd_m",
+        "dovdd": "camera_common_dovdd",
+        "afvdd": "ldo_afvdd_m_tele",
+        "sequenceStatus": "CANDIDATE_DRIVER_DEFINED",
+        "sequenceSourcePaths": [
+          "mtkcam/imgsensor/src-v4l2/common/s5kgn9sp_mipi_raw/s5kgn9spmipiraw_Sensor.c"
+        ],
+        "knownSequenceInputs": ["mclk_off/drive states", "reset_low/high", "AVDD", "DVDD", "DOVDD", "AFVDD"],
+        "unknowns": "Ordered delays and exact build-matched regulator programming are not normalized in this map"
+      },
+      "eeprom": {
+        "controller": "i2c8",
+        "address7bitHex": "0x50",
+        "compatible": "mediatek,camera_eeprom",
+        "deviceTreeNode": "mtk_camera_eeprom0",
+        "runtimeNodePattern": "/dev/camera_eeprom*"
+      },
+      "actuator": {
+        "controller": "i2c8",
+        "address7bitHex": "0x0c",
+        "compatible": "mediatek,pd9302a",
+        "deviceTreeNode": "camera-af-main",
+        "driverPath": "drivers/misc/mediatek/lens/vcm/v4l2/pd9302a/pd9302a.c",
+        "driverEvidence": "SOURCE_CONFIRMED_TOPOLOGY"
+      },
+      "ois": {
+        "confidence": "NOT_EVIDENCED",
+        "status": "No main OIS node or compatible is present in the indexed Galaga camera device tree."
+      },
+      "opticalRouteEvidence": {
+        "stockExpertEquivalentMm": 24,
+        "physicalFocalLengthMm": 5.56,
+        "evidence": "data/artifacts/diagnostic-manifest.yaml",
+        "confidence": "RUNTIME_OBSERVED_OPTICAL_ROUTE"
+      },
+      "topologyConfidence": "SOURCE_CONFIRMED_TOPOLOGY"
+    },
+    {
+      "id": "ultrawide",
+      "role": "REAR_ULTRAWIDE",
+      "deviceTreeNode": "sensor2",
+      "status": "okay",
+      "i2c": {
+        "controller": "i2c7",
+        "clockHz": 1000000,
+        "address7bitHex": "0x31"
+      },
+      "sensorCandidates": [
+        {
+          "name": "gc08a8_mipi_raw",
+          "sourcePath": "mtkcam/imgsensor/src-v4l2/common/gc08a8_mipi_raw/gc08a8mipiraw_Sensor.c",
+          "confidence": "SOURCE_CANDIDATE_DRIVER"
+        },
+        {
+          "name": "gc08a8xl_mipi_raw",
+          "sourcePath": "mtkcam/imgsensor/src-v4l2/common/gc08a8xl_mipi_raw/gc08a8xlmipiraw_Sensor.c",
+          "confidence": "SOURCE_CANDIDATE_DRIVER"
+        }
+      ],
+      "shippedModuleIdentity": {
+        "status": "UNKNOWN",
+        "confidence": "UNKNOWN_SHIPPED_IDENTITY",
+        "requiredEvidence": "Build-matched sensor ID or EEPROM/module-vendor evidence"
+      },
+      "csi": {
+        "port": 2,
+        "endpoint": "seninf_csi_port_2_in",
+        "remoteEndpoint": "sensor2_out",
+        "nvmemCell": "csi_efuse2",
+        "timing": {
+          "dphySettleDelayDt": null,
+          "hsTrailParameterHex": "0x20"
+        }
+      },
+      "clock": {
+        "mclkGpio": 94,
+        "pinFunction": "CMMCLK2",
+        "topSelector": "CLK_TOP_CAMTG3_SEL",
+        "availableDriveStatesMa": [2, 4, 6, 8],
+        "offState": "camera_pins_cam2_mclk_off"
+      },
+      "reset": {
+        "gpio": 26,
+        "lowState": "camera_pins_cam2_rst_0",
+        "highState": "camera_pins_cam2_rst_1"
+      },
+      "power": {
+        "avdd": "ldo_avdd_uw",
+        "dvdd": "ldo_dvdd_uw",
+        "dovdd": "camera_common_dovdd",
+        "afvdd": null,
+        "sequenceStatus": "CANDIDATE_DRIVER_DEFINED",
+        "sequenceSourcePaths": [
+          "mtkcam/imgsensor/src-v4l2/common/gc08a8_mipi_raw/gc08a8mipiraw_Sensor.c",
+          "mtkcam/imgsensor/src-v4l2/common/gc08a8xl_mipi_raw/gc08a8xlmipiraw_Sensor.c"
+        ],
+        "knownSequenceInputs": ["mclk_off/drive states", "reset_low/high", "AVDD", "DVDD", "DOVDD"],
+        "unknowns": "Exact active candidate, ordered delays and build-matched regulator programming"
+      },
+      "eeprom": {
+        "controller": "i2c7",
+        "address7bitHex": "0x50",
+        "compatible": "mediatek,camera_eeprom",
+        "deviceTreeNode": "mtk_camera_eeprom2",
+        "runtimeNodePattern": "/dev/camera_eeprom*"
+      },
+      "actuator": null,
+      "ois": {
+        "confidence": "NOT_EVIDENCED",
+        "status": "No ultrawide OIS node or compatible is present in the indexed Galaga camera device tree."
+      },
+      "opticalRouteEvidence": {
+        "stockExpertEquivalentMm": 15,
+        "physicalFocalLengthMm": 1.64,
+        "evidence": "data/artifacts/diagnostic-manifest.yaml",
+        "confidence": "RUNTIME_OBSERVED_OPTICAL_ROUTE"
+      },
+      "topologyConfidence": "SOURCE_CONFIRMED_TOPOLOGY"
+    },
+    {
+      "id": "telephoto",
+      "role": "REAR_TELEPHOTO",
+      "deviceTreeNode": "sensor3",
+      "status": "okay",
+      "i2c": {
+        "controller": "i2c9",
+        "clockHz": 1000000,
+        "address7bitHex": "0x36"
+      },
+      "sensorCandidates": [
+        {
+          "name": "ov50d40_mipi_raw",
+          "sourcePath": "mtkcam/imgsensor/src-v4l2/common/ov50d40_mipi_raw/ov50d40mipiraw_Sensor.c",
+          "confidence": "SOURCE_CANDIDATE_DRIVER"
+        },
+        {
+          "name": "ov50d40ofilm_mipi_raw",
+          "sourcePath": "mtkcam/imgsensor/src-v4l2/common/ov50d40ofilm_mipi_raw/ov50d40ofilmmipiraw_Sensor.c",
+          "confidence": "SOURCE_CANDIDATE_DRIVER"
+        }
+      ],
+      "shippedModuleIdentity": {
+        "status": "UNKNOWN",
+        "confidence": "UNKNOWN_SHIPPED_IDENTITY",
+        "requiredEvidence": "Build-matched sensor ID or EEPROM/module-vendor evidence"
+      },
+      "csi": {
+        "port": 3,
+        "endpoint": "seninf_csi_port_3_in",
+        "remoteEndpoint": "sensor3_out",
+        "nvmemCell": "csi_efuse3",
+        "timing": {
+          "dphySettleDelayDt": null,
+          "hsTrailParameterHex": "0x20"
+        }
+      },
+      "clock": {
+        "mclkGpio": 95,
+        "pinFunction": "CMMCLK3",
+        "topSelector": "CLK_TOP_CAMTG4_SEL",
+        "availableDriveStatesMa": [2, 4, 6, 8],
+        "offState": "camera_pins_cam3_mclk_off"
+      },
+      "reset": {
+        "gpio": 27,
+        "lowState": "camera_pins_cam3_rst_0",
+        "highState": "camera_pins_cam3_rst_1"
+      },
+      "power": {
+        "avdd": "camera_tele_avdd",
+        "dvdd": "ldo_dvdd_tele",
+        "dovdd": "camera_common_dovdd",
+        "afvdd": "ldo_afvdd_m_tele",
+        "sequenceStatus": "CANDIDATE_DRIVER_DEFINED",
+        "sequenceSourcePaths": [
+          "mtkcam/imgsensor/src-v4l2/common/ov50d40_mipi_raw/ov50d40mipiraw_Sensor.c",
+          "mtkcam/imgsensor/src-v4l2/common/ov50d40ofilm_mipi_raw/ov50d40ofilmmipiraw_Sensor.c"
+        ],
+        "knownSequenceInputs": ["mclk_off/drive states", "reset_low/high", "AVDD", "DVDD", "DOVDD", "AFVDD"],
+        "unknowns": "Exact active candidate, ordered delays and build-matched regulator programming"
+      },
+      "eeprom": {
+        "controller": "i2c9",
+        "address7bitHex": "0x58",
+        "compatible": "mediatek,camera_eeprom",
+        "deviceTreeNode": "mtk_camera_eeprom3",
+        "runtimeNodePattern": "/dev/camera_eeprom*"
+      },
+      "actuator": {
+        "controller": "i2c9",
+        "address7bitHex": "0x0c",
+        "compatible": "mediatek,cn3968",
+        "deviceTreeNode": "camera-af-tele",
+        "driverPath": null,
+        "driverEvidence": "DEVICE_TREE_ONLY",
+        "unknowns": "A matching cn3968 source file was not located in the three indexed official Galaga repositories."
+      },
+      "ois": {
+        "confidence": "NOT_EVIDENCED",
+        "status": "No telephoto OIS node or compatible is present in the indexed Galaga camera device tree."
+      },
+      "opticalRouteEvidence": {
+        "stockExpertEquivalentMm": 50,
+        "physicalFocalLengthMm": 7.1,
+        "evidence": "data/artifacts/diagnostic-manifest.yaml",
+        "confidence": "RUNTIME_OBSERVED_OPTICAL_ROUTE"
+      },
+      "topologyConfidence": "SOURCE_CONFIRMED_TOPOLOGY"
+    }
+  ],
+  "powerComponents": [
+    {
+      "id": "camera-common-dovdd",
+      "type": "FIXED_REGULATOR",
+      "voltageMicrovolts": 1800000,
+      "enableGpio": 23,
+      "consumers": ["front", "main", "ultrawide", "telephoto"]
+    },
+    {
+      "id": "camera-tele-avdd",
+      "type": "FIXED_REGULATOR",
+      "voltageMicrovolts": 2800000,
+      "enableGpio": 129,
+      "consumers": ["telephoto"]
+    },
+    {
+      "id": "camera-regulator-i2c3",
+      "type": "ET5924_OR_DIO8016",
+      "controller": "i2c3",
+      "address7bitHex": "0x28",
+      "enableGpio": 1,
+      "outputs": [
+        {"rail": "ldo_dvdd_front", "minMicrovolts": 1000000, "maxMicrovolts": 1200000},
+        {"rail": "ldo_dvdd_uw", "minMicrovolts": 1000000, "maxMicrovolts": 1230000},
+        {"rail": "ldo_avdd_front", "minMicrovolts": 2800000, "maxMicrovolts": 2800000},
+        {"rail": "ldo_avdd_uw", "minMicrovolts": 2800000, "maxMicrovolts": 2800000}
+      ]
+    },
+    {
+      "id": "camera-regulator-i2c11",
+      "type": "ET5924_OR_DIO8016",
+      "controller": "i2c11",
+      "address7bitHex": "0x28",
+      "enableGpio": 21,
+      "outputs": [
+        {"rail": "ldo_dvdd_m", "minMicrovolts": 1000000, "maxMicrovolts": 1200000},
+        {"rail": "ldo_dvdd_tele", "minMicrovolts": 1000000, "maxMicrovolts": 1200000},
+        {"rail": "ldo_avdd_m", "minMicrovolts": 2800000, "maxMicrovolts": 2800000},
+        {"rail": "ldo_afvdd_m_tele", "minMicrovolts": 2800000, "maxMicrovolts": 2800000}
+      ]
+    }
+  ],
+  "flash": {
+    "controller": "i2c6",
+    "clockHz": 400000,
+    "address7bitHex": "0x63",
+    "compatibleCandidates": ["mediatek,sgm37864", "mediatek,ocp81375"],
+    "channels": 2,
+    "hwenGpio": 39,
+    "coolingCells": 2,
+    "driverPaths": [
+      "drivers/misc/mediatek/flashlight/v4l2/sgm37864.c",
+      "drivers/misc/mediatek/flashlight/v4l2/ocp81375.c"
+    ],
+    "shippedControllerIdentity": "UNKNOWN",
+    "gateController": {
+      "controller": "i2c6",
+      "address7bitHex": "0x11",
+      "compatible": "mediatek,gate-ic-i2c",
+      "enableGpio": 103
+    }
+  },
+  "kernelInterfaces": [
+    {
+      "id": "imgsensor-v4l2-subdev",
+      "component": "SENSORS",
+      "nodePattern": "/dev/v4l-subdev*",
+      "nodeStability": "DYNAMIC_ENUMERATION_REQUIRED",
+      "sourcePaths": [
+        "mtkcam/imgsensor/inc/imgsensor-user.h",
+        "mtkcam/imgsensor/src-v4l2/adaptor-ioctl.c",
+        "mtkcam/imgsensor/src-v4l2/adaptor-drv.c"
+      ],
+      "standardControls": ["V4L2 subdevice formats, pads and controls through the MediaTek adaptor"],
+      "privateIoctls": [
+        "VIDIOC_MTK_G_SENSOR_INFO",
+        "VIDIOC_MTK_G_CROP_BY_SCENARIO",
+        "VIDIOC_MTK_G_VCINFO_BY_SCENARIO",
+        "VIDIOC_MTK_G_SCENARIO_COMBO_INFO",
+        "VIDIOC_MTK_G_PDAF_INFO_BY_SCENARIO",
+        "VIDIOC_MTK_G_PDAF_DATA",
+        "VIDIOC_MTK_G_PDAF_CAP",
+        "VIDIOC_MTK_G_HDR_CAP",
+        "VIDIOC_MTK_G_SEAMLESS_SCENARIO",
+        "VIDIOC_MTK_G_OUTPUT_FORMAT_BY_SCENARIO",
+        "VIDIOC_MTK_G_SENSOR_PROFILE",
+        "VIDIOC_MTK_G_MULTI_EXP_GAIN_RANGE_BY_SCENARIO",
+        "VIDIOC_MTK_G_MULTI_EXP_SHUTTER_RANGE_BY_SCENARIO",
+        "VIDIOC_MTK_S_VIDEO_FRAMERATE",
+        "VIDIOC_MTK_S_MAX_FPS_BY_SCENARIO"
+      ],
+      "accessBoundary": "Kernel/HAL interface; not a supported third-party Android application API."
+    },
+    {
+      "id": "main-vcm-v4l2-subdev",
+      "component": "MAIN_ACTUATOR",
+      "nodePattern": "/dev/v4l-subdev*",
+      "nodeStability": "DYNAMIC_ENUMERATION_REQUIRED",
+      "sourcePaths": ["drivers/misc/mediatek/lens/vcm/v4l2/pd9302a/pd9302a.c"],
+      "standardControls": ["V4L2_CID_FOCUS_ABSOLUTE"],
+      "privateIoctls": ["VCM_IOC_POWER_ON", "VCM_IOC_POWER_OFF"],
+      "accessBoundary": "V4L2 lens subdevice behind MediaTek camera userspace and SELinux policy."
+    },
+    {
+      "id": "tele-vcm-v4l2-subdev",
+      "component": "TELEPHOTO_ACTUATOR",
+      "nodePattern": "/dev/v4l-subdev*",
+      "nodeStability": "DYNAMIC_ENUMERATION_REQUIRED",
+      "sourcePaths": [],
+      "standardControls": [],
+      "privateIoctls": [],
+      "accessBoundary": "Device tree declares mediatek,cn3968; driver implementation is not located in indexed source."
+    },
+    {
+      "id": "camera-eeprom-char-dev",
+      "component": "EEPROM_CALIBRATION",
+      "nodePattern": "/dev/camera_eeprom*",
+      "classPattern": "/sys/class/camera_eepromdrv*",
+      "nodeStability": "INSTANCE_INDEX_DYNAMIC",
+      "sourcePaths": [
+        "drivers/misc/mediatek/cam_cal/src/common/v2/eeprom_driver.c",
+        "drivers/misc/mediatek/cam_cal/inc/cam_cal_format.h"
+      ],
+      "fileOperations": ["open", "read", "write", "llseek", "unlocked_ioctl", "compat_ioctl"],
+      "privateIoctls": ["CAM_CALIOC_S_SENSOR_INFO"],
+      "accessBoundary": "Calibration character device; permissions and SELinux access require build-matched verification."
+    },
+    {
+      "id": "flash-v4l2-subdev",
+      "component": "FLASH",
+      "nodePattern": "/dev/v4l-subdev*",
+      "nodeStability": "DYNAMIC_ENUMERATION_REQUIRED",
+      "sourcePaths": [
+        "drivers/misc/mediatek/flashlight/v4l2/sgm37864.c",
+        "drivers/misc/mediatek/flashlight/v4l2/ocp81375.c"
+      ],
+      "standardControls": [
+        "V4L2 flash LED mode",
+        "flash/torch brightness",
+        "flash timeout",
+        "strobe and fault controls"
+      ],
+      "privateIoctls": [],
+      "sysfs": ["/sys/class/thermal/cooling_device* when the flash cooling device is registered"],
+      "accessBoundary": "V4L2 flash subdevices and MediaTek flashlight core; app access is mediated by Camera2/HAL."
+    }
+  ],
+  "sourceConfiguration": {
+    "defconfigEvidence": [
+      "CONFIG_CUSTOM_KERNEL_IMGSENSOR includes the Galaga candidate sensor families",
+      "CONFIG_MTK_IMGSENSOR=m",
+      "CONFIG_MTK_V4L2_LENS=m",
+      "CONFIG_MTK_V4L2_FLASHLIGHT=m",
+      "CONFIG_MTK_FLASHLIGHT=m",
+      "CONFIG_COMMON_CLK_MT6878_CAM=m",
+      "CONFIG_COMMON_CLK_MT6878_CCU=m"
+    ],
+    "cameraSubsystems": [
+      "VIDEO_MTK_ISP_CAMSYS",
+      "VIDEO_MTK_ISP_HCP",
+      "VIDEO_MTK_ISP_IMGSYS_7SP",
+      "MTK_CAMERA_DPE_ISP7SP",
+      "MTK_CAMERA_FD_ISP7S_ISP7SP",
+      "MTK_C2PS",
+      "MTK_CAMERA_PDA"
+    ]
+  },
+  "replacementAppConsequences": [
+    "The hardware map confirms four wired sensors but does not grant four public Camera2 IDs.",
+    "The replacement app must use public Camera2/CameraX interfaces unless a separately verified privileged route exists.",
+    "Sensor candidate names and source drivers must not be shown as shipped module identities without runtime confirmation.",
+    "Direct EEPROM, V4L2 subdevice, actuator or flash node access is not a portable app path and remains subject to SELinux, ownership and package privilege.",
+    "OIS must remain unsupported/unknown because the indexed Galaga camera device tree contains no OIS node or binding evidence.",
+    "Power budgets and sequencing must follow the active candidate driver and build-matched regulator behavior; the DTS rail map alone is insufficient for direct hardware control."
+  ],
+  "knownGaps": [
+    {
+      "id": "gap-exact-build-source",
+      "status": "OPEN",
+      "relatedIssues": [77, 84, 85],
+      "description": "No official source or partition image is matched to observed build 2606151653."
+    },
+    {
+      "id": "gap-shipped-module-identity",
+      "status": "OPEN",
+      "relatedIssues": [27, 52],
+      "description": "Candidate driver families are known; exact module-vendor selection is not verified for front, ultrawide or telephoto."
+    },
+    {
+      "id": "gap-tele-actuator-driver",
+      "status": "OPEN",
+      "relatedIssues": [52, 84],
+      "description": "The device tree declares mediatek,cn3968 but matching driver source was not located in indexed official repositories."
+    },
+    {
+      "id": "gap-userspace-routing",
+      "status": "OPEN",
+      "relatedIssues": [26, 28, 29, 31, 35, 55, 69],
+      "description": "Kernel topology does not identify Android logical IDs, package allowlists, stock routing or vendor-tag semantics."
+    }
+  ],
+  "nonClaims": [
+    "A device-tree sensor-names list does not prove the exact retail module vendor.",
+    "A source driver does not prove that the corresponding binary is loaded on observed build 2606151653.",
+    "Four wired sensors do not prove four public, logical or physical Camera2 routes.",
+    "No indexed OIS node is evidence of an unresolved feature boundary, not proof that no optical stabilization hardware exists.",
+    "Kernel ioctls and device nodes are not public Android SDK interfaces and are not assumed accessible to the replacement app.",
+    "This map does not authorize direct register, power, EEPROM, lens or flash control."
+  ],
+  "maintenance": {
+    "document": "docs/GALAGA_CAMERA_HARDWARE_MAP.md",
+    "validationTool": "tools/validate-galaga-camera-hardware-map.py",
+    "updateTriggers": [
+      "A build-matched Galaga source or firmware image appears",
+      "Runtime sensor/module identity is confirmed",
+      "A tele actuator or OIS driver/binding is located",
+      "SELinux/device-node access is measured on the target build",
+      "The official device tree or camera package changes"
+    ]
+  }
+}
