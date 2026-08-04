@@ -1,0 +1,580 @@
+{
+  "schemaVersion": 1,
+  "indexVersion": "2026.08.04-1",
+  "device": {
+    "marketingName": "CMF Phone 2 Pro",
+    "model": "A001",
+    "codename": "Galaga",
+    "observedBuildId": "2606151653",
+    "observedFingerprintEvidence": "data/artifacts/diagnostic-manifest.yaml"
+  },
+  "scope": {
+    "issue": 79,
+    "objective": "Track reproducible community reports about public camera IDs, GCam behavior, stock lens switching, firmware regressions and stock-camera features, then convert the reports into controlled device tests.",
+    "interpretationRule": "Community reports are leads or corroborated observations, never implementation proof. Claims enter capability or routing specifications only after controlled target-device evidence.",
+    "redistributionRule": "Do not redistribute camera APKs, GCam packages, private logs or user photographs. Preserve source links, bounded summaries and test protocols only."
+  },
+  "evidenceGrades": {
+    "SECOND_HAND_LEAD": "A report repeats a tool/app notification or another person's claim without testing on the device.",
+    "SINGLE_REPORT": "One device owner reports a behavior with insufficient independent confirmation.",
+    "MULTIPLE_INDEPENDENT_REPORTS": "Two or more distinct participants report materially similar behavior, but the reports remain uncontrolled.",
+    "OFFICIAL_CONTEXT_PLUS_REPORT": "An official changelog establishes build context and a community participant reports behavior on that release."
+  },
+  "sources": [
+    {
+      "id": "nothing-community-gcam-32911",
+      "publisher": "Nothing Community",
+      "title": "Support for GCAM | CMF Phone 2 Pro",
+      "url": "https://nothing.community/d/32911-support-for-gcam-cmf-phone-2-pro",
+      "firstReportedDate": "2025-05-14",
+      "datePrecision": "DAY",
+      "deviceContext": "Nothing A001 / CMF Phone 2 Pro",
+      "buildContext": {
+        "status": "UNKNOWN",
+        "value": null
+      },
+      "appContext": {
+        "status": "PARTIAL",
+        "name": "Camera2 API Probe and GCamator",
+        "version": "GCam v8.4 notification; probe version unknown"
+      },
+      "limitations": [
+        "The original poster did not own the device.",
+        "The GCam compatibility statement came from a GCamator notification and was not tested in the thread.",
+        "The one-rear-ID observation came from one Camera2 API Probe user and was not independently reproduced there."
+      ]
+    },
+    {
+      "id": "nothing-community-camera-feedback-79",
+      "publisher": "Nothing Community",
+      "title": "CMF Phone 2 Pro - Camera feedback, posts around December 2025",
+      "url": "https://nothing.community/d/32446-cmf-phone-2-pro-camera-feedback/79",
+      "firstReportedDate": "2025-12-20",
+      "datePrecision": "DAY",
+      "deviceContext": "CMF Phone 2 Pro",
+      "buildContext": {
+        "status": "PARTIAL",
+        "value": "Latest update at report time; exact build not stated for every post"
+      },
+      "appContext": {
+        "status": "PARTIAL",
+        "name": "Stock Camera",
+        "version": "UNKNOWN"
+      },
+      "limitations": [
+        "Multiple claims share one long feedback thread and are not controlled experiments.",
+        "The detailed video matrix is one participant's report and includes interpretation beyond direct observation.",
+        "Most posts do not include stock camera package version or exported metadata."
+      ]
+    },
+    {
+      "id": "nothing-community-nos32-251103-camera",
+      "publisher": "Nothing Community",
+      "title": "CMF Phone 2 Pro - Nothing OS V3.2-251103-2121 Changelog, camera regression discussion",
+      "url": "https://nothing.community/d/46765-cmf-phone-2-pro-nothing-os-v32-251103-2121-changelog?page=4",
+      "firstReportedDate": "2025-11",
+      "datePrecision": "MONTH",
+      "deviceContext": "CMF Phone 2 Pro",
+      "buildContext": {
+        "status": "EXACT",
+        "value": "V3.2-251103-2121"
+      },
+      "appContext": {
+        "status": "PARTIAL",
+        "name": "Stock Camera",
+        "version": "UNKNOWN"
+      },
+      "limitations": [
+        "Reports are subjective and captured under different scenes and settings.",
+        "One participant says bug reports, logs and samples were sent to support, but those private artifacts are not available in the repository.",
+        "Support correspondence quoted by users is not an official public defect acknowledgement."
+      ]
+    },
+    {
+      "id": "nothing-community-nos41-260415-camera",
+      "publisher": "Nothing Community",
+      "title": "CMF Phone 2 Pro - Nothing OS B4.1-260415-1710 Changelog",
+      "url": "https://nothing.community/en/d/56305-cmf-phone-2-pro-nothing-os-b41-260415-1710-changelog",
+      "firstReportedDate": "2026-04",
+      "datePrecision": "MONTH",
+      "deviceContext": "CMF Phone 2 Pro",
+      "buildContext": {
+        "status": "EXACT",
+        "value": "B4.1-260415-1710"
+      },
+      "appContext": {
+        "status": "PARTIAL",
+        "name": "Stock Camera",
+        "version": "UNKNOWN"
+      },
+      "limitations": [
+        "The official changelog says only that overall camera stability improved; it does not identify a fixed root cause.",
+        "A user reports a video lens-switching glitch fixed, while another reports focus problems persisting from OS 4.0.",
+        "The participants do not provide camera package version, logs or a shared reproduction protocol."
+      ]
+    },
+    {
+      "id": "nothing-community-update-ruined-camera-38107",
+      "publisher": "Nothing Community",
+      "title": "The latest CMF Phone 2 Pro software update has ruined the camera experience",
+      "url": "https://nothing.community/d/38107-the-latest-cmf-phone-2-pro-software-update-has-ruined-the-camera-experience",
+      "firstReportedDate": "2025-07",
+      "datePrecision": "MONTH",
+      "deviceContext": "CMF Phone 2 Pro",
+      "buildContext": {
+        "status": "UNKNOWN",
+        "value": "Recent update at report time"
+      },
+      "appContext": {
+        "status": "PARTIAL",
+        "name": "Stock Camera",
+        "version": "UNKNOWN"
+      },
+      "limitations": [
+        "One report with an attached processed image.",
+        "The exact firmware and before/after capture protocol are not recorded.",
+        "Image artifacts described by the reporter are not implementation evidence."
+      ]
+    },
+    {
+      "id": "nothing-community-camera-feedback-20",
+      "publisher": "Nothing Community",
+      "title": "CMF Phone 2 Pro - Camera feedback, lens color and app stability posts",
+      "url": "https://nothing.community/d/32446-cmf-phone-2-pro-camera-feedback/20",
+      "firstReportedDate": "2025-08-11",
+      "datePrecision": "DAY",
+      "deviceContext": "CMF Phone 2 Pro",
+      "buildContext": {
+        "status": "UNKNOWN",
+        "value": null
+      },
+      "appContext": {
+        "status": "PARTIAL",
+        "name": "Stock Camera",
+        "version": "UNKNOWN"
+      },
+      "limitations": [
+        "Lens color-temperature difference and long-session reboot are separate single-user reports.",
+        "No logs, thermal state, free-memory state or camera package version are supplied."
+      ]
+    },
+    {
+      "id": "nothing-community-camera-feedback-39",
+      "publisher": "Nothing Community",
+      "title": "CMF Phone 2 Pro - Camera feedback, processing and focus posts",
+      "url": "https://nothing.community/d/32446-cmf-phone-2-pro-camera-feedback/39",
+      "firstReportedDate": "2025-10",
+      "datePrecision": "MONTH",
+      "deviceContext": "CMF Phone 2 Pro",
+      "buildContext": {
+        "status": "PARTIAL",
+        "value": "Reports describe behavior after an update, exact build varies or is absent"
+      },
+      "appContext": {
+        "status": "PARTIAL",
+        "name": "Stock Camera",
+        "version": "UNKNOWN"
+      },
+      "limitations": [
+        "The thread mixes different scenes, modes and lighting.",
+        "Some participants revise their diagnosis after discussion.",
+        "No common capture target or metadata bundle is provided."
+      ]
+    },
+    {
+      "id": "nothing-community-camera-feedback-146",
+      "publisher": "Nothing Community",
+      "title": "CMF Phone 2 Pro - Camera feedback, front-camera post-processing",
+      "url": "https://nothing.community/d/32446-cmf-phone-2-pro-camera-feedback/146",
+      "firstReportedDate": "2026-02-05",
+      "datePrecision": "DAY",
+      "deviceContext": "CMF Phone 2 Pro",
+      "buildContext": {
+        "status": "PARTIAL",
+        "value": "Post-NOS 3.2/4.0 period; exact build not recorded by every participant"
+      },
+      "appContext": {
+        "status": "PARTIAL",
+        "name": "Stock Camera",
+        "version": "UNKNOWN"
+      },
+      "limitations": [
+        "Preview/final comparisons are user-supplied and not calibrated.",
+        "Beauty settings were reportedly disabled, but no settings export or metadata is available.",
+        "The reports do not isolate face detection, HDR, skin smoothing or JPEG tuning."
+      ]
+    }
+  ],
+  "reports": [
+    {
+      "id": "report-gcamator-v84-device-lead",
+      "sourceId": "nothing-community-gcam-32911",
+      "grade": "SECOND_HAND_LEAD",
+      "topic": "GCAM_COMPATIBILITY",
+      "reportedBehavior": "A GCamator notification identified Nothing A001 as compatible with a GCam 8.4 build.",
+      "buildContextStatus": "UNKNOWN",
+      "appContextStatus": "PARTIAL",
+      "independentCorroboration": false,
+      "implementationProof": false,
+      "testIds": [
+        "test-gcam-build-and-lens-matrix"
+      ],
+      "limitations": [
+        "The reporting participant did not own the phone and did not install the app.",
+        "Compatibility may mean installation or main-camera operation only."
+      ]
+    },
+    {
+      "id": "report-camera2-level3-one-rear-id",
+      "sourceId": "nothing-community-gcam-32911",
+      "grade": "SINGLE_REPORT",
+      "topic": "PUBLIC_CAMERA_IDS",
+      "reportedBehavior": "One participant reported Camera2 API hardware level 3 and only one rear camera listed by Camera2 API Probe.",
+      "buildContextStatus": "UNKNOWN",
+      "appContextStatus": "PARTIAL",
+      "independentCorroboration": false,
+      "implementationProof": false,
+      "testIds": [
+        "test-public-camera-id-enumeration"
+      ],
+      "limitations": [
+        "Probe version, package identity, complete export and firmware build were not supplied.",
+        "A probe UI count does not prove that no hidden, system-only or logical physical routes exist."
+      ]
+    },
+    {
+      "id": "report-stock-video-1080p30-three-lens-switching",
+      "sourceId": "nothing-community-camera-feedback-79",
+      "grade": "SINGLE_REPORT",
+      "topic": "STOCK_VIDEO_ROUTING",
+      "reportedBehavior": "At 1080p30, the reporter could select and switch among 0.6x, 1x and 2x while recording, with smooth handover.",
+      "buildContextStatus": "PARTIAL",
+      "appContextStatus": "PARTIAL",
+      "independentCorroboration": false,
+      "implementationProof": false,
+      "testIds": [
+        "test-stock-video-route-matrix",
+        "test-lens-handover-continuity"
+      ],
+      "limitations": [
+        "Physical sensor activation was inferred from UI labels rather than synchronized metadata or sensor traces.",
+        "The exact build and camera package version were not recorded."
+      ]
+    },
+    {
+      "id": "report-stock-video-high-mode-route-limits",
+      "sourceId": "nothing-community-camera-feedback-79",
+      "grade": "SINGLE_REPORT",
+      "topic": "STOCK_VIDEO_ROUTING",
+      "reportedBehavior": "The same reporter described no telephoto selection or handover at 1080p60, and fixed preselected 1x or 2x routes during 4K30 recording.",
+      "buildContextStatus": "PARTIAL",
+      "appContextStatus": "PARTIAL",
+      "independentCorroboration": false,
+      "implementationProof": false,
+      "testIds": [
+        "test-stock-video-route-matrix"
+      ],
+      "limitations": [
+        "The assertion that zoom remained digital was not backed by focal-length metadata in the post.",
+        "A disabled UI control does not identify whether the restriction is camera policy, stream compatibility, thermal policy or stabilization."
+      ]
+    },
+    {
+      "id": "report-nos32-processing-regression-cluster",
+      "sourceId": "nothing-community-nos32-251103-camera",
+      "grade": "MULTIPLE_INDEPENDENT_REPORTS",
+      "topic": "FIRMWARE_REGRESSION",
+      "reportedBehavior": "Multiple participants associated V3.2-251103-2121 with less natural HDR, darker or overprocessed output, skin-tone changes, low-light degradation, highlight clipping and slower capture processing.",
+      "buildContextStatus": "EXACT",
+      "appContextStatus": "PARTIAL",
+      "independentCorroboration": true,
+      "implementationProof": false,
+      "testIds": [
+        "test-build-controlled-image-regression",
+        "test-preview-final-processing-delta"
+      ],
+      "limitations": [
+        "Reports were made under uncontrolled scenes and do not all separate auto HDR, scene detection, front/rear camera or mode.",
+        "Independent agreement raises priority but does not establish a single root cause."
+      ]
+    },
+    {
+      "id": "report-nos32-main-tele-handover-glitch",
+      "sourceId": "nothing-community-nos32-251103-camera",
+      "grade": "MULTIPLE_INDEPENDENT_REPORTS",
+      "topic": "LENS_HANDOVER",
+      "reportedBehavior": "Participants described a visible 1x-to-2x shift/glitch and differing main/tele processing after V3.2-251103-2121.",
+      "buildContextStatus": "EXACT",
+      "appContextStatus": "PARTIAL",
+      "independentCorroboration": true,
+      "implementationProof": false,
+      "testIds": [
+        "test-lens-handover-continuity",
+        "test-build-controlled-image-regression"
+      ],
+      "limitations": [
+        "The reports do not distinguish optical handover from digital zoom threshold behavior.",
+        "No synchronized focal-length, physical-camera result or stock request trace is attached."
+      ]
+    },
+    {
+      "id": "report-nos41-switching-glitch-improved",
+      "sourceId": "nothing-community-nos41-260415-camera",
+      "grade": "OFFICIAL_CONTEXT_PLUS_REPORT",
+      "topic": "LENS_HANDOVER",
+      "reportedBehavior": "The B4.1-260415-1710 changelog states overall camera stability improved, and one participant reported a prior video lens-switching glitch working well after the update.",
+      "buildContextStatus": "EXACT",
+      "appContextStatus": "PARTIAL",
+      "independentCorroboration": false,
+      "implementationProof": false,
+      "testIds": [
+        "test-stock-video-route-matrix",
+        "test-lens-handover-continuity"
+      ],
+      "limitations": [
+        "The changelog does not identify the specific video issue.",
+        "One positive report cannot establish that every switching path or device was fixed."
+      ]
+    },
+    {
+      "id": "report-os40-os41-focus-oscillation",
+      "sourceId": "nothing-community-nos41-260415-camera",
+      "grade": "SINGLE_REPORT",
+      "topic": "AUTOFOCUS_REGRESSION",
+      "reportedBehavior": "A participant reported focus oscillation after OS 4.0 that persisted on B4.1-260415-1710, with 0.6x and 2x focused at distance while 1x remained unfocused.",
+      "buildContextStatus": "EXACT",
+      "appContextStatus": "PARTIAL",
+      "independentCorroboration": false,
+      "implementationProof": false,
+      "testIds": [
+        "test-cross-lens-autofocus"
+      ],
+      "limitations": [
+        "No focus-distance target, AF state log, lens cleanliness inspection or hardware diagnostic is provided.",
+        "A single device report cannot separate firmware, calibration, actuator or unit-specific faults."
+      ]
+    },
+    {
+      "id": "report-front-camera-postprocessing-cluster",
+      "sourceId": "nothing-community-camera-feedback-146",
+      "grade": "MULTIPLE_INDEPENDENT_REPORTS",
+      "topic": "POST_PROCESSING",
+      "reportedBehavior": "Multiple participants described final selfies as more smoothed, sharpened, HDR-heavy or less natural than the live preview even after beauty controls were reportedly disabled.",
+      "buildContextStatus": "PARTIAL",
+      "appContextStatus": "PARTIAL",
+      "independentCorroboration": true,
+      "implementationProof": false,
+      "testIds": [
+        "test-preview-final-processing-delta"
+      ],
+      "limitations": [
+        "Display preview, saved JPEG and uploaded forum images use different rendering paths.",
+        "The reports do not isolate HDR, face retouching, tone mapping or display color management."
+      ]
+    },
+    {
+      "id": "report-long-camera-session-reboot",
+      "sourceId": "nothing-community-camera-feedback-20",
+      "grade": "SINGLE_REPORT",
+      "topic": "CAMERA_APP_STABILITY",
+      "reportedBehavior": "One participant reported the phone sometimes shutting down and restarting after prolonged use of the stock camera app, but not during a quick single capture.",
+      "buildContextStatus": "UNKNOWN",
+      "appContextStatus": "PARTIAL",
+      "independentCorroboration": false,
+      "implementationProof": false,
+      "testIds": [
+        "test-stock-camera-soak"
+      ],
+      "limitations": [
+        "No tombstone, pstore, thermal trace, battery state or system log is available.",
+        "The report may describe an app crash, watchdog reset, thermal shutdown, power fault or unrelated reboot."
+      ]
+    }
+  ],
+  "controlledTests": [
+    {
+      "id": "test-public-camera-id-enumeration",
+      "objective": "Reproduce public camera enumeration on an exact build and retain the complete machine-readable result.",
+      "protocol": [
+        "Record build fingerprint, stock camera version, probe package/version and test timestamp.",
+        "Enumerate CameraManager camera IDs as the replacement app and diagnostic app.",
+        "For each ID record hardware level, lens facing, focal lengths, logical/physical IDs, request/result/session keys and open result.",
+        "Repeat after reboot and compare with package-identity-controlled probes where permitted."
+      ],
+      "requiredArtifacts": [
+        "Raw diagnostic JSON",
+        "Package/version manifest",
+        "Per-ID open results",
+        "SHA-256 and build matrix entry"
+      ],
+      "decisionRule": "A public-ID claim is accepted only when two runs on the same exact build agree and the complete export is preserved. Hidden or system-only routes remain separate.",
+      "relatedReportIds": [
+        "report-camera2-level3-one-rear-id"
+      ]
+    },
+    {
+      "id": "test-gcam-build-and-lens-matrix",
+      "objective": "Determine what one explicitly identified third-party camera build can install, open and route without redistributing it.",
+      "protocol": [
+        "Record APK package name, version, signer digest and acquisition provenance without committing the APK.",
+        "Run main, ultrawide and telephoto UI selections at photo and supported video modes.",
+        "Record CameraService opens, Camera2 IDs, focal length, crop region, output EXIF and failures.",
+        "Repeat on the stock app as a same-build control."
+      ],
+      "requiredArtifacts": [
+        "Package metadata only",
+        "Per-mode trace bundle",
+        "Output metadata and hashes",
+        "Failure classification"
+      ],
+      "decisionRule": "Compatibility means only the exact tested operations. Installation or main-camera capture does not imply auxiliary-lens access.",
+      "relatedReportIds": [
+        "report-gcamator-v84-device-lead"
+      ]
+    },
+    {
+      "id": "test-stock-video-route-matrix",
+      "objective": "Measure stock route availability and in-recording handover by resolution and frame rate.",
+      "protocol": [
+        "Test 1080p30, 1080p60 and 4K30 with 0.6x, 1x and 2x selected before recording.",
+        "Attempt each route transition while recording and record UI state, capture result focal length, crop, physical ID and sensor timestamp.",
+        "Repeat three times in controlled light and after thermal cooldown.",
+        "Record unsupported combinations separately from failed transitions."
+      ],
+      "requiredArtifacts": [
+        "Route matrix CSV/JSON",
+        "Synchronized result and video metadata",
+        "Screen recording or UI event log",
+        "Thermal and build context"
+      ],
+      "decisionRule": "A physical-lens route is confirmed only by correlated metadata or sensor evidence, not by zoom labels alone.",
+      "relatedReportIds": [
+        "report-stock-video-1080p30-three-lens-switching",
+        "report-stock-video-high-mode-route-limits",
+        "report-nos41-switching-glitch-improved"
+      ]
+    },
+    {
+      "id": "test-lens-handover-continuity",
+      "objective": "Quantify visual and metadata discontinuity at stock lens handover thresholds.",
+      "protocol": [
+        "Use a fixed tripod, locked scene, stable illumination and a color/geometry target.",
+        "Record slow zoom sweeps and discrete 1x/2x selections in supported modes.",
+        "Measure frame-to-frame field of view, white balance, exposure, focus, timestamp gaps and physical-route changes.",
+        "Compare across exact firmware builds when available."
+      ],
+      "requiredArtifacts": [
+        "Frame-indexed route metadata",
+        "Color target measurements",
+        "Handover discontinuity metrics",
+        "Build/app version manifest"
+      ],
+      "decisionRule": "A firmware regression requires a repeatable build-to-build increase in discontinuity under the same protocol.",
+      "relatedReportIds": [
+        "report-stock-video-1080p30-three-lens-switching",
+        "report-nos32-main-tele-handover-glitch",
+        "report-nos41-switching-glitch-improved"
+      ]
+    },
+    {
+      "id": "test-build-controlled-image-regression",
+      "objective": "Test processing-regression reports across firmware builds without relying on memory or forum-compressed samples.",
+      "protocol": [
+        "Use the same device, tripod, calibrated target, illumination and camera settings before and after an update where safe images are available.",
+        "Capture auto HDR on/off, front/rear, low-light and backlit scenes with RAW/JPEG where supported.",
+        "Record exposure, ISO, white balance, focal length, processing time and JPEG metadata.",
+        "Compare objective clipping, tone, color and sharpness metrics and retain originals privately."
+      ],
+      "requiredArtifacts": [
+        "Exact before/after build fingerprints",
+        "Original image hashes and metadata",
+        "Scene/lighting measurements",
+        "Metric report"
+      ],
+      "decisionRule": "A regression is recorded only when the controlled metric change is repeatable and not explained by exposure, mode, route or scene differences.",
+      "relatedReportIds": [
+        "report-nos32-processing-regression-cluster",
+        "report-nos32-main-tele-handover-glitch"
+      ]
+    },
+    {
+      "id": "test-preview-final-processing-delta",
+      "objective": "Separate live-preview rendering from saved-image HDR, retouching and JPEG processing.",
+      "protocol": [
+        "Capture a calibrated face/skin-tone chart and non-face control under fixed light.",
+        "Record preview frames and final JPEG/RAW with beauty, HDR and scene features toggled where available.",
+        "Log face-detection results, capture requests/results, exposure and processing latency.",
+        "Compare preview and final tone, texture, sharpness and color in a common color space."
+      ],
+      "requiredArtifacts": [
+        "Preview and final-frame pairs",
+        "RAW/JPEG metadata",
+        "Settings export",
+        "Processing-delta measurements"
+      ],
+      "decisionRule": "A post-processing effect is attributed only after preview/display color differences and exposure changes are controlled.",
+      "relatedReportIds": [
+        "report-nos32-processing-regression-cluster",
+        "report-front-camera-postprocessing-cluster"
+      ]
+    },
+    {
+      "id": "test-cross-lens-autofocus",
+      "objective": "Determine whether reported focus oscillation is route-, build-, scene- or unit-specific.",
+      "protocol": [
+        "Use near, mid and far high-contrast targets under measured illumination.",
+        "Test 0.6x, 1x and 2x with tap AF, continuous AF and repeated camera reopen.",
+        "Record AF mode/state, lens focus distance, actuator/result timing, sharpness and route metadata.",
+        "Repeat after reboot and compare with another device unit if available."
+      ],
+      "requiredArtifacts": [
+        "Per-frame AF state/result log",
+        "Sharpness measurements",
+        "Route and build manifest",
+        "Unit comparison when available"
+      ],
+      "decisionRule": "A firmware focus defect requires repeatability across sessions and separation from a single-unit actuator or calibration failure.",
+      "relatedReportIds": [
+        "report-os40-os41-focus-oscillation"
+      ]
+    },
+    {
+      "id": "test-stock-camera-soak",
+      "objective": "Classify long-session camera crashes, reboots or thermal shutdowns.",
+      "protocol": [
+        "Run a fixed sequence of preview, capture, video, mode switching and preset editing for a bounded duration.",
+        "Record temperature, memory, battery, CameraService state, logcat, tombstones, pstore and reboot reason.",
+        "Repeat from cool state and under a non-camera control workload.",
+        "Stop on unsafe temperature or repeated system instability."
+      ],
+      "requiredArtifacts": [
+        "Timestamped workload script",
+        "Thermal/memory/power trace",
+        "Crash or reboot artifacts",
+        "Build/app version manifest"
+      ],
+      "decisionRule": "Do not classify the cause without a matching crash, watchdog, thermal or power artifact.",
+      "relatedReportIds": [
+        "report-long-camera-session-reboot"
+      ]
+    }
+  ],
+  "nonClaims": [
+    "A community report does not prove a Camera2 implementation, hidden API, vendor-tag meaning or privilege boundary.",
+    "One rear camera shown by a probe does not prove that auxiliary sensors are absent or physically inaccessible to the stock app.",
+    "A stock UI lens label does not prove which physical sensor produced a frame.",
+    "Independent reports increase test priority but do not establish a common root cause.",
+    "An official camera-stability changelog does not identify every fixed or remaining camera defect.",
+    "This register does not recommend or redistribute third-party camera packages."
+  ],
+  "maintenance": {
+    "updateTriggers": [
+      "A report provides an exact build, camera package version or machine-readable probe export",
+      "Two independent reports corroborate or contradict an indexed behavior",
+      "A controlled test produces target-device evidence",
+      "A new firmware changes public IDs, lens routing, focus, processing or stability"
+    ],
+    "document": "docs/COMMUNITY_CAMERA_EVIDENCE.md",
+    "validationTool": "tools/validate-community-camera-evidence.py"
+  }
+}
