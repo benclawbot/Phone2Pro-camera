@@ -1,0 +1,284 @@
+{
+  "schemaVersion": 1,
+  "indexVersion": "2026.08.04-1",
+  "device": {
+    "marketingName": "CMF Phone 2 Pro",
+    "model": "A001",
+    "codename": "Galaga",
+    "soc": "MT6878"
+  },
+  "observedFirmware": {
+    "fingerprint": "Nothing/GalagaEEA/Galaga:16/BP2A.250605.031.A3/2606151653:user/release-keys",
+    "buildId": "2606151653",
+    "evidence": "data/artifacts/diagnostic-manifest.yaml"
+  },
+  "officialSourceRelease": {
+    "label": "Galaga-B4.1-260415-1710",
+    "releaseDate": "2026-04-22",
+    "relationToObservedFirmware": "OFFICIAL_BUT_NOT_EXACT_BUILD_MATCH",
+    "explanation": "The official Android 16 Galaga branch heads identify release Galaga-B4.1-260415-1710. The observed diagnostic firmware build is 2606151653, so this source set is authoritative Galaga provenance but not an exact source match for the tested build."
+  },
+  "repositories": [
+    {
+      "id": "nothing-kernel-6.1-mt6878",
+      "owner": "NothingOSS",
+      "repository": "android_kernel_6.1_nothing_mt6878",
+      "branch": "mt6878/Galaga/16b",
+      "commit": "6bed54e9d8b14850bb867ccba6607329cd6eaa06",
+      "commitMessage": "release kernel source code of Galaga-B4.1-260415-1710",
+      "commitDate": "2026-04-22T08:44:49Z",
+      "role": "BASE_KERNEL",
+      "cameraScope": "Generic kernel infrastructure; no Galaga-specific camera topology is claimed from this repository alone."
+    },
+    {
+      "id": "nothing-kernel-modules-mt6878",
+      "owner": "NothingOSS",
+      "repository": "android_kernel_modules_nothing_mt6878",
+      "branch": "mt6878/Galaga/16b",
+      "commit": "2866afdd56e09debbe373d919f17bacebcc4b765",
+      "commitMessage": "release kernel source code of Galaga-B4.1-260415-1710",
+      "commitDate": "2026-04-22T08:45:15Z",
+      "role": "KERNEL_MODULES",
+      "cameraScope": "Companion module source provenance. Camera-specific Galaga topology is indexed from the device-modules repository."
+    },
+    {
+      "id": "nothing-device-modules-6.1-mt6878",
+      "owner": "NothingOSS",
+      "repository": "android_kernel_device_modules_6.1_nothing_mt6878",
+      "branch": "mt6878/Galaga/16b",
+      "commit": "2b0af666da693dcf4088b583bae7d77f4a4373e3",
+      "commitMessage": "release kernel source code of Galaga-B4.1-260415-1710",
+      "commitDate": "2026-04-22T08:45:39Z",
+      "role": "DEVICE_MODULES_AND_DEVICE_TREE",
+      "cameraScope": "Galaga device tree, MT6878 camera clocks, image-sensor framework, calibration, PDA, flash, and MediaTek ISP subsystem configuration."
+    }
+  ],
+  "cameraSources": [
+    {
+      "id": "galaga-camera-device-tree",
+      "repositoryId": "nothing-device-modules-6.1-mt6878",
+      "path": "arch/arm64/boot/dts/mediatek/cust_mt6878_galaga_camera_v4l2.dtsi",
+      "category": "GALAGA_DEVICE_TREE",
+      "galagaSpecific": true,
+      "confidence": "VERIFIED_SOURCE",
+      "significance": "Declares four SENINF CSI ports, camera regulators and pins, four enabled image-sensor nodes, EEPROM nodes, main/tele autofocus, and dual flash endpoints.",
+      "observations": [
+        "sensor0 candidate list: s5kgn9sp_mipi_raw",
+        "sensor1 candidate list: gc16b3c2_mipi_raw and gc16b3cofilm_mipi_raw",
+        "sensor2 candidate list: gc08a8_mipi_raw and gc08a8xl_mipi_raw",
+        "sensor3 candidate list: ov50d40_mipi_raw and ov50d40ofilm_mipi_raw",
+        "Sensor names are device-tree driver candidates and are not by themselves proof of the shipped module vendor for every hardware unit."
+      ]
+    },
+    {
+      "id": "galaga-board-device-tree",
+      "repositoryId": "nothing-device-modules-6.1-mt6878",
+      "path": "arch/arm64/boot/dts/mediatek/k6878v1_64_galaga.dts",
+      "category": "GALAGA_BOARD_DEVICE_TREE",
+      "galagaSpecific": true,
+      "confidence": "VERIFIED_SOURCE",
+      "significance": "Galaga board overlay built on the MT6878 board source; establishes official device-specific board provenance."
+    },
+    {
+      "id": "mt6878-base-device-tree",
+      "repositoryId": "nothing-device-modules-6.1-mt6878",
+      "path": "arch/arm64/boot/dts/mediatek/mt6878.dts",
+      "category": "SOC_DEVICE_TREE",
+      "galagaSpecific": false,
+      "confidence": "VERIFIED_SOURCE",
+      "significance": "MT6878 SoC device-tree definitions consumed by Galaga board overlays and camera-related nodes."
+    },
+    {
+      "id": "mt6878-camera-base-device-tree",
+      "repositoryId": "nothing-device-modules-6.1-mt6878",
+      "path": "arch/arm64/boot/dts/mediatek/cust_mt6878_camera_v4l2.dtsi",
+      "category": "CAMERA_DEVICE_TREE_BASE",
+      "galagaSpecific": false,
+      "confidence": "VERIFIED_SOURCE",
+      "significance": "Shared MT6878 V4L2 camera device-tree configuration; the Galaga-specific file overrides or extends project wiring."
+    },
+    {
+      "id": "mt6878-device-defconfig",
+      "repositoryId": "nothing-device-modules-6.1-mt6878",
+      "path": "arch/arm64/configs/mgk_64_k61_defconfig",
+      "category": "KERNEL_CONFIGURATION",
+      "galagaSpecific": false,
+      "confidence": "VERIFIED_SOURCE",
+      "significance": "Enables MTK image sensors, lens/V4L2 lens, camera clocks, flash/flashlight drivers, and enumerates compiled image-sensor driver candidates including the Galaga DTS names."
+    },
+    {
+      "id": "device-modules-kconfig-root",
+      "repositoryId": "nothing-device-modules-6.1-mt6878",
+      "path": "Kconfig.ext",
+      "category": "KERNEL_CONFIGURATION",
+      "galagaSpecific": false,
+      "confidence": "VERIFIED_SOURCE",
+      "significance": "Connects the device-module build to media-platform and MTK ISP Kconfig trees."
+    },
+    {
+      "id": "media-platform-kconfig",
+      "repositoryId": "nothing-device-modules-6.1-mt6878",
+      "path": "drivers/media/platform/Kconfig",
+      "category": "MEDIA_SUBSYSTEM",
+      "galagaSpecific": false,
+      "confidence": "VERIFIED_SOURCE",
+      "significance": "Indexes MTK ISP, AIE, DPE, codecs, and CAMSYS vendor-hook configuration."
+    },
+    {
+      "id": "mtk-isp-kconfig",
+      "repositoryId": "nothing-device-modules-6.1-mt6878",
+      "path": "drivers/media/platform/mtk-isp/Kconfig",
+      "category": "ISP_SUBSYSTEM",
+      "galagaSpecific": false,
+      "confidence": "VERIFIED_SOURCE",
+      "significance": "Declares CAMSYS, CSI-2/multicamera support, HCP userspace messaging, AOV, IMGSYS/IPESYS processing, CMDQ, and camera power/performance scheduling."
+    },
+    {
+      "id": "mtk-aie-kconfig",
+      "repositoryId": "nothing-device-modules-6.1-mt6878",
+      "path": "drivers/media/platform/mtk-aie/Kconfig",
+      "category": "ACCELERATOR_SUBSYSTEM",
+      "galagaSpecific": false,
+      "confidence": "VERIFIED_SOURCE",
+      "significance": "Declares the V4L2 memory-to-memory hardware face-detection engine."
+    },
+    {
+      "id": "mtk-dpe-kconfig",
+      "repositoryId": "nothing-device-modules-6.1-mt6878",
+      "path": "drivers/media/platform/mtk-dpe/Kconfig",
+      "category": "ACCELERATOR_SUBSYSTEM",
+      "galagaSpecific": false,
+      "confidence": "VERIFIED_SOURCE",
+      "significance": "Declares depth engines for dual-camera image pairs across ISP generations."
+    },
+    {
+      "id": "mtk-image-sensor-kconfig",
+      "repositoryId": "nothing-device-modules-6.1-mt6878",
+      "path": "drivers/misc/mediatek/imgsensor/Kconfig",
+      "category": "IMAGE_SENSOR_FRAMEWORK",
+      "galagaSpecific": false,
+      "confidence": "VERIFIED_SOURCE",
+      "significance": "Declares MediaTek image-sensor and V4L2 sensor-level driver frameworks plus the custom sensor-list configuration."
+    },
+    {
+      "id": "mt6878-camera-clock-driver",
+      "repositoryId": "nothing-device-modules-6.1-mt6878",
+      "path": "drivers/clk/mediatek/clk-mt6878-cam.c",
+      "category": "CLOCK_AND_POWER",
+      "galagaSpecific": false,
+      "confidence": "VERIFIED_SOURCE",
+      "significance": "Defines CAM, SENINF, CAMSV, MRAW, RAW/YUV, CAMTG, and CCUSYS clock gates for MT6878."
+    },
+    {
+      "id": "mt6878-clock-bindings",
+      "repositoryId": "nothing-device-modules-6.1-mt6878",
+      "path": "include/dt-bindings/clock/mt6878-clk.h",
+      "category": "CLOCK_AND_POWER",
+      "galagaSpecific": false,
+      "confidence": "VERIFIED_SOURCE",
+      "significance": "Defines MT6878 CAMTG, SENINF, CAM, CCU, IMG, and IPE clock selectors used by device tree and drivers."
+    },
+    {
+      "id": "camera-calibration-format",
+      "repositoryId": "nothing-device-modules-6.1-mt6878",
+      "path": "drivers/misc/mediatek/cam_cal/inc/cam_cal_format.h",
+      "category": "CALIBRATION",
+      "galagaSpecific": false,
+      "confidence": "VERIFIED_SOURCE",
+      "significance": "Defines calibration containers and error fields for shading, 3A gains, PDAF, stereo data, lens ID, fuse ID, and related EEPROM content."
+    },
+    {
+      "id": "isp7sp-pda-driver",
+      "repositoryId": "nothing-device-modules-6.1-mt6878",
+      "path": "drivers/misc/mediatek/cameraisp/pda/isp_7sp/camera_pda.c",
+      "category": "PDAF_ACCELERATOR",
+      "galagaSpecific": false,
+      "confidence": "VERIFIED_SOURCE",
+      "significance": "Kernel PDA hardware driver with CAMSYS registers, DMA buffers, interrupts, MMQoS, and runtime power/clock integration."
+    },
+    {
+      "id": "v4l2-flash-lm3644",
+      "repositoryId": "nothing-device-modules-6.1-mt6878",
+      "path": "drivers/misc/mediatek/flashlight/v4l2/lm3644.c",
+      "category": "FLASH",
+      "galagaSpecific": false,
+      "confidence": "VERIFIED_SOURCE",
+      "significance": "One compiled V4L2 flash-controller implementation in the source set."
+    },
+    {
+      "id": "v4l2-flash-ocp81375",
+      "repositoryId": "nothing-device-modules-6.1-mt6878",
+      "path": "drivers/misc/mediatek/flashlight/v4l2/ocp81375.c",
+      "category": "FLASH",
+      "galagaSpecific": false,
+      "confidence": "VERIFIED_SOURCE",
+      "significance": "Galaga DTS-compatible flash-controller implementation."
+    },
+    {
+      "id": "v4l2-flash-sgm37864",
+      "repositoryId": "nothing-device-modules-6.1-mt6878",
+      "path": "drivers/misc/mediatek/flashlight/v4l2/sgm37864.c",
+      "category": "FLASH",
+      "galagaSpecific": false,
+      "confidence": "VERIFIED_SOURCE",
+      "significance": "Galaga DTS-compatible dual-channel flash-controller implementation."
+    }
+  ],
+  "missingUserspaceAndFirmware": [
+    {
+      "id": "camera-provider-hal-service",
+      "status": "NOT_PRESENT_IN_OFFICIAL_KERNEL_SOURCE_SET",
+      "component": "Exact Android CameraProvider/HAL service implementation and provider configuration for the observed firmware",
+      "whyRequired": "Maps Android camera IDs, characteristics, sessions, requests, and results to kernel/native interfaces.",
+      "unknownIssues": [46, 47, 48, 50, 51, 69]
+    },
+    {
+      "id": "mediatek-camera-middleware",
+      "status": "NOT_PRESENT_IN_OFFICIAL_KERNEL_SOURCE_SET",
+      "component": "MediaTek proprietary camera middleware, feature graph, tuning control, and userspace daemons",
+      "whyRequired": "The open ISP Kconfig explicitly describes HCP messaging with a userspace daemon, while the exact Galaga userspace counterpart is not supplied by these kernel repositories.",
+      "unknownIssues": [31, 34, 47, 48, 69]
+    },
+    {
+      "id": "sensor-tuning-and-calibration-payloads",
+      "status": "NOT_PRESENT_IN_OFFICIAL_KERNEL_SOURCE_SET",
+      "component": "Production sensor tuning, ISP tuning, calibration payloads, and module-specific manufacturing data",
+      "whyRequired": "Kernel schemas and EEPROM nodes identify interfaces, not the device-specific production tuning or private calibration payloads.",
+      "unknownIssues": [25, 31, 48, 49]
+    },
+    {
+      "id": "vendor-tags-and-semantics",
+      "status": "NOT_PRESENT_IN_OFFICIAL_KERNEL_SOURCE_SET",
+      "component": "Complete vendor-tag definitions, Java/native types, enum structures, dependencies, and verified effects",
+      "whyRequired": "Kernel source does not establish Android vendor-tag contracts or production-safe request values.",
+      "unknownIssues": [55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66]
+    },
+    {
+      "id": "stock-camera-controller",
+      "status": "NOT_PRESENT_IN_OFFICIAL_KERNEL_SOURCE_SET",
+      "component": "Stock camera APK controller, mode graph, request builders, package identity behavior, and native dependencies",
+      "whyRequired": "Kernel topology cannot reproduce the stock application's 0.6x/1x/2x routing or caller-identity decisions.",
+      "unknownIssues": [26, 27, 28, 29, 30, 31, 32, 34, 35, 36]
+    },
+    {
+      "id": "isp-ccu-sensor-firmware",
+      "status": "NOT_PRESENT_IN_OFFICIAL_KERNEL_SOURCE_SET",
+      "component": "ISP, CCU, sensor, actuator, or other camera firmware blobs used by the production build",
+      "whyRequired": "Open drivers define clocks, messaging, and hardware interfaces but not all runtime firmware executed by camera processors and peripherals.",
+      "unknownIssues": [45, 48, 49, 53]
+    },
+    {
+      "id": "exact-build-source-drop",
+      "status": "NOT_AVAILABLE_IN_INDEXED_OFFICIAL_BRANCHES",
+      "component": "Official source release matching firmware build 2606151653",
+      "whyRequired": "The indexed official release is Galaga-B4.1-260415-1710 and predates the observed diagnostic build.",
+      "unknownIssues": [54, 76]
+    }
+  ],
+  "nonClaims": [
+    "A device-tree sensor-names entry does not prove the module fitted to every retail unit.",
+    "Kernel source presence does not prove that an Android feature, vendor tag, or auxiliary route is publicly reachable.",
+    "The Galaga-B4.1-260415-1710 source release is not treated as an exact source match for build 2606151653.",
+    "This index does not claim a complete Android camera stack or reproduce proprietary userspace behavior."
+  ]
+}
