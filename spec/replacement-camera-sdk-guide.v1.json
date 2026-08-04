@@ -78,7 +78,7 @@
       "entryPoints": [
         "camera-app/app/src/main/java/com/phone2pro/camera/imaging/FrameMetadata.java",
         "camera-app/app/src/main/java/com/phone2pro/camera/imaging/TimestampDomain.java",
-        "camera-app/app/src/main/java/com/phone2pro/camera/imaging/AlignmentEngine.java"
+        "camera-app/app/src/main/java/com/phone2pro/camera/imaging/FrameAligner.java"
       ],
       "documentation": [
         "docs/architecture/BURST_ALIGNMENT_CONTRACTS.md"
