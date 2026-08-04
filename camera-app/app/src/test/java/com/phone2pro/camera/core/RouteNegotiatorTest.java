@@ -22,7 +22,7 @@ public final class RouteNegotiatorTest {
     }
 
     @Test
-    public void mainRouteUsesVerifiedPublicCamera() {
+    public void mainRouteUsesVerifiedPublicOpticalCamera() {
         RouteNegotiator negotiator = new RouteNegotiator(
                 Collections.singletonList(new PublicMainBackend())
         );
@@ -35,6 +35,7 @@ public final class RouteNegotiatorTest {
         assertTrue(decision.support().isAvailable());
         assertEquals(PublicMainBackend.BACKEND_ID, decision.backendId());
         assertEquals(RouteMechanism.PUBLIC_CAMERA, decision.support().mechanism());
+        assertEquals(RouteRendering.OPTICAL, decision.rendering());
         assertEquals(
                 PublicMainBackend.GALAGA_PUBLIC_REAR_ID,
                 decision.endpoint().orElseThrow(AssertionError::new).cameraId()
@@ -54,20 +55,29 @@ public final class RouteNegotiatorTest {
 
         assertFalse(decision.support().isAvailable());
         assertEquals(RouteMechanism.UNAVAILABLE, decision.support().mechanism());
+        assertEquals(RouteRendering.UNAVAILABLE, decision.rendering());
         assertTrue(decision.support().reason().contains("digital crop"));
     }
 
     @Test
-    public void higherPriorityVerifiedBackendWins() {
+    public void higherPriorityVerifiedBackendWinsWithRenderingPreserved() {
         RouteBackend lowerPriority = new FakeBackend(
                 "lower",
                 10,
-                RouteSupport.available(RouteMechanism.STOCK_CAMERA_HANDOFF, "handoff")
+                RouteSupport.available(
+                        RouteMechanism.STOCK_CAMERA_HANDOFF,
+                        RouteRendering.OPTICAL,
+                        "handoff"
+                )
         );
         RouteBackend higherPriority = new FakeBackend(
                 "higher",
                 20,
-                RouteSupport.available(RouteMechanism.PUBLIC_VENDOR_SAT, "verified vendor route")
+                RouteSupport.available(
+                        RouteMechanism.PUBLIC_VENDOR_SAT,
+                        RouteRendering.IN_SENSOR,
+                        "verified vendor route"
+                )
         );
         RouteNegotiator negotiator = new RouteNegotiator(
                 java.util.Arrays.asList(lowerPriority, higherPriority)
@@ -80,6 +90,33 @@ public final class RouteNegotiatorTest {
 
         assertEquals("higher", decision.backendId());
         assertEquals(RouteMechanism.PUBLIC_VENDOR_SAT, decision.support().mechanism());
+        assertEquals(RouteRendering.IN_SENSOR, decision.rendering());
+    }
+
+    @Test
+    public void digitalRouteNeverClaimsOpticalRendering() {
+        RouteBackend digitalBackend = new FakeBackend(
+                "digital-main-crop",
+                200,
+                RouteSupport.available(
+                        RouteMechanism.PUBLIC_CAMERA,
+                        RouteRendering.DIGITAL,
+                        "Explicit main-sensor crop"
+                )
+        );
+        RouteNegotiator negotiator = new RouteNegotiator(
+                Collections.singletonList(digitalBackend)
+        );
+
+        RouteDecision decision = negotiator.select(
+                OpticalRoute.TELEPHOTO,
+                galagaWithPublicMain()
+        );
+
+        assertTrue(decision.support().isAvailable());
+        assertEquals(OpticalRoute.TELEPHOTO, decision.route());
+        assertEquals(RouteRendering.DIGITAL, decision.rendering());
+        assertFalse(decision.rendering() == RouteRendering.OPTICAL);
     }
 
     private static final class FakeBackend implements RouteBackend {

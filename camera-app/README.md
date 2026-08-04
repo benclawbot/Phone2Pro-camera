@@ -29,6 +29,37 @@ Only the verified 24 mm-equivalent public main route is enabled by the initial b
 
 The 0.6× and 2× controls remain visible but report `Unavailable`. They are not silently mapped to a crop of the main sensor. This preserves the product rule that digital zoom must never masquerade as an optical ultrawide or telephoto route.
 
+Every `OpticalRoute` now owns an evidence-backed `LensIdentity` containing:
+
+```text
+physical focal length
+35 mm-equivalent focal length
+optional aperture
+crop factor
+per-field and aggregate evidence confidence
+source evidence note
+```
+
+The verified Galaga focal geometry is recorded for 0.6×, 1× and 2×. Exact aperture values are currently `UNKNOWN` and remain absent rather than being guessed. Because geometry is verified while aperture is unknown, the aggregate identity is `PARTIALLY_VERIFIED`.
+
+Route transport and image rendering are independent:
+
+```text
+RouteMechanism
+  PUBLIC_CAMERA
+  PUBLIC_VENDOR_SAT
+  SYSTEM_CAMERA
+  STOCK_CAMERA_HANDOFF
+
+RouteRendering
+  OPTICAL
+  IN_SENSOR
+  DIGITAL
+  UNAVAILABLE
+```
+
+A public Camera2 backend can therefore report an optical main route or an explicitly digital crop without confusing either result with how the endpoint was reached.
+
 Backends are selected through:
 
 ```text
@@ -44,20 +75,17 @@ Installed backend policies:
 galaga-system-camera2
   routes: 0.6× → ID 2, 1× → ID 0, 2× → ID 3
   mechanism: SYSTEM_CAMERA
+  rendering: OPTICAL
   state: fail-closed until an independent authorization probe succeeds
 
 public-main-camera2
   route: 1× / 24 mm equivalent
   mechanism: PUBLIC_CAMERA
+  rendering: OPTICAL
   Camera2 ID: 0
 ```
 
-Concrete IDs are owned by backend route tables rather than `OpticalRoute`. The
-Galaga table records verified static stock-camera configuration, while
-`SystemEndpointAccess` independently determines whether the current process is
-authorized to bind the endpoint. The production policy is unverified and
-always denies system-camera access, so current ordinary-app behavior remains
-unchanged.
+Concrete IDs are owned by backend route tables rather than `OpticalRoute`. The Galaga table records verified static stock-camera configuration, while `SystemEndpointAccess` independently determines whether the current process is authorized to bind the endpoint. The production policy is unverified and always denies system-camera access, so current ordinary-app behavior remains unchanged.
 
 Planned optional backends remain isolated:
 
@@ -66,7 +94,7 @@ Planned optional backends remain isolated:
 - rooted/custom-ROM integration;
 - official-camera handoff.
 
-A backend is not enabled until its capability check and output verification are build-specific and evidence-backed.
+A backend is not enabled until its capability check, rendering classification and output verification are build-specific and evidence-backed.
 
 ## Build
 
@@ -105,10 +133,13 @@ app/src/main/java/com/phone2pro/camera/
   core/
     CaptureProfile.java
     DeviceCapabilitySnapshot.java
+    EvidenceConfidence.java
+    LensIdentity.java
     OpticalRoute.java
     RouteBackend.java
     RouteDecision.java
     RouteMechanism.java
+    RouteRendering.java
     ResolvedCameraEndpoint.java
     RouteNegotiator.java
     RouteSupport.java
@@ -116,13 +147,16 @@ app/src/main/java/com/phone2pro/camera/
 
 ## Initial tests
 
-`RouteNegotiatorTest` verifies:
+`RouteNegotiatorTest`, `LensIdentityTest` and `RouteSupportTest` verify:
 
-- the main route selects the public Camera2 backend;
+- the main route selects the public optical Camera2 backend;
 - ultrawide does not fall back to a digital crop;
-- a future higher-priority verified vendor backend can supersede a lower-priority handoff backend;
+- optical, in-sensor and digital rendering remain separate from backend transport;
+- a digital route can never report optical rendering;
 - the recovered Galaga table resolves `2`, `0` and `3` only after an independent authorization probe succeeds;
-- the default system-endpoint policy fails closed.
+- the default system-endpoint policy fails closed;
+- focal geometry, crop factor, aperture availability and confidence remain internally consistent;
+- missing aperture evidence cannot claim verified confidence.
 
 ## Next implementation slices
 
