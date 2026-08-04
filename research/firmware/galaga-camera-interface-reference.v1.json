@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "referenceVersion": "2026.08.04-1",
+  "issue": 98,
+  "status": "VERSIONED_REFERENCE_WITH_EXPLICIT_OPAQUE_BOUNDARIES",
+  "targetBuild": {
+    "matrixEntryId": "nothing-galaga-eea-android16-2606151653-f88325f3",
+    "device": "Galaga",
+    "model": "A001",
+    "androidRelease": "16",
+    "buildNumber": "2606151653",
+    "fingerprint": "Nothing/GalagaEEA/Galaga:16/BP2A.250605.031.A3/2606151653:user/release-keys",
+    "cameraPackage": {
+      "packageName": "com.nothing.camera",
+      "versionName": "16.1.01.93.20",
+      "sha256": "f78368e303033d49c5564b1287f51ef2bf5dde53db4687a08bfb20aa64a8eeea"
+    },
+    "status": "PARTIALLY_VERIFIED"
+  },
+  "sourceReleaseScope": {
+    "officialRelease": "Galaga-B4.1-260415-1710",
+    "observedBuild": "2606151653",
+    "relationship": "BUILD_MISMATCH",
+    "status": "PARTIALLY_VERIFIED",
+    "notes": "Official Galaga kernel sources predate the observed firmware build. Source-backed topology is retained, while exact shipped userspace/HAL/native implementation remains unverified."
+  },
+  "confidenceVocabulary": [
+    "VERIFIED",
+    "PARTIALLY_VERIFIED",
+    "HYPOTHESIS",
+    "UNKNOWN"
+  ],
+  "categories": [
+    "FRAMEWORK",
+    "APPLICATION",
+    "PROVIDER_HAL",
+    "VENDOR_METADATA",
+    "NATIVE_LIBRARY",
+    "CONFIGURATION",
+    "KERNEL",
+    "PERMISSION",
+    "SELINUX",
+    "ISP_TUNING"
+  ],
+  "firmwareDifferences": [
+    {
+      "id": "observed-target",
+      "build": "2606151653",
+      "matrixEntryId": "nothing-galaga-eea-android16-2606151653-f88325f3",
+      "status": "PARTIALLY_VERIFIED",
+      "notes": "Exact fingerprint and stock camera APK identity are recorded; complete system/vendor partition inventory is not yet available."
+    },
+    {
+      "id": "official-source-release",
+      "build": "Galaga-B4.1-260415-1710",
+      "status": "PARTIALLY_VERIFIED",
+      "relationshipToTarget": "PREDATES_TARGET",
+      "notes": "Official Galaga kernel sources predate the observed firmware build. Source-backed topology is retained, while exact shipped userspace/HAL/native implementation remains unverified."
+    }
+  ],
+  "opaqueBoundaries": [
+    "Exact camera-provider generation, instances and interface hashes",
+    "Build-matched camera HAL methods, stream negotiation extensions and sensor-routing policy",
+    "Complete proprietary native library inventory, symbols, JNI registration and call graphs",
+    "Build-matched system/vendor camera XML, properties, overlays and init services",
+    "Target SELinux domains, allow rules and AVC denials",
+    "ISP/tuning services, metadata layouts, firmware calls and proprietary tuning blobs"
+  ],
+  "maintenance": {
+    "validator": "tools/validate-firmware-camera-interface-reference.py",
+    "document": "docs/FIRMWARE_CAMERA_INTERFACE_REFERENCE.md",
+    "updateTriggers": [
+      "A new exact firmware/package matrix entry is added.",
+      "Build-matched system/vendor partitions or service manifests are indexed.",
+      "Provider/HAL versions, instances, hashes or method tables are recovered.",
+      "Native library build IDs or symbols are recovered.",
+      "SELinux policy or runtime AVC evidence is captured.",
+      "A controlled test changes an interface confidence or replacement-use decision."
+    ]
+  },
+  "evidenceRegistry": {
+    "build-matrix": {
+      "path": "data/builds/version-matrix.json",
+      "classification": "VERIFIED",
+      "supports": "Binds observations to the exact device fingerprint and stock-camera APK identity."
+    },
+    "system-camera-filtering": {
+      "path": "docs/research/SYSTEM_CAMERA_FILTERING_MODEL.md",
+      "classification": "VERIFIED",
+      "supports": "Separates enumeration, characteristics and connect enforcement for public and system-only camera IDs."
+    },
+    "privilege-boundaries": {
+      "path": "research/boundaries/galaga-camera-privilege-boundaries.json",
+      "classification": "VERIFIED",
+      "supports": "Maps access classes, enforcement layers and unresolved provider/HAL/SELinux/ISP boundaries."
+    },
+    "hardware-map": {
+      "path": "data/hardware/galaga-camera-hardware-map.v1.json",
+      "classification": "PARTIALLY_VERIFIED",
+      "supports": "Provides source-backed Galaga sensor, CSI, EEPROM, actuator, clock, reset and power topology with source-build mismatch retained."
+    },
+    "vendor-tag-database": {
+      "path": "data/vendor-tags/database.v1.json",
+      "classification": "VERIFIED",
+      "supports": "Defines the typed vendor-key evidence policy and exact target build context."
+    },
+    "vendor-api-reference": {
+      "path": "data/vendor-tags/api-reference.v1.json",
+      "classification": "VERIFIED",
+      "supports": "Defines per-key ordering, dependencies, failure modes, safety and configuration policy."
+    },
+    "stock-expert-route": {
+      "path": "docs/research/GALAGA_EXPERT_DIRECT_ROUTE.md",
+      "classification": "VERIFIED",
+      "supports": "Records stock Expert routing to camera IDs 2, 0 and 3."
+    },
+    "privilege-boundary-document": {
+      "path": "docs/research/CAMERA_PRIVILEGE_BOUNDARY.md",
+      "classification": "VERIFIED",
+      "supports": "Documents the application-to-framework-to-provider/HAL-to-ISP enforcement stack."
+    }
+  },
+  "interfaceFiles": [
+    "research/firmware/interfaces/framework-application.v1.json",
+    "research/firmware/interfaces/vendor-userspace.v1.json",
+    "research/firmware/interfaces/kernel.v1.json",
+    "research/firmware/interfaces/policy-isp.v1.json"
+  ]
+}
