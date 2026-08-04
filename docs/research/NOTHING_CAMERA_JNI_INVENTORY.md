@@ -4,7 +4,7 @@
 **APK:** `com.nothing.camera` `16.1.01.93.20`  
 **APK SHA-256:** `f78368e303033d49c5564b1287f51ef2bf5dde53db4687a08bfb20aa64a8eeea`
 
-The versioned index is `data/apk/nothing-camera-jni/index.v1.json`.
+The versioned index is `data/apk/nothing-camera-jni/index.v1.json`. The complete machine-readable inventory is stored as nine ordered base64/zlib chunks. The index records every chunk hash and length plus the decoded JSON hash and length; validation fails before parsing if any byte, order, or file is changed.
 
 ## VERIFIED static inventory
 
@@ -20,6 +20,8 @@ The exact APK contains:
 
 Every native declaration records its Java signature, DEX owner, generated JNI short and long names, priority, ownership status, and exact packaged-library symbol matches where available. Library records include hashes, architecture, build IDs, SONAME, dependencies, JNI export counts, registration indicators and registration-related imports.
 
+The supplemental TSV files expose the library, load-site, native-handle and callback evidence directly for review. The chunked JSON remains the authoritative complete dataset.
+
 ## Priority
 
 `HIGH_CAMERA_ROUTING_OR_ISP` highlights declarations whose class, method or signature contains camera, lens, sensor, SAT/multicam, zoom, seamless/remosaic, ISP, RAW, HDR, Night, bokeh, portrait, denoise, super-resolution or stabilization terms. These are first candidates for issues #41, #48 and #49. `MEDIUM_IMAGE_PROCESSING` identifies broader image-processing dependencies.
@@ -34,8 +36,10 @@ Every native declaration records its Java signature, DEX owner, generated JNI sh
 
 ## Reproduction and validation
 
+The builder produces readable source records from the exact APK. The committed chunked form is reconstructed with the decoder and protected by the index integrity manifest.
+
 ```bash
-python3 tools/apk/build-nothing-camera-jni-inventory.py /path/to/Camera-16.1.01.93.20.apk data/apk/nothing-camera-jni
+python3 tools/apk/build-nothing-camera-jni-inventory.py /path/to/Camera-16.1.01.93.20.apk /tmp/nothing-camera-jni-readable
 python3 tools/decode-nothing-camera-jni-inventory.py --output /tmp/nothing-camera-jni.json
 python3 tools/validate-nothing-camera-jni-inventory.py
 python3 -m unittest tests/test_validate_nothing_camera_jni_inventory.py
