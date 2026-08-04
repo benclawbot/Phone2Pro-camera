@@ -1,0 +1,477 @@
+{
+  "schemaVersion": 1,
+  "indexVersion": "2026.08.04-1",
+  "projectContext": {
+    "repository": "benclawbot/Phone2Pro-camera",
+    "projectLicense": "MIT",
+    "issue": 80,
+    "captureContract": "docs/architecture/CAPTURE_SESSION_REQUEST_ENGINE.md",
+    "engineeringGuide": "docs/REPLACEMENT_CAMERA_SDK.md",
+    "complianceRegister": "compliance/source-license-register.v1.json",
+    "complianceGuide": "docs/SOURCE_LICENCE_COMPLIANCE.md",
+    "legalCaveat": "This is an engineering compliance record and architecture recommendation, not legal advice."
+  },
+  "coverageDomains": [
+    "CAPTURE_SESSION",
+    "RAW_YUV",
+    "BURST",
+    "GYRO",
+    "STORAGE",
+    "ERROR_HANDLING",
+    "PRIVACY_INTENTS",
+    "TESTING"
+  ],
+  "projects": [
+    {
+      "id": "androidx-camera-pipe",
+      "name": "AndroidX CameraX and CameraPipe",
+      "repository": "androidx/androidx",
+      "host": "GITHUB",
+      "branch": "androidx-main",
+      "revision": "08835fcf4a40e042e26efd86a3ac70d79b561e86",
+      "revisionType": "GIT_COMMIT",
+      "sourceUrl": "https://github.com/androidx/androidx/commit/08835fcf4a40e042e26efd86a3ac70d79b561e86",
+      "license": "Apache-2.0",
+      "licenseEvidence": "LICENSE.txt",
+      "reuseDecision": "DIRECT_REUSE_APPROVED",
+      "copiedCodeAllowed": true,
+      "dependencyAllowed": true,
+      "requiredReview": "Retain copyright and licence notices, review NOTICE/third-party dependencies, and prefer published AndroidX artifacts over copied internals.",
+      "evidencePaths": [
+        "camera/camera-camera2-pipe/src/main/java/androidx/camera/camera2/pipe/CameraGraph.kt",
+        "camera/camera-camera2-pipe/src/main/java/androidx/camera/camera2/pipe/CameraPipe.kt",
+        "camera/camera-camera2-pipe/src/main/java/androidx/camera/camera2/pipe/FrameGraph.kt",
+        "camera/camera-camera2-pipe/src/main/java/androidx/camera/camera2/pipe/StreamGraph.kt",
+        "camera/camera-camera2-pipe/src/main/java/androidx/camera/camera2/pipe/CameraBackend.kt",
+        "camera/camera-camera2-pipe/src/main/java/androidx/camera/camera2/pipe/graph/CameraGraphSessionImpl.kt",
+        "camera/camera-camera2-pipe-testing/src/main/java/androidx/camera/camera2/pipe/testing/CameraGraphSimulator.kt"
+      ],
+      "coverage": {
+        "CAPTURE_SESSION": "FULL",
+        "RAW_YUV": "PARTIAL",
+        "BURST": "FULL",
+        "GYRO": "NOT_OBSERVED",
+        "STORAGE": "NONE",
+        "ERROR_HANDLING": "FULL",
+        "PRIVACY_INTENTS": "NONE",
+        "TESTING": "FULL"
+      },
+      "patterns": [
+        "Immutable graph configuration separates streams, reprocessing inputs, postview, session parameters, default/required parameters, listeners and backend.",
+        "Graph/session ownership makes lifecycle and recreation explicit.",
+        "Device flags and quirks bound repeating-before-capture, abort, close, finalization and restart behavior.",
+        "Simulator and fake-backend support make graph behavior testable without hardware."
+      ],
+      "limitations": [
+        "CameraPipe is an AndroidX internal/experimental implementation surface and API stability must be checked before direct dependency changes.",
+        "It does not provide the replacement app's RAW processing, storage policy or vendor-key semantics."
+      ]
+    },
+    {
+      "id": "grapheneos-camera",
+      "name": "GrapheneOS Camera",
+      "repository": "GrapheneOS/Camera",
+      "host": "GITHUB",
+      "branch": "main",
+      "revision": "db39c2ddc9d1427fafcec9d8eb2c30f817b6a597",
+      "revisionType": "GIT_COMMIT",
+      "sourceUrl": "https://github.com/GrapheneOS/Camera/commit/db39c2ddc9d1427fafcec9d8eb2c30f817b6a597",
+      "license": "MIT",
+      "licenseEvidence": "LICENSE",
+      "reuseDecision": "DIRECT_REUSE_WITH_ATTRIBUTION_REVIEW",
+      "copiedCodeAllowed": true,
+      "dependencyAllowed": true,
+      "requiredReview": "Review copied-file history, AndroidX/internal API use, dependencies, retained notices and compatibility with the replacement app's Java architecture.",
+      "evidencePaths": [
+        "app/src/main/java/app/grapheneos/camera/capturer/ImageSaver.kt",
+        "app/src/main/java/app/grapheneos/camera/capturer/VideoCapturer.kt",
+        "app/src/main/java/app/grapheneos/camera/CapturedItems.kt",
+        "app/src/main/java/app/grapheneos/camera/ui/activities/CaptureActivity.kt",
+        "app/src/main/java/app/grapheneos/camera/ui/activities/VideoCaptureActivity.kt",
+        "app/src/androidTest/java/app/grapheneos/camera/SafTreeGrantsRegressionTest.kt",
+        "app/src/androidTest/java/app/grapheneos/camera/VideoCapturerRegressionTest.kt"
+      ],
+      "coverage": {
+        "CAPTURE_SESSION": "PARTIAL",
+        "RAW_YUV": "PARTIAL",
+        "BURST": "NONE",
+        "GYRO": "NOT_OBSERVED",
+        "STORAGE": "FULL",
+        "ERROR_HANDLING": "FULL",
+        "PRIVACY_INTENTS": "FULL",
+        "TESTING": "FULL"
+      },
+      "patterns": [
+        "Close scarce ImageProxy resources immediately after extraction instead of holding them through storage IO.",
+        "Pipeline extraction, write and thumbnail stages while preserving one-write output semantics.",
+        "Use MediaStore pending/finalization, SAF, fsync where appropriate and deletion of incomplete outputs.",
+        "Keep EXIF/location disclosure and external capture-intent behavior explicit and privacy-first."
+      ],
+      "limitations": [
+        "The app is Kotlin/CameraX-oriented and does not supply the target's portable RAW burst or vendor adapter.",
+        "Use of restricted AndroidX internals requires maintenance and dependency review."
+      ]
+    },
+    {
+      "id": "open-camera",
+      "name": "Open Camera",
+      "repository": "sourceforge.net/p/opencamera/code",
+      "host": "SOURCEFORGE",
+      "branch": "master",
+      "revision": "0dd4cb",
+      "applicationRevision": "8b577f",
+      "revisionType": "SOURCEFORGE_SHORT_REVISION",
+      "sourceUrl": "https://sourceforge.net/p/opencamera/code/ci/master/tree/",
+      "license": "GPL-3.0-or-later",
+      "licenseEvidence": "official project licence and source headers",
+      "reuseDecision": "CLEAN_ROOM_PATTERN_ONLY",
+      "copiedCodeAllowed": false,
+      "dependencyAllowed": false,
+      "requiredReview": "Any code or dependency reuse requires a deliberate GPL-compatible distribution decision and an updated compliance register.",
+      "evidencePaths": [
+        "app/src/main/java/net/sourceforge/opencamera/cameracontroller/CameraController2.java",
+        "app/src/main/java/net/sourceforge/opencamera/cameracontroller/CameraControllerManager2.java",
+        "app/src/main/java/net/sourceforge/opencamera/ImageSaver.java",
+        "app/src/main/java/net/sourceforge/opencamera/StorageUtils.java",
+        "app/src/main/java/net/sourceforge/opencamera/preview/Preview.java",
+        "app/src/main/java/net/sourceforge/opencamera/MyApplicationInterface.java"
+      ],
+      "coverage": {
+        "CAPTURE_SESSION": "FULL",
+        "RAW_YUV": "FULL",
+        "BURST": "FULL",
+        "GYRO": "NOT_OBSERVED",
+        "STORAGE": "FULL",
+        "ERROR_HANDLING": "FULL",
+        "PRIVACY_INTENTS": "PARTIAL",
+        "TESTING": "PARTIAL"
+      },
+      "patterns": [
+        "Broad Camera2 capability probing and user-visible fallback behavior.",
+        "RAW/DNG, focus and exposure bracketing, queued save work and bounded storage failures.",
+        "Device-specific quirk inventory and mature manual-control edge cases.",
+        "MediaStore/SAF selection and app-policy separation from the camera controller."
+      ],
+      "limitations": [
+        "GPL-3.0-or-later code is not copied into the MIT project.",
+        "The large controller and application-policy surfaces should become independent tests and small contracts rather than a monolithic port."
+      ]
+    },
+    {
+      "id": "motioncam",
+      "name": "MotionCam",
+      "repository": "f0enix/motioncam",
+      "host": "GITHUB",
+      "branch": "main",
+      "revision": "cc7f7c9cad5234bc939699b1ab1ffbc4bdfd6690",
+      "revisionType": "GIT_COMMIT",
+      "sourceUrl": "https://github.com/f0enix/motioncam/commit/cc7f7c9cad5234bc939699b1ab1ffbc4bdfd6690",
+      "license": "GPL-3.0-only",
+      "licenseEvidence": "LICENSE",
+      "reuseDecision": "CLEAN_ROOM_PATTERN_ONLY",
+      "copiedCodeAllowed": false,
+      "dependencyAllowed": false,
+      "requiredReview": "No direct code or linked native component enters the MIT app without an explicit GPL-compatible distribution decision.",
+      "evidencePaths": [
+        "MotionCam-Android/MotionCam/src/main/cpp/camera/CameraSession.cpp",
+        "MotionCam-Android/MotionCam/src/main/cpp/camera/RawImageConsumer.cpp",
+        "libMotionCam/libMotionCam/include/motioncam/RawBufferManager.h",
+        "libMotionCam/libMotionCam/source/RawBufferManager.cpp",
+        "libMotionCam/libMotionCam/include/motioncam/RawContainer.h",
+        "libMotionCam/libMotionCam/include/motioncam/ImageProcessor.h"
+      ],
+      "coverage": {
+        "CAPTURE_SESSION": "FULL",
+        "RAW_YUV": "FULL",
+        "BURST": "FULL",
+        "GYRO": "NOT_OBSERVED",
+        "STORAGE": "PARTIAL",
+        "ERROR_HANDLING": "FULL",
+        "PRIVACY_INTENTS": "NONE",
+        "TESTING": "PARTIAL"
+      },
+      "patterns": [
+        "Explicit NDK camera event loop and capture/session error callbacks.",
+        "Bounded RAW buffer ownership with ready/unused queues and memory accounting.",
+        "Timestamp-selected buffer consumption and immutable locked buffer sets.",
+        "Background RAW capture and multi-frame processing separated from camera callbacks."
+      ],
+      "limitations": [
+        "The native pipeline and algorithms are GPL-3.0-only and are requirements evidence only.",
+        "Hardware and memory assumptions must be re-measured on Galaga before implementing a buffer budget."
+      ]
+    },
+    {
+      "id": "photoncamera",
+      "name": "PhotonCamera",
+      "repository": "eszdman/PhotonCamera",
+      "host": "GITHUB",
+      "branch": "dev",
+      "revision": "92a68b5f456f25611093188f2c56ea0beeb30b3c",
+      "revisionType": "GIT_COMMIT",
+      "sourceUrl": "https://github.com/eszdman/PhotonCamera/commit/92a68b5f456f25611093188f2c56ea0beeb30b3c",
+      "license": "GPL-3.0-only",
+      "licenseEvidence": "LICENSE",
+      "reuseDecision": "CLEAN_ROOM_PATTERN_ONLY",
+      "copiedCodeAllowed": false,
+      "dependencyAllowed": false,
+      "requiredReview": "Repository-level GPL applies unless a specific file's complete provenance and compatible licence are independently established and approved.",
+      "evidencePaths": [
+        "app/src/main/java/com/particlesdevs/photoncamera/capture/CaptureController.java",
+        "app/src/main/java/com/particlesdevs/photoncamera/control/Gyro.java",
+        "app/src/main/java/com/particlesdevs/photoncamera/control/GyroBurst.java",
+        "app/src/main/java/com/particlesdevs/photoncamera/processing/ImageFrame.java",
+        "app/src/main/java/com/particlesdevs/photoncamera/processing/ImageFrameDeblur.java",
+        "app/src/main/java/com/particlesdevs/photoncamera/processing/ImageSaver.java",
+        "app/src/main/java/com/particlesdevs/photoncamera/processing/processor/HdrxProcessor.java"
+      ],
+      "coverage": {
+        "CAPTURE_SESSION": "FULL",
+        "RAW_YUV": "FULL",
+        "BURST": "FULL",
+        "GYRO": "FULL",
+        "STORAGE": "FULL",
+        "ERROR_HANDLING": "PARTIAL",
+        "PRIVACY_INTENTS": "PARTIAL",
+        "TESTING": "PARTIAL"
+      },
+      "patterns": [
+        "Camera2 RAW_SENSOR and YUV_420_888 capture with explicit preview/capture states.",
+        "Frame-count selection and multi-frame processing executors.",
+        "Gyro sample collection and per-burst/per-frame deblur inputs.",
+        "Separate saver implementations and processing lifecycle."
+      ],
+      "limitations": [
+        "Repository-level GPL means the implementation is not a direct reuse source for the MIT app.",
+        "Static globals, reflection/vendor helpers and a large controller are not adopted as architectural patterns."
+      ]
+    },
+    {
+      "id": "libre-camera",
+      "name": "Libre Camera",
+      "repository": "iakdis/librecamera",
+      "host": "GITHUB",
+      "branch": "master",
+      "revision": "23490e2c73c3281ec28dccbeb377ec4bad1d177c",
+      "revisionType": "GIT_COMMIT",
+      "sourceUrl": "https://github.com/iakdis/librecamera/commit/23490e2c73c3281ec28dccbeb377ec4bad1d177c",
+      "license": "GPL-3.0-only",
+      "licenseEvidence": "LICENSE",
+      "reuseDecision": "CLEAN_ROOM_PATTERN_ONLY",
+      "copiedCodeAllowed": false,
+      "dependencyAllowed": false,
+      "requiredReview": "No Dart/Flutter source or GPL dependency is imported into the MIT app without a compatible distribution decision.",
+      "evidencePaths": [
+        "README.md",
+        "pubspec.yaml",
+        "lib/"
+      ],
+      "coverage": {
+        "CAPTURE_SESSION": "PARTIAL",
+        "RAW_YUV": "NONE",
+        "BURST": "NONE",
+        "GYRO": "NONE",
+        "STORAGE": "FULL",
+        "ERROR_HANDLING": "PARTIAL",
+        "PRIVACY_INTENTS": "FULL",
+        "TESTING": "PARTIAL"
+      },
+      "patterns": [
+        "Compact privacy-first settings and optional EXIF behavior.",
+        "User-selected save location and common photo/video controls.",
+        "Clear UI-level feature and platform limitation communication."
+      ],
+      "limitations": [
+        "Flutter camera abstraction does not meet the replacement app's direct Camera2, RAW burst, physical route or vendor-session needs.",
+        "GPL-3.0-only source is clean-room UI requirements evidence only."
+      ]
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "rec-camera-pipe-graph-contract",
+      "title": "Align portable session plans with CameraPipe graph separation",
+      "sourceProjectIds": [
+        "androidx-camera-pipe"
+      ],
+      "implementationMode": "DIRECT_REUSE_OR_ADAPTATION",
+      "decision": "ADOPT",
+      "targetPaths": [
+        "docs/architecture/CAPTURE_SESSION_REQUEST_ENGINE.md",
+        "camera-app/app/src/main/java/com/phone2pro/camera/capture/CaptureSessionPlan.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/capture/SessionRecreationDecision.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/capture/SessionBinderKind.java"
+      ],
+      "requirements": [
+        "Keep immutable stream, backend, binder, session parameter and request parameter scopes.",
+        "Expose graph state and listeners through portable interfaces rather than framework objects.",
+        "Do not replace the current engine wholesale or weaken vendor-adapter isolation."
+      ],
+      "rationale": "The existing session engine already matches the strongest CameraPipe separation and should evolve through small conformance improvements."
+    },
+    {
+      "id": "rec-camera-pipe-simulation",
+      "title": "Add graph and backend simulation tests",
+      "sourceProjectIds": [
+        "androidx-camera-pipe"
+      ],
+      "implementationMode": "DIRECT_REUSE_OR_ADAPTATION",
+      "decision": "ADOPT",
+      "targetPaths": [
+        "camera-app/app/src/test/java/com/phone2pro/camera/capture/CaptureSessionRequestEngineTest.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/capture/SessionRecoveryPolicy.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/capture/CaptureRequestPlanner.java"
+      ],
+      "requirements": [
+        "Simulate surface loss, session recreation, repeating-before-capture and backend failure events.",
+        "Verify each recovery path remains bounded and cancellation wins over retries.",
+        "Keep tests independent of Galaga hardware while reserving device validation for measured thresholds."
+      ],
+      "rationale": "CameraPipe's simulator pattern can increase deterministic coverage without importing Android framework objects into portable tests."
+    },
+    {
+      "id": "rec-graphene-storage-pipeline",
+      "title": "Implement a staged privacy-first storage pipeline",
+      "sourceProjectIds": [
+        "grapheneos-camera"
+      ],
+      "implementationMode": "DIRECT_REUSE_WITH_ATTRIBUTION_REVIEW",
+      "decision": "ADOPT_AFTER_REVIEW",
+      "targetPaths": [
+        "docs/REPLACEMENT_CAMERA_SDK.md",
+        "docs/SOURCE_LICENCE_COMPLIANCE.md",
+        "compliance/source-license-register.v1.json"
+      ],
+      "requirements": [
+        "Close Image/ImageProxy resources immediately after extracting owned bytes.",
+        "Write output once, fsync where appropriate, finalize pending MediaStore rows and delete incomplete outputs.",
+        "Support SAF and make EXIF/location disclosure explicit and private by default.",
+        "Classify extraction, creation, write, finalization and thumbnail failures separately."
+      ],
+      "rationale": "GrapheneOS provides a permissively licensed, production-oriented storage and privacy pattern aligned with the replacement app."
+    },
+    {
+      "id": "rec-clean-room-raw-buffer-pool",
+      "title": "Design a bounded RAW/YUV buffer pool independently",
+      "sourceProjectIds": [
+        "motioncam",
+        "open-camera"
+      ],
+      "implementationMode": "CLEAN_ROOM_REIMPLEMENTATION",
+      "decision": "ADOPT_AS_REQUIREMENTS",
+      "targetPaths": [
+        "camera-app/app/src/main/java/com/phone2pro/camera/capture/StillBurstPlan.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/capture/CaptureRequestPlanner.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/capture/CaptureCancellation.java",
+        "docs/REPLACEMENT_CAMERA_SDK.md"
+      ],
+      "requirements": [
+        "Bound frame count and memory bytes independently of producer speed.",
+        "Represent ownership transfer, ready/unused state, cancellation and backpressure explicitly.",
+        "Select frames only through request identity and normalized timestamp correlation.",
+        "Measure Galaga memory and throughput before setting production budgets."
+      ],
+      "rationale": "GPL projects demonstrate the operational need, but the implementation must be independently designed for the existing portable capture contracts."
+    },
+    {
+      "id": "rec-clean-room-gyro-frame-association",
+      "title": "Add gyro snapshots keyed to the capture clock domain",
+      "sourceProjectIds": [
+        "photoncamera"
+      ],
+      "implementationMode": "CLEAN_ROOM_REIMPLEMENTATION",
+      "decision": "ADOPT_AS_REQUIREMENTS",
+      "targetPaths": [
+        "camera-app/app/src/main/java/com/phone2pro/camera/capture/TimestampCorrelator.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/capture/ImageTimestamp.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/capture/CorrelatedCaptureFrame.java",
+        "docs/architecture/CAPTURE_SESSION_REQUEST_ENGINE.md"
+      ],
+      "requirements": [
+        "Use a bounded monotonic gyro ring with immutable per-frame snapshots.",
+        "Record sensor timestamp source and normalize it before association.",
+        "Reject unknown clock domains, frame mismatch and out-of-tolerance samples before alignment.",
+        "Make gyro optional and disclose unsupported hardware or timing quality."
+      ],
+      "rationale": "PhotonCamera supplies concept evidence for gyro-assisted bursts, while the existing fail-closed timestamp contract defines the safe independent design."
+    },
+    {
+      "id": "rec-open-camera-test-inventory",
+      "title": "Convert mature Camera2 edge cases into independent tests",
+      "sourceProjectIds": [
+        "open-camera"
+      ],
+      "implementationMode": "CLEAN_ROOM_REIMPLEMENTATION",
+      "decision": "ADOPT_AS_TESTS",
+      "targetPaths": [
+        "camera-app/app/src/test/java/com/phone2pro/camera/capture/CaptureSessionRequestEngineTest.java",
+        "camera-app/app/src/main/java/com/phone2pro/camera/capture/SessionRecoveryPolicy.java",
+        "docs/REPLACEMENT_CAMERA_SDK.md"
+      ],
+      "requirements": [
+        "Add capability-probe, manual focus/exposure, RAW/DNG, bracketing, queue pressure, SAF and MediaStore failure cases.",
+        "Keep device quirks evidence-linked and isolated from generic policy.",
+        "Do not port the monolithic controller or GPL implementation."
+      ],
+      "rationale": "Open Camera's breadth is most valuable as a clean-room regression inventory rather than a source-code dependency."
+    },
+    {
+      "id": "rec-libre-camera-ui-boundary",
+      "title": "Use Libre Camera only as a clean-room UI/settings reference",
+      "sourceProjectIds": [
+        "libre-camera"
+      ],
+      "implementationMode": "CLEAN_ROOM_REIMPLEMENTATION",
+      "decision": "DEFER_TO_UI_WORK",
+      "targetPaths": [
+        "docs/REPLACEMENT_CAMERA_SDK.md",
+        "docs/SOURCE_LICENCE_COMPLIANCE.md"
+      ],
+      "requirements": [
+        "Expose privacy defaults, save location, format, resolution, FPS, focus and exposure controls only when backend capabilities support them.",
+        "Keep unsupported multi-camera and manual controls visibly unavailable.",
+        "Do not adopt Flutter or its camera plugin as the replacement backend."
+      ],
+      "rationale": "The project is useful for compact UI and disclosure patterns but does not satisfy low-level capture requirements."
+    },
+    {
+      "id": "rec-no-gpl-code-import",
+      "title": "Enforce a no-GPL-import default for the MIT application",
+      "sourceProjectIds": [
+        "open-camera",
+        "motioncam",
+        "photoncamera",
+        "libre-camera"
+      ],
+      "implementationMode": "POLICY_ONLY",
+      "decision": "ADOPT",
+      "targetPaths": [
+        "docs/SOURCE_LICENCE_COMPLIANCE.md",
+        "compliance/source-license-register.v1.json"
+      ],
+      "requirements": [
+        "Do not copy GPL-family code, generated output or linked native libraries into the MIT application by default.",
+        "Allow independently written requirements, tests and high-level architectural observations with source attribution.",
+        "Require an explicit distribution/licensing decision and compliance-register update before any exception."
+      ],
+      "rationale": "This preserves the current MIT distribution intent while allowing clean-room learning from GPL projects."
+    }
+  ],
+  "nonClaims": [
+    "The review does not certify legal compliance for a future release.",
+    "A permissive licence does not approve wholesale copying without file-provenance and dependency review.",
+    "A GPL project's architecture does not become MIT-compatible merely because it is summarized.",
+    "The review does not prove Galaga supports RAW, reprocessing, auxiliary physical IDs or usable gyro synchronization.",
+    "The review does not replace target-device tests or the source/licence compliance register."
+  ],
+  "maintenance": {
+    "document": "docs/OPEN_SOURCE_CAMERA_ARCHITECTURE_REVIEW.md",
+    "validationTool": "tools/validate-open-source-camera-architecture-review.py",
+    "updateTriggers": [
+      "An upstream revision or licence changes",
+      "A new source dependency or copied file is proposed",
+      "RAW, gyro or storage implementation is added",
+      "A release compliance review changes a reuse decision"
+    ]
+  }
+}
