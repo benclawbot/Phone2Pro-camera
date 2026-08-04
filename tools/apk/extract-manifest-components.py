@@ -171,9 +171,20 @@ def build_report(path:Path)->dict[str,Any]:
         'nativeLibraryCount':len(native)}}
 
 def main()->int:
-    ap=argparse.ArgumentParser(); ap.add_argument('input',type=Path); ap.add_argument('--json',type=Path)
+    ap=argparse.ArgumentParser(); ap.add_argument('input',type=Path); ap.add_argument('--json',type=Path); ap.add_argument('--output-dir',type=Path)
     args=ap.parse_args(); report=build_report(args.input); text=json.dumps(report,indent=2,ensure_ascii=False)+"\n"
     if args.json: args.json.parent.mkdir(parents=True,exist_ok=True); args.json.write_text(text,encoding='utf-8')
-    else: print(text,end='')
+    if args.output_dir:
+        output=args.output_dir; output.mkdir(parents=True,exist_ok=True)
+        groups={kind:[c for c in report['components'] if c['type']==kind] for kind in ('activity','service','receiver','provider')}
+        plurals={'activity':'activities','service':'services','receiver':'receivers','provider':'providers'}
+        index={k:v for k,v in report.items() if k not in {'components','nativeLibraries','optionalLibraries'}}
+        index['componentFiles']={kind:f'{plurals[kind]}.v1.json' for kind in groups}
+        index['libraryFile']='libraries.v1.json'
+        (output/'index.v1.json').write_text(json.dumps(index,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
+        for kind,values in groups.items():
+            (output/f'{plurals[kind]}.v1.json').write_text(json.dumps({'schemaVersion':1,'type':kind,'components':values},indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
+        (output/'libraries.v1.json').write_text(json.dumps({'schemaVersion':1,'nativeLibraries':report['nativeLibraries'],'optionalLibraries':report['optionalLibraries']},indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
+    if not args.json and not args.output_dir: print(text,end='')
     return 0
 if __name__=='__main__':raise SystemExit(main())
