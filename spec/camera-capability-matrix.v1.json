@@ -1,0 +1,345 @@
+{
+  "schemaVersion": 1,
+  "matrixVersion": "2026.08.04-1",
+  "device": {
+    "marketingName": "CMF Phone 2 Pro",
+    "codename": "galaga",
+    "soc": "MT6878"
+  },
+  "buildScopes": [
+    {
+      "id": "galaga-observed-builds",
+      "description": "Builds represented by the committed diagnostic, stock-capture and architecture evidence.",
+      "confidence": "PARTIALLY_VERIFIED",
+      "unknownIssues": [54]
+    },
+    {
+      "id": "galaga-future-builds",
+      "description": "Future or untested firmware builds; capabilities must be re-probed before enablement.",
+      "confidence": "UNKNOWN",
+      "unknownIssues": [54, 94]
+    }
+  ],
+  "rows": [
+    {
+      "id": "hardware.rear.main",
+      "feature": "Rear main optical route",
+      "layer": "HARDWARE",
+      "reachability": "PUBLIC",
+      "configuration": {
+        "route": "main",
+        "label": "1×",
+        "physicalFocalLengthMm": 5.56,
+        "equivalentFocalLengthMm": 24,
+        "verifiedOutput": "4080x3072",
+        "aperture": "UNKNOWN"
+      },
+      "evidence": [
+        "camera-app/app/src/main/java/com/phone2pro/camera/core/OpticalRoute.java",
+        "issue:#84"
+      ],
+      "confidence": "VERIFIED",
+      "replacementUse": "ENABLED",
+      "buildScope": "galaga-observed-builds",
+      "unknownIssues": [25]
+    },
+    {
+      "id": "hardware.rear.ultrawide",
+      "feature": "Rear ultrawide optical route",
+      "layer": "HARDWARE",
+      "reachability": "STOCK_ONLY",
+      "configuration": {
+        "route": "ultrawide",
+        "label": "0.6×",
+        "physicalFocalLengthMm": 1.64,
+        "equivalentFocalLengthMm": 15,
+        "verifiedOutput": "3264x2448",
+        "publicEndpoint": "UNAVAILABLE"
+      },
+      "evidence": [
+        "camera-app/app/src/main/java/com/phone2pro/camera/core/OpticalRoute.java",
+        "docs/architecture/CAMERA_BACKEND_CONTRACTS.md"
+      ],
+      "confidence": "PARTIALLY_VERIFIED",
+      "replacementUse": "BLOCKED",
+      "buildScope": "galaga-observed-builds",
+      "unknownIssues": [32, 39, 44, 96]
+    },
+    {
+      "id": "hardware.rear.telephoto",
+      "feature": "Rear telephoto optical route",
+      "layer": "HARDWARE",
+      "reachability": "STOCK_ONLY",
+      "configuration": {
+        "route": "telephoto",
+        "label": "2×",
+        "physicalFocalLengthMm": 7.1,
+        "equivalentFocalLengthMm": 50,
+        "verifiedOutput": "4096x3072",
+        "publicEndpoint": "UNAVAILABLE"
+      },
+      "evidence": [
+        "camera-app/app/src/main/java/com/phone2pro/camera/core/OpticalRoute.java",
+        "docs/architecture/CAMERA_BACKEND_CONTRACTS.md"
+      ],
+      "confidence": "PARTIALLY_VERIFIED",
+      "replacementUse": "BLOCKED",
+      "buildScope": "galaga-observed-builds",
+      "unknownIssues": [32, 39, 44, 96]
+    },
+    {
+      "id": "public.camera.id0",
+      "feature": "Public rear Camera2 endpoint",
+      "layer": "PUBLIC_API",
+      "reachability": "PUBLIC",
+      "configuration": {
+        "cameraId": "0",
+        "route": "main",
+        "mechanism": "PUBLIC_CAMERA"
+      },
+      "evidence": [
+        "issue:#17",
+        "docs/architecture/CAMERA_BACKEND_CONTRACTS.md"
+      ],
+      "confidence": "VERIFIED",
+      "replacementUse": "ENABLED",
+      "buildScope": "galaga-observed-builds",
+      "unknownIssues": []
+    },
+    {
+      "id": "public.camera.id1",
+      "feature": "Public front Camera2 endpoint",
+      "layer": "PUBLIC_API",
+      "reachability": "PUBLIC",
+      "configuration": {
+        "cameraId": "1",
+        "facing": "FRONT"
+      },
+      "evidence": [
+        "issue:#17"
+      ],
+      "confidence": "VERIFIED",
+      "replacementUse": "DIAGNOSTIC_ONLY",
+      "buildScope": "galaga-observed-builds",
+      "unknownIssues": [18]
+    },
+    {
+      "id": "firmware.camera.ids2-5",
+      "feature": "System-only camera endpoint candidates 2 through 5",
+      "layer": "FIRMWARE",
+      "reachability": "PRIVILEGED_OR_SYSTEM",
+      "configuration": {
+        "cameraIds": ["2", "3", "4", "5"],
+        "ordinaryAppOpen": "DENIED",
+        "routeOwnership": "UNKNOWN"
+      },
+      "evidence": [
+        "issue:#17",
+        "docs/architecture/CAMERA_BACKEND_CONTRACTS.md"
+      ],
+      "confidence": "PARTIALLY_VERIFIED",
+      "replacementUse": "BLOCKED",
+      "buildScope": "galaga-observed-builds",
+      "unknownIssues": [32, 40, 46, 47, 51, 69, 71, 72]
+    },
+    {
+      "id": "stock.expert.routes",
+      "feature": "Stock Expert 0.6×, 1× and 2× route behaviour",
+      "layer": "STOCK_APP",
+      "reachability": "STOCK_ONLY",
+      "configuration": {
+        "routes": ["0.6×", "1×", "2×"],
+        "externalWidgetLaunch": "SEPARATE_HANDOFF_PATH",
+        "internalMechanism": "PARTIALLY_OPAQUE"
+      },
+      "evidence": [
+        "camera-app/app/src/main/java/com/phone2pro/camera/core/OpticalRoute.java",
+        "issue:#30",
+        "issue:#33"
+      ],
+      "confidence": "PARTIALLY_VERIFIED",
+      "replacementUse": "DIAGNOSTIC_ONLY",
+      "buildScope": "galaga-observed-builds",
+      "unknownIssues": [30, 32, 39, 42, 43, 96]
+    },
+    {
+      "id": "public.session.camerax",
+      "feature": "CameraX public session binder",
+      "layer": "PUBLIC_API",
+      "reachability": "PUBLIC",
+      "configuration": {
+        "physicalOutputs": "UNSUPPORTED_BY_CONTRACT",
+        "reprocessingInputs": "UNSUPPORTED_BY_CONTRACT",
+        "arbitrarySessionParameters": "UNSUPPORTED_BY_CONTRACT",
+        "vendorKeys": "DENIED"
+      },
+      "evidence": [
+        "docs/architecture/CAPTURE_SESSION_REQUEST_ENGINE.md",
+        "camera-app/app/src/main/java/com/phone2pro/camera/capture/CaptureSessionPlan.java"
+      ],
+      "confidence": "VERIFIED",
+      "replacementUse": "ENABLED_WITH_FALLBACK",
+      "buildScope": "galaga-observed-builds",
+      "unknownIssues": [18, 21]
+    },
+    {
+      "id": "public.stream.combinations",
+      "feature": "Complete advertised and mandatory stream-combination support",
+      "layer": "PUBLIC_API",
+      "reachability": "UNKNOWN",
+      "configuration": {
+        "regularPrivateJpegYuvRaw": "PARTIALLY_TESTED",
+        "highResolution": "UNVERIFIED",
+        "reprocessing": "UNVERIFIED",
+        "video": "UNVERIFIED",
+        "constrainedHighSpeed": "UNVERIFIED"
+      },
+      "evidence": [
+        "issue:#18"
+      ],
+      "confidence": "UNKNOWN",
+      "replacementUse": "DIAGNOSTIC_ONLY",
+      "buildScope": "galaga-observed-builds",
+      "unknownIssues": [18, 21, 24]
+    },
+    {
+      "id": "vendor.adapter.gate",
+      "feature": "MediaTek and Nothing vendor feature adapter",
+      "layer": "VENDOR_API",
+      "reachability": "ADAPTER_GATED",
+      "configuration": {
+        "enablement": "EXACT_BUILD_ALLOWLIST_AND_VERIFIED_PROBE",
+        "sessionAndPerFrameScopes": "ENFORCED",
+        "rejectionTimeoutMismatch": "PUBLIC_CAMERA2_FALLBACK",
+        "currentlyEnabledFeatures": []
+      },
+      "evidence": [
+        "docs/architecture/VENDOR_EXTENSION_ADAPTER.md",
+        "camera-app/app/src/main/java/com/phone2pro/camera/vendor/VendorExtensionPlanner.java"
+      ],
+      "confidence": "VERIFIED",
+      "replacementUse": "DISABLED",
+      "buildScope": "galaga-observed-builds",
+      "unknownIssues": [55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66]
+    },
+    {
+      "id": "security.no-network",
+      "feature": "On-device processing and no-network application policy",
+      "layer": "SECURITY",
+      "reachability": "LOCAL_ONLY",
+      "configuration": {
+        "manifestPermissions": ["android.permission.CAMERA"],
+        "internetPermission": "DENIED",
+        "cleartextTraffic": "DENIED",
+        "backup": "DENIED"
+      },
+      "evidence": [
+        "docs/architecture/PRIVACY_SECURITY.md",
+        "tools/validate-camera-privacy.py",
+        "camera-app/app/src/main/AndroidManifest.xml"
+      ],
+      "confidence": "VERIFIED",
+      "replacementUse": "ENABLED",
+      "buildScope": "galaga-observed-builds",
+      "unknownIssues": []
+    },
+    {
+      "id": "replacement.storage.transactional",
+      "feature": "Transactional MediaStore publication and recovery",
+      "layer": "REPLACEMENT_APP",
+      "reachability": "PUBLIC",
+      "configuration": {
+        "reserve": "IS_PENDING",
+        "publish": "ATOMIC_AFTER_DURABLE_BYTES",
+        "failure": "DELETE_OR_RECOVER_HIDDEN_ROW",
+        "metadata": "PRIVATE_BY_DEFAULT"
+      },
+      "evidence": [
+        "docs/architecture/STORAGE_GALLERY.md",
+        "camera-app/app/src/main/java/com/phone2pro/camera/storage/AssetLifecyclePolicy.java"
+      ],
+      "confidence": "PARTIALLY_VERIFIED",
+      "replacementUse": "ENABLED_WITH_FALLBACK",
+      "buildScope": "galaga-observed-builds",
+      "unknownIssues": [101]
+    },
+    {
+      "id": "replacement.capture.modes",
+      "feature": "Quick, Auto and Max Detail deterministic mode policies",
+      "layer": "REPLACEMENT_APP",
+      "reachability": "PUBLIC",
+      "configuration": {
+        "modes": ["QUICK", "AUTO", "MAX_DETAIL"],
+        "thermalDegradation": "DEFINED",
+        "memoryDegradation": "DEFINED",
+        "naturalFallback": "REFERENCE_FIRST"
+      },
+      "evidence": [
+        "camera-app/app/src/main/java/com/phone2pro/camera/core/CaptureModePolicy.java",
+        "docs/architecture/RESOURCE_BUDGETS.md"
+      ],
+      "confidence": "PARTIALLY_VERIFIED",
+      "replacementUse": "ENABLED_WITH_FALLBACK",
+      "buildScope": "galaga-observed-builds",
+      "unknownIssues": [22, 81, 101]
+    },
+    {
+      "id": "replacement.resource.budgets",
+      "feature": "Memory, latency, battery and thermal budgets",
+      "layer": "REPLACEMENT_APP",
+      "reachability": "PUBLIC",
+      "configuration": {
+        "policy": "EXECUTABLE",
+        "numericTargets": "HYPOTHESIS_UNTIL_DEVICE_BENCHMARK",
+        "memoryHeadroom": "60_PERCENT",
+        "degradationOrder": ["MAX_DETAIL", "AUTO", "QUICK", "BLOCK"]
+      },
+      "evidence": [
+        "docs/architecture/RESOURCE_BUDGETS.md",
+        "camera-app/app/src/main/java/com/phone2pro/camera/core/ResourceBudgetPolicy.java"
+      ],
+      "confidence": "HYPOTHESIS",
+      "replacementUse": "ENABLED_WITH_FALLBACK",
+      "buildScope": "galaga-observed-builds",
+      "unknownIssues": [22, 101]
+    },
+    {
+      "id": "replacement.diagnostics",
+      "feature": "Privacy-safe capability and capture diagnostics",
+      "layer": "REPLACEMENT_APP",
+      "reachability": "LOCAL_ONLY",
+      "configuration": {
+        "imagePixels": "EXCLUDED",
+        "pathsAndUris": "EXCLUDED",
+        "featureFlags": "EVIDENCE_TYPED",
+        "firmwareValidation": "SAFE_BY_DEFAULT"
+      },
+      "evidence": [
+        "docs/architecture/DIAGNOSTICS_CAPABILITY_REPORTING.md",
+        "camera-app/app/src/main/java/com/phone2pro/camera/diagnostics/CaptureDiagnosticReport.java"
+      ],
+      "confidence": "VERIFIED",
+      "replacementUse": "ENABLED",
+      "buildScope": "galaga-observed-builds",
+      "unknownIssues": []
+    },
+    {
+      "id": "firmware.build-variance",
+      "feature": "Capability stability across Nothing OS firmware releases",
+      "layer": "FIRMWARE",
+      "reachability": "UNKNOWN",
+      "configuration": {
+        "currentMatrix": "OBSERVED_BUILD_SCOPE_ONLY",
+        "futureBuildEnablement": "REPROBE_REQUIRED"
+      },
+      "evidence": [
+        "issue:#54",
+        "docs/architecture/VENDOR_EXTENSION_ADAPTER.md"
+      ],
+      "confidence": "UNKNOWN",
+      "replacementUse": "DIAGNOSTIC_ONLY",
+      "buildScope": "galaga-future-builds",
+      "unknownIssues": [54, 77, 95]
+    }
+  ]
+}
