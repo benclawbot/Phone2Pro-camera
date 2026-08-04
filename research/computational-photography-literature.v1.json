@@ -1,0 +1,378 @@
+{
+  "schemaVersion": 1,
+  "indexVersion": "2026.08.04-1",
+  "scope": {
+    "issue": 81,
+    "objective": "Translate primary computational-photography literature and authoritative implementations into bounded Quick, Auto and Max Detail requirements.",
+    "engineeringGuide": "docs/REPLACEMENT_CAMERA_SDK.md",
+    "alignmentContract": "docs/architecture/BURST_ALIGNMENT_CONTRACTS.md",
+    "resourceContract": "docs/architecture/RESOURCE_BUDGETS.md",
+    "renderingContract": "docs/architecture/IMAGE_RENDERING_PIPELINE.md",
+    "interpretationRule": "Paper descriptions are not code, model, dataset or patent licences. Every implementation remains disabled until target capability, provenance and resource evidence are verified."
+  },
+  "papers": [
+    {
+      "id": "paper-hasinoff-hdrplus-2016",
+      "title": "Burst photography for high dynamic range and low-light imaging on mobile cameras",
+      "authors": "Samuel W. Hasinoff, Dillon Sharlet, Ryan Geiss, Andrew Adams, J. Barron, Florian Kainz, Jiawen Chen, M. Levoy",
+      "year": 2016,
+      "venue": "ACM Transactions on Graphics",
+      "url": "https://consensus.app/papers/burst-photography-for-high-dynamic-range-and-lowlight-hasinoff-sharlet/6635b08f0c54583faba00ebeb4866487/?utm_source=chatgpt",
+      "primaryContribution": "Constant-exposure underexposed RAW burst capture, FFT tile alignment and hybrid spatial/temporal Wiener merging on mobile."
+    },
+    {
+      "id": "paper-liba-low-light-2019",
+      "title": "Handheld mobile photography in very low light",
+      "authors": "O. Liba, K. Murthy, Yun-Ta Tsai, Tim Brooks, Tianfan Xue, Nikhil Karnad, Qiurui He, J. Barron, Dillon Sharlet, Ryan Geiss, Samuel W. Hasinoff, Y. Pritch, M. Levoy",
+      "year": 2019,
+      "venue": "ACM Transactions on Graphics",
+      "url": "https://consensus.app/papers/handheld-mobile-photography-in-very-low-light-liba-murthy/0e2f96a45e2b56bdbaf3f190d594d5ba/?utm_source=chatgpt",
+      "primaryContribution": "Motion-metered frame count/exposure, robust high-noise alignment and low-light tone policy on mobile."
+    },
+    {
+      "id": "paper-wronski-mfsr-2019",
+      "title": "Handheld multi-frame super-resolution",
+      "authors": "Bartlomiej Wronski, Ignacio Garcia-Dorado, M. Ernst, D. Kelly, Michael Krainin, Chia-Kai Liang, M. Levoy, P. Milanfar",
+      "year": 2019,
+      "venue": "ACM Transactions on Graphics",
+      "url": "https://consensus.app/papers/handheld-multiframe-superresolution-wronski-garcia-dorado/fdd3520ce8d159499916a7ffe37b9a5c/?utm_source=chatgpt",
+      "primaryContribution": "Robust RAW CFA burst super-resolution and direct full-colour reconstruction from handheld subpixel shifts."
+    },
+    {
+      "id": "paper-mildenhall-kpn-2018",
+      "title": "Burst Denoising with Kernel Prediction Networks",
+      "authors": "B. Mildenhall, J. Barron, Jiawen Chen, Dillon Sharlet, Ren Ng, Robert E. Carroll",
+      "year": 2018,
+      "venue": "IEEE/CVF CVPR",
+      "url": "https://consensus.app/papers/burst-denoising-with-kernel-prediction-networks-mildenhall-barron/29bc1631763156d690d4a50d2832410b/?utm_source=chatgpt",
+      "primaryContribution": "Learned spatially varying kernels for joint burst alignment and denoising with realistic synthetic noise."
+    },
+    {
+      "id": "paper-zhang-gyro-2018",
+      "title": "Inertia Sensor Aided Alignment for Burst Pipeline in Low Light Conditions",
+      "authors": "Shuang Zhang, R. Stevenson",
+      "year": 2018,
+      "venue": "IEEE ICIP",
+      "url": "https://consensus.app/papers/inertia-sensor-aided-alignment-for-burst-pipeline-in-low-zhang-stevenson/d26bcaa610c55656a16786366c5aa419/?utm_source=chatgpt",
+      "primaryContribution": "Gyro-derived rotation and feature-derived translation used to seed/refine burst homography."
+    },
+    {
+      "id": "paper-mertens-exposure-fusion-2007",
+      "title": "Exposure Fusion",
+      "authors": "T. Mertens, Jan Kautz, F. Van Reeth",
+      "year": 2007,
+      "venue": "Pacific Graphics",
+      "url": "https://consensus.app/papers/exposure-fusion-mertens-kautz/8337a44bd8cd5b18ac336fa5504ce734/?utm_source=chatgpt",
+      "primaryContribution": "Multiresolution fusion of bracketed exposures using contrast, saturation and well-exposedness weights."
+    },
+    {
+      "id": "paper-reinhard-tone-2002",
+      "title": "Photographic tone reproduction for digital images",
+      "authors": "E. Reinhard, Michael M. Stark, P. Shirley, J. Ferwerda",
+      "year": 2002,
+      "venue": "ACM SIGGRAPH",
+      "url": "https://consensus.app/papers/photographic-tone-reproduction-for-digital-images-reinhard-stark/73b675cc57ac5b79aee38b03aca95d2d/?utm_source=chatgpt",
+      "primaryContribution": "Simple photographic global/local tone-reproduction operators."
+    },
+    {
+      "id": "paper-paris-local-laplacian-2011",
+      "title": "Local Laplacian filters: edge-aware image processing with a Laplacian pyramid",
+      "authors": "Sylvain Paris, Samuel W. Hasinoff, Jan Kautz",
+      "year": 2011,
+      "venue": "ACM SIGGRAPH",
+      "url": "https://consensus.app/papers/local-laplacian-filters-edgeaware-image-processing-with-a-paris-hasinoff/7597ea2e79955745b4267d9640a7a1f2/?utm_source=chatgpt",
+      "primaryContribution": "Edge-aware smoothing, detail enhancement and tone mapping using Laplacian pyramids and pointwise remapping."
+    },
+    {
+      "id": "paper-bhat-burstsr-2021",
+      "title": "Deep Burst Super-Resolution",
+      "authors": "Goutam Bhat, Martin Danelljan, L. Van Gool, R. Timofte",
+      "year": 2021,
+      "venue": "IEEE/CVF CVPR",
+      "url": "https://consensus.app/papers/deep-burst-superresolution-bhat-danelljan/fedabfe148f15508b90239e7766698ce/?utm_source=chatgpt",
+      "primaryContribution": "Optical-flow-aligned learned RAW burst super-resolution and the BurstSR smartphone/DSLR dataset."
+    },
+    {
+      "id": "paper-sidd-2018",
+      "title": "A High-Quality Denoising Dataset for Smartphone Cameras",
+      "authors": "A. Abdelhamed, Stephen Lin, M. S. Brown",
+      "year": 2018,
+      "venue": "IEEE/CVF CVPR",
+      "url": "https://consensus.app/papers/a-highquality-denoising-dataset-for-smartphone-cameras-abdelhamed-lin/a16963ea7ac8517dbf0f93431df289dc/?utm_source=chatgpt",
+      "primaryContribution": "Approximately 30,000 real noisy/clean smartphone image pairs across five devices."
+    },
+    {
+      "id": "paper-dnd-2017",
+      "title": "Benchmarking Denoising Algorithms with Real Photographs",
+      "authors": "Tobias Plötz, S. Roth",
+      "year": 2017,
+      "venue": "IEEE CVPR",
+      "url": "https://consensus.app/papers/benchmarking-denoising-algorithms-with-real-photographs-plötz-roth/92ceccb1ee0f5b45885872a58df0e5fb/?utm_source=chatgpt",
+      "primaryContribution": "Real-photograph denoising benchmark and ground-truth methodology demonstrating synthetic-noise ranking failures."
+    }
+  ],
+  "implementations": [
+    {
+      "id": "impl-halide",
+      "repository": "halide/Halide",
+      "revision": "734f678e19d322b329dd1e325397a30f6030d3c8",
+      "url": "https://github.com/halide/Halide/commit/734f678e19d322b329dd1e325397a30f6030d3c8",
+      "license": "MIT",
+      "status": "TOOLCHAIN_REFERENCE",
+      "notes": "The HDR+ paper reports a Halide implementation. Halide is a scheduling/compiler toolchain, not reusable HDR+ algorithm code."
+    },
+    {
+      "id": "impl-google-kpn",
+      "repository": "google/burst-denoising",
+      "revision": "7ff07e009568778ff337c259e192d1d81aedbea6",
+      "url": "https://github.com/google/burst-denoising/commit/7ff07e009568778ff337c259e192d1d81aedbea6",
+      "license": "Apache-2.0",
+      "status": "ARCHIVED_TRAINING_REFERENCE",
+      "notes": "Authoritative training code for KPN; archived, TensorFlow-based and not a production mobile inference implementation."
+    },
+    {
+      "id": "impl-opencv-photo",
+      "repository": "opencv/opencv",
+      "revision": "4bee6895ebf48f998ab8cfeccf2b5eb56b9dfa3a",
+      "url": "https://github.com/opencv/opencv/commit/4bee6895ebf48f998ab8cfeccf2b5eb56b9dfa3a",
+      "license": "Apache-2.0",
+      "status": "VALIDATION_REFERENCE",
+      "notes": "Provides MergeMertens and TonemapReinhard reference APIs; dependency size, native ABI and mobile integration still require review."
+    }
+  ],
+  "benchmarks": [
+    {
+      "id": "benchmark-hdrplus-burst",
+      "paperIds": ["paper-hasinoff-hdrplus-2016"],
+      "tasks": ["ALIGNMENT", "BURST_DENOISING", "HDR_MERGE"],
+      "licenseStatus": "RESEARCH_TERMS_REVIEW_REQUIRED",
+      "limitations": ["Not captured on Galaga", "Limited target-specific optics, motion and noise coverage"]
+    },
+    {
+      "id": "benchmark-burstsr",
+      "paperIds": ["paper-bhat-burstsr-2021"],
+      "tasks": ["RAW_BURST_SUPER_RESOLUTION"],
+      "licenseStatus": "DATASET_TERMS_REVIEW_REQUIRED",
+      "limitations": ["Smartphone-to-DSLR ground truth includes optics and colour-domain differences", "Not a latency or thermal benchmark"]
+    },
+    {
+      "id": "benchmark-sidd",
+      "paperIds": ["paper-sidd-2018"],
+      "tasks": ["RAW_DENOISING", "SRGB_DENOISING"],
+      "licenseStatus": "DATASET_TERMS_REVIEW_REQUIRED",
+      "limitations": ["Five non-Galaga devices", "Mostly single-image denoising rather than burst motion handling"]
+    },
+    {
+      "id": "benchmark-dnd",
+      "paperIds": ["paper-dnd-2017"],
+      "tasks": ["REAL_IMAGE_DENOISING"],
+      "licenseStatus": "BENCHMARK_TERMS_REVIEW_REQUIRED",
+      "limitations": ["Not a burst dataset", "Server-evaluation workflow and sensor distribution differ from target"]
+    },
+    {
+      "id": "benchmark-galaga-controlled",
+      "paperIds": [],
+      "tasks": ["ALIGNMENT", "GHOSTING", "NOISE", "COLOUR", "DETAIL", "LATENCY", "MEMORY", "THERMAL", "FALLBACK"],
+      "licenseStatus": "PRIVATE_PROJECT_CONTROLLED",
+      "limitations": ["Requires user-authorized captures", "Original pixels and sensitive metadata must remain private"]
+    }
+  ],
+  "methods": [
+    {
+      "id": "method-hdrplus-constant-exposure-raw-burst",
+      "category": "BURST_HDR",
+      "paperIds": ["paper-hasinoff-hdrplus-2016"],
+      "implementationIds": ["impl-halide"],
+      "assumptions": ["Verified RAW capture and per-frame metadata", "Constant exposure protects highlights", "Calibrated black/white levels and noise model", "Reliable frame identity and timestamps"],
+      "failureArtifacts": ["Ghosting", "Local blur", "Zippering", "Noise-model colour error", "Highlight colour error"],
+      "computeClass": "HIGH",
+      "memoryClass": "HIGH",
+      "licensing": "Paper method requires independent implementation and patent review; Halide MIT licence covers only the toolchain.",
+      "modeAssignments": ["AUTO", "MAX_DETAIL"],
+      "mobileRisks": ["Seconds-scale latency", "RAW burst memory", "Thermal throttling", "Camera2 RAW may be unavailable"],
+      "benchmarkIds": ["benchmark-hdrplus-burst", "benchmark-galaga-controlled"],
+      "decision": "BASELINE_AFTER_CAPABILITY_PROOF"
+    },
+    {
+      "id": "method-motion-metered-low-light-burst",
+      "category": "CAPTURE_POLICY",
+      "paperIds": ["paper-liba-low-light-2019"],
+      "implementationIds": [],
+      "assumptions": ["Pre-capture motion estimate", "Variable frame count and exposure control", "High-noise alignment", "Subject-motion rejection"],
+      "failureArtifacts": ["Motion trails", "Noisy moving regions", "White-balance error", "Unnatural day-like night rendering"],
+      "computeClass": "VARIABLE_HIGH",
+      "memoryClass": "VARIABLE_HIGH",
+      "licensing": "Paper-only policy reference; independent implementation, model and patent review required.",
+      "modeAssignments": ["AUTO", "MAX_DETAIL"],
+      "mobileRisks": ["Unbounded capture duration", "Motion estimate instability", "Thermal and battery cost", "User-visible shutter delay"],
+      "benchmarkIds": ["benchmark-hdrplus-burst", "benchmark-galaga-controlled"],
+      "decision": "ADOPT_POLICY_CONCEPT"
+    },
+    {
+      "id": "method-fft-tile-alignment",
+      "category": "ALIGNMENT",
+      "paperIds": ["paper-hasinoff-hdrplus-2016"],
+      "implementationIds": ["impl-halide"],
+      "assumptions": ["Textured tiles", "Bounded displacement", "Adequate signal", "Local validity masks"],
+      "failureArtifacts": ["Repeated-texture mismatch", "Block boundaries", "Low-texture invalid regions", "Occlusion leakage"],
+      "computeClass": "MEDIUM",
+      "memoryClass": "MEDIUM",
+      "licensing": "Paper method is independently reimplemented; no HDR+ production source licence is available.",
+      "modeAssignments": ["QUICK", "AUTO", "MAX_DETAIL"],
+      "mobileRisks": ["FFT library footprint", "Tile tuning by resolution/noise", "Rolling-shutter/parallax mismatch"],
+      "benchmarkIds": ["benchmark-hdrplus-burst", "benchmark-galaga-controlled"],
+      "decision": "EVALUATE_AS_CLASSICAL_ALIGNER"
+    },
+    {
+      "id": "method-robust-wiener-burst-merge",
+      "category": "DENOISING_MERGE",
+      "paperIds": ["paper-hasinoff-hdrplus-2016"],
+      "implementationIds": ["impl-halide"],
+      "assumptions": ["Valid local alignment", "Signal-dependent noise calibration", "Enough consistent samples", "Reliable rejection masks"],
+      "failureArtifacts": ["Waxy texture", "Ringing", "Chroma blotches", "Residual ghosts"],
+      "computeClass": "MEDIUM_HIGH",
+      "memoryClass": "MEDIUM_HIGH",
+      "licensing": "Independent learning-free implementation required; production HDR+ code and patent status are not assumed reusable.",
+      "modeAssignments": ["AUTO", "MAX_DETAIL"],
+      "mobileRisks": ["Noise calibration drift", "Frequency-domain precision", "Frame-count scaling"],
+      "benchmarkIds": ["benchmark-hdrplus-burst", "benchmark-sidd", "benchmark-dnd", "benchmark-galaga-controlled"],
+      "decision": "PREFERRED_AUTO_MERGE_BASELINE"
+    },
+    {
+      "id": "method-handheld-raw-mfsr",
+      "category": "SUPER_RESOLUTION",
+      "paperIds": ["paper-wronski-mfsr-2019", "paper-bhat-burstsr-2021"],
+      "implementationIds": [],
+      "assumptions": ["Subpixel sampling diversity", "Accurate local motion", "Known CFA pattern", "Occlusion and motion masks"],
+      "failureArtifacts": ["False detail", "Moiré", "Zippering", "Texture collapse", "Double edges"],
+      "computeClass": "VERY_HIGH",
+      "memoryClass": "VERY_HIGH",
+      "licensing": "Paper-only baseline in this repository; any external code/model and dataset terms require separate compliance review.",
+      "modeAssignments": ["MAX_DETAIL"],
+      "mobileRisks": ["Full-resolution burst memory", "Long latency", "Thermal throttling", "Hallucination in learned variants", "Route changes invalidate reconstruction"],
+      "benchmarkIds": ["benchmark-burstsr", "benchmark-galaga-controlled"],
+      "decision": "EXPERIMENTAL_MAX_DETAIL"
+    },
+    {
+      "id": "method-kpn-burst-denoising",
+      "category": "LEARNED_DENOISING",
+      "paperIds": ["paper-mildenhall-kpn-2018"],
+      "implementationIds": ["impl-google-kpn"],
+      "assumptions": ["Representative sensor/noise training data", "Stable input normalization", "Supported model runtime", "Known frame count and exposure distribution"],
+      "failureArtifacts": ["Smeared texture", "Hallucinated detail", "Temporal leakage", "Colour shift", "Domain mismatch"],
+      "computeClass": "VERY_HIGH",
+      "memoryClass": "VERY_HIGH",
+      "licensing": "Apache-2.0 training reference is available, but model/data provenance, dependencies and patent review remain mandatory.",
+      "modeAssignments": ["MAX_DETAIL"],
+      "mobileRisks": ["Archived TensorFlow code", "No production mobile inference path", "Activation/model memory", "Target-sensor retraining requirement"],
+      "benchmarkIds": ["benchmark-sidd", "benchmark-dnd", "benchmark-hdrplus-burst", "benchmark-galaga-controlled"],
+      "decision": "DEFER_UNTIL_MODEL_AND_BUDGET_PROOF"
+    },
+    {
+      "id": "method-gyro-aided-alignment-seed",
+      "category": "MOTION_HANDLING",
+      "paperIds": ["paper-zhang-gyro-2018"],
+      "implementationIds": [],
+      "assumptions": ["Calibrated camera/gyro clocks", "Known intrinsics", "Low gyro bias", "Exposure timing and rolling shutter understood"],
+      "failureArtifacts": ["Global warp error", "Edge stretch", "Worse alignment from clock offset", "Dynamic-object mismatch"],
+      "computeClass": "MEDIUM",
+      "memoryClass": "LOW",
+      "licensing": "Paper-only reference; independent implementation and sensor API review required.",
+      "modeAssignments": ["AUTO", "MAX_DETAIL"],
+      "mobileRisks": ["Clock-domain mismatch", "Sensor batching latency", "Calibration drift", "Gyro absence or permission/power cost"],
+      "benchmarkIds": ["benchmark-galaga-controlled"],
+      "decision": "OPTIONAL_ALIGNMENT_SEED"
+    },
+    {
+      "id": "method-exposure-fusion",
+      "category": "HDR_TONE_FUSION",
+      "paperIds": ["paper-mertens-exposure-fusion-2007"],
+      "implementationIds": ["impl-opencv-photo"],
+      "assumptions": ["Aligned bracketed exposures", "Consistent colour response", "Adequate exposure coverage"],
+      "failureArtifacts": ["Ghosting", "Halos", "Local contrast reversal", "Saturation shifts"],
+      "computeClass": "MEDIUM",
+      "memoryClass": "MEDIUM",
+      "licensing": "OpenCV Apache-2.0 reference is available; paper/patent and dependency/ABI review still apply.",
+      "modeAssignments": ["QUICK", "AUTO"],
+      "mobileRisks": ["Bracket motion", "Pyramid memory", "Native dependency size", "Not suitable for uncontrolled moving scenes"],
+      "benchmarkIds": ["benchmark-galaga-controlled"],
+      "decision": "OPTIONAL_STATIC_SCENE_PATH"
+    },
+    {
+      "id": "method-reinhard-global-tone-map",
+      "category": "TONE_MAPPING",
+      "paperIds": ["paper-reinhard-tone-2002"],
+      "implementationIds": ["impl-opencv-photo"],
+      "assumptions": ["Linear/high-bit-depth luminance", "Stable white balance", "Correct colour-space ordering"],
+      "failureArtifacts": ["Flat local contrast", "Grey shadows", "Highlight compression", "Colour shift"],
+      "computeClass": "LOW",
+      "memoryClass": "LOW",
+      "licensing": "OpenCV Apache-2.0 validation reference is available; independent lightweight implementation may be preferable.",
+      "modeAssignments": ["QUICK", "AUTO", "MAX_DETAIL"],
+      "mobileRisks": ["Incorrect luminance space", "Over-compression", "Mismatch between preview and final render"],
+      "benchmarkIds": ["benchmark-galaga-controlled"],
+      "decision": "GLOBAL_TONE_BASELINE"
+    },
+    {
+      "id": "method-local-laplacian-detail-tone",
+      "category": "SHARPENING_TONE_MAPPING",
+      "paperIds": ["paper-paris-local-laplacian-2011"],
+      "implementationIds": [],
+      "assumptions": ["Linearized colour/luminance", "Bounded detail gain", "Adequate pyramid precision", "Noise-aware masks"],
+      "failureArtifacts": ["Halos", "Amplified noise", "Crunchy microcontrast", "Gradient reversal"],
+      "computeClass": "HIGH",
+      "memoryClass": "HIGH",
+      "licensing": "Paper-only method in this review; independent implementation and patent review required.",
+      "modeAssignments": ["AUTO", "MAX_DETAIL"],
+      "mobileRisks": ["Multi-level full-frame memory", "Thermal cost", "Noise amplification", "Preview/final inconsistency"],
+      "benchmarkIds": ["benchmark-sidd", "benchmark-dnd", "benchmark-galaga-controlled"],
+      "decision": "MAX_DETAIL_WITH_MODERATE_AUTO_VARIANT"
+    }
+  ],
+  "modeRequirements": {
+    "QUICK": [
+      "Bound frame count and latency before shutter submission",
+      "Prefer global tone mapping and conservative detail",
+      "Use small-burst alignment only with valid timestamps/confidence",
+      "Collapse to the reference frame on any uncertainty"
+    ],
+    "AUTO": [
+      "Adapt frame count/exposure to motion, noise, thermal and memory budgets",
+      "Use robust classical alignment/merge as the baseline",
+      "Preserve confidence masks and reference-frame fallback",
+      "Do not enable MFSR or learned denoising without measured benefit"
+    ],
+    "MAX_DETAIL": [
+      "Allow larger RAW bursts only within executable resource policy",
+      "Gate MFSR, KPN, gyro and local detail independently",
+      "Report longer processing and permit cancellation",
+      "Never force invented detail or hide fallback"
+    ]
+  },
+  "acceptanceMetrics": [
+    "Alignment confidence and invalid-region rate",
+    "Ghost/double-edge and motion-mask precision",
+    "Noise power and colour error",
+    "Highlight clipping and shadow detail",
+    "Spatial detail without hallucination",
+    "Peak memory, latency, thermal rise and cancellation latency",
+    "Fallback frequency and reference-frame quality"
+  ],
+  "nonClaims": [
+    "A paper's runtime is not a Galaga benchmark.",
+    "A publication does not establish patent clearance or code reuse rights.",
+    "A public dataset does not represent the target sensor, optics, ISP or user population.",
+    "A learned model does not generalize to Galaga without sensor/noise validation.",
+    "Mode assignments are recommendations until executable resource benchmarks replace them."
+  ],
+  "maintenance": {
+    "document": "docs/COMPUTATIONAL_PHOTOGRAPHY_LITERATURE_REVIEW.md",
+    "validationTool": "tools/validate-computational-photography-literature.py",
+    "updateTriggers": [
+      "A benchmark or authoritative implementation changes",
+      "A code, model or dataset licence is resolved",
+      "Galaga RAW or gyro capability is verified",
+      "Resource measurements change a mode assignment"
+    ]
+  }
+}
