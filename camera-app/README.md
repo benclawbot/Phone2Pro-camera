@@ -23,6 +23,32 @@ The first implementation is intentionally honest about unfinished processing:
 
 The UI reports those states instead of presenting unfinished multi-frame processing as active.
 
+## Capture mode policy
+
+`CaptureProfile.plan(CaptureEnvironment)` now exposes a deterministic future-pipeline contract without changing the current CameraX execution path.
+
+```text
+Quick       1..1 frames
+Auto        1..6 frames
+Max Detail  1..12 frames
+```
+
+The plan records the exact frame count, exposure strategy, processing stages, active degradation reasons, requested/effective mode, natural rendering constraints, and user-facing summary. Motion, low light, thermal state and memory pressure are explicit strongly typed inputs.
+
+Latency budgets are design targets with `HYPOTHESIS` confidence until measured on Galaga hardware. Critical thermal or memory pressure falls back to Quick. High motion suppresses fragile HDR/super-resolution work. Constrained resources cap frame count rather than failing unpredictably.
+
+Natural rendering constraints remain active in every mode:
+
+```text
+PRESERVE_NATURAL_COLOR
+PROTECT_HIGHLIGHTS
+PREFER_DEGHOSTING_OVER_DETAIL
+CONSERVATIVE_SHARPENING
+AVOID_SYNTHETIC_TEXTURE
+```
+
+The complete contract is documented in `docs/architecture/CAPTURE_MODE_POLICY.md`.
+
 ## Lens policy
 
 Only the verified 24 mm-equivalent public main route is enabled by the initial backend.
@@ -131,11 +157,18 @@ app/src/main/java/com/phone2pro/camera/
   capture/
     CameraSessionController.java
   core/
+    CaptureEnvironment.java
+    CaptureModePolicy.java
+    CapturePlan.java
     CaptureProfile.java
+    CaptureStage.java
+    DegradationReason.java
     DeviceCapabilitySnapshot.java
     EvidenceConfidence.java
+    ExposureStrategy.java
     LensIdentity.java
     OpticalRoute.java
+    RenderingConstraint.java
     RouteBackend.java
     RouteDecision.java
     RouteMechanism.java
@@ -147,7 +180,7 @@ app/src/main/java/com/phone2pro/camera/
 
 ## Initial tests
 
-`RouteNegotiatorTest`, `LensIdentityTest` and `RouteSupportTest` verify:
+Routing and identity tests verify:
 
 - the main route selects the public optical Camera2 backend;
 - ultrawide does not fall back to a digital crop;
@@ -158,11 +191,13 @@ app/src/main/java/com/phone2pro/camera/
 - focal geometry, crop factor, aperture availability and confidence remain internally consistent;
 - missing aperture evidence cannot claim verified confidence.
 
+`CaptureModePolicyTest` additionally verifies every combination of mode, motion, light, thermal and memory state remains within deterministic bounds, retains natural rendering constraints, and follows the documented degradation ladder.
+
 ## Next implementation slices
 
 1. Persist and restore app mode and last verified route.
 2. Query output sizes and select a known-safe preview/JPEG combination.
 3. Add focus/metering gestures, orientation handling and capture-state feedback.
 4. Add frame/result correlation and structured diagnostic bundles.
-5. Implement burst acquisition, frame scoring and gyro timestamp capture.
+5. Implement burst acquisition, frame scoring and gyro timestamp capture against the mode-policy contracts.
 6. Implement the `SystemEndpointAccess` probe and direct Camera2 session binder only after the privilege boundary is reproduced lawfully.
