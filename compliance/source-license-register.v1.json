@@ -1,0 +1,318 @@
+{
+  "schemaVersion": 1,
+  "registerVersion": "2026.08.04-1",
+  "scope": "Direct reusable source, build, test and CI declarations plus externally controlled research artifacts.",
+  "legalNotice": "This register records observed declarations and project decisions. It is not legal advice or a patent-clearance opinion.",
+  "dependencies": [
+    {
+      "id": "project-source",
+      "kind": "PROJECT_SOURCE",
+      "component": "Phone2Pro-camera original repository code and documentation",
+      "version": "repository history",
+      "licence": "MIT",
+      "licenceEvidence": "LICENSE",
+      "upstream": "repository:self",
+      "declaredIn": "LICENSE",
+      "declarationFragments": ["MIT License", "Copyright (c) 2026 BenClawBot"],
+      "use": "SOURCE_AND_BINARY",
+      "decision": "APPROVED",
+      "redistribution": "ALLOWED_WITH_COPYRIGHT_AND_PERMISSION_NOTICE",
+      "attribution": "PRESERVE_LICENSE_TEXT",
+      "reviewStatus": "RECORDED"
+    },
+    {
+      "id": "android-gradle-plugin",
+      "kind": "BUILD_TOOL",
+      "component": "com.android.application Android Gradle Plugin",
+      "version": "9.3.0",
+      "licence": "Apache-2.0",
+      "licenceEvidence": "https://android.googlesource.com/platform/tools/base/",
+      "upstream": "https://android.googlesource.com/platform/tools/base/",
+      "declaredIn": "camera-app/build.gradle.kts",
+      "declarationFragments": ["id(\"com.android.application\") version \"9.3.0\" apply false"],
+      "use": "BUILD_ONLY",
+      "decision": "APPROVED_BUILD_ONLY",
+      "redistribution": "NOT_BUNDLED_BY_PROJECT",
+      "attribution": "RETAIN_UPSTREAM_NOTICES_WHEN_REDISTRIBUTED",
+      "reviewStatus": "RECORDED"
+    },
+    {
+      "id": "android-sdk-platform-36",
+      "kind": "BUILD_TOOL",
+      "component": "Android SDK platform API 36",
+      "version": "36",
+      "licence": "LicenseRef-Android-SDK-Terms",
+      "licenceEvidence": "https://developer.android.com/studio/terms",
+      "upstream": "https://developer.android.com/studio/",
+      "declaredIn": "camera-app/app/build.gradle.kts",
+      "declarationFragments": ["compileSdk = 36", "targetSdk = 36"],
+      "use": "BUILD_AND_PLATFORM_API",
+      "decision": "APPROVED_BUILD_ONLY",
+      "redistribution": "SDK_PACKAGES_NOT_REDISTRIBUTED_BY_PROJECT",
+      "attribution": "FOLLOW_ANDROID_SDK_TERMS",
+      "reviewStatus": "RELEASE_REVIEW_REQUIRED"
+    },
+    {
+      "id": "androidx-activity",
+      "kind": "RUNTIME_LIBRARY",
+      "component": "androidx.activity:activity",
+      "version": "1.13.0",
+      "licence": "Apache-2.0",
+      "licenceEvidence": "https://android.googlesource.com/platform/frameworks/support/",
+      "upstream": "https://android.googlesource.com/platform/frameworks/support/",
+      "declaredIn": "camera-app/app/build.gradle.kts",
+      "declarationFragments": ["implementation(\"androidx.activity:activity:1.13.0\")"],
+      "use": "RUNTIME",
+      "decision": "APPROVED_RUNTIME",
+      "redistribution": "ALLOWED_WITH_LICENSE_AND_NOTICE_COMPLIANCE",
+      "attribution": "INCLUDE_APACHE_2_0_AND_APPLICABLE_NOTICES_IN_DISTRIBUTION",
+      "reviewStatus": "RECORDED"
+    },
+    {
+      "id": "androidx-camera-core",
+      "kind": "RUNTIME_LIBRARY",
+      "component": "androidx.camera:camera-core",
+      "version": "1.6.1",
+      "licence": "Apache-2.0",
+      "licenceEvidence": "https://android.googlesource.com/platform/frameworks/support/",
+      "upstream": "https://android.googlesource.com/platform/frameworks/support/",
+      "declaredIn": "camera-app/app/build.gradle.kts",
+      "declarationFragments": ["val cameraXVersion = \"1.6.1\"", "implementation(\"androidx.camera:camera-core:$cameraXVersion\")"],
+      "use": "RUNTIME",
+      "decision": "APPROVED_RUNTIME",
+      "redistribution": "ALLOWED_WITH_LICENSE_AND_NOTICE_COMPLIANCE",
+      "attribution": "INCLUDE_APACHE_2_0_AND_APPLICABLE_NOTICES_IN_DISTRIBUTION",
+      "reviewStatus": "RECORDED"
+    },
+    {
+      "id": "androidx-camera-camera2",
+      "kind": "RUNTIME_LIBRARY",
+      "component": "androidx.camera:camera-camera2",
+      "version": "1.6.1",
+      "licence": "Apache-2.0",
+      "licenceEvidence": "https://android.googlesource.com/platform/frameworks/support/",
+      "upstream": "https://android.googlesource.com/platform/frameworks/support/",
+      "declaredIn": "camera-app/app/build.gradle.kts",
+      "declarationFragments": ["val cameraXVersion = \"1.6.1\"", "implementation(\"androidx.camera:camera-camera2:$cameraXVersion\")"],
+      "use": "RUNTIME",
+      "decision": "APPROVED_RUNTIME",
+      "redistribution": "ALLOWED_WITH_LICENSE_AND_NOTICE_COMPLIANCE",
+      "attribution": "INCLUDE_APACHE_2_0_AND_APPLICABLE_NOTICES_IN_DISTRIBUTION",
+      "reviewStatus": "RECORDED"
+    },
+    {
+      "id": "androidx-camera-lifecycle",
+      "kind": "RUNTIME_LIBRARY",
+      "component": "androidx.camera:camera-lifecycle",
+      "version": "1.6.1",
+      "licence": "Apache-2.0",
+      "licenceEvidence": "https://android.googlesource.com/platform/frameworks/support/",
+      "upstream": "https://android.googlesource.com/platform/frameworks/support/",
+      "declaredIn": "camera-app/app/build.gradle.kts",
+      "declarationFragments": ["val cameraXVersion = \"1.6.1\"", "implementation(\"androidx.camera:camera-lifecycle:$cameraXVersion\")"],
+      "use": "RUNTIME",
+      "decision": "APPROVED_RUNTIME",
+      "redistribution": "ALLOWED_WITH_LICENSE_AND_NOTICE_COMPLIANCE",
+      "attribution": "INCLUDE_APACHE_2_0_AND_APPLICABLE_NOTICES_IN_DISTRIBUTION",
+      "reviewStatus": "RECORDED"
+    },
+    {
+      "id": "androidx-camera-view",
+      "kind": "RUNTIME_LIBRARY",
+      "component": "androidx.camera:camera-view",
+      "version": "1.6.1",
+      "licence": "Apache-2.0",
+      "licenceEvidence": "https://android.googlesource.com/platform/frameworks/support/",
+      "upstream": "https://android.googlesource.com/platform/frameworks/support/",
+      "declaredIn": "camera-app/app/build.gradle.kts",
+      "declarationFragments": ["val cameraXVersion = \"1.6.1\"", "implementation(\"androidx.camera:camera-view:$cameraXVersion\")"],
+      "use": "RUNTIME",
+      "decision": "APPROVED_RUNTIME",
+      "redistribution": "ALLOWED_WITH_LICENSE_AND_NOTICE_COMPLIANCE",
+      "attribution": "INCLUDE_APACHE_2_0_AND_APPLICABLE_NOTICES_IN_DISTRIBUTION",
+      "reviewStatus": "RECORDED"
+    },
+    {
+      "id": "junit4",
+      "kind": "TEST_LIBRARY",
+      "component": "junit:junit",
+      "version": "4.13.2",
+      "licence": "EPL-1.0",
+      "licenceEvidence": "https://github.com/junit-team/junit4/blob/main/LICENSE-junit.txt",
+      "upstream": "https://github.com/junit-team/junit4",
+      "declaredIn": "camera-app/app/build.gradle.kts",
+      "declarationFragments": ["testImplementation(\"junit:junit:4.13.2\")"],
+      "use": "TEST_ONLY",
+      "decision": "APPROVED_TEST_ONLY",
+      "redistribution": "NOT_INCLUDED_IN_APPLICATION_RUNTIME",
+      "attribution": "PRESERVE_UPSTREAM_LICENCE_IF_REDISTRIBUTED",
+      "reviewStatus": "RECORDED"
+    },
+    {
+      "id": "hamcrest-core",
+      "kind": "TRANSITIVE_TEST_LIBRARY",
+      "component": "org.hamcrest:hamcrest-core",
+      "version": "1.3",
+      "licence": "BSD-3-Clause",
+      "licenceEvidence": "https://github.com/hamcrest/JavaHamcrest/blob/master/LICENSE.txt",
+      "upstream": "https://github.com/hamcrest/JavaHamcrest",
+      "declaredIn": "camera-app/app/build.gradle.kts",
+      "declarationFragments": ["testImplementation(\"junit:junit:4.13.2\")"],
+      "use": "TRANSITIVE_TEST_ONLY",
+      "decision": "APPROVED_TEST_ONLY",
+      "redistribution": "NOT_INCLUDED_IN_APPLICATION_RUNTIME",
+      "attribution": "PRESERVE_BSD_NOTICE_IF_REDISTRIBUTED",
+      "reviewStatus": "RECORDED",
+      "parentDependency": "junit4"
+    },
+    {
+      "id": "python-jsonschema",
+      "kind": "CI_LIBRARY",
+      "component": "jsonschema",
+      "version": "UNPINNED",
+      "licence": "MIT",
+      "licenceEvidence": "https://github.com/python-jsonschema/jsonschema",
+      "upstream": "https://github.com/python-jsonschema/jsonschema",
+      "declaredIn": ".github/workflows/validate.yml",
+      "declarationFragments": ["python -m pip install --disable-pip-version-check jsonschema PyYAML"],
+      "use": "CI_ONLY",
+      "decision": "APPROVED_CI_ONLY_WITH_PINNING_GATE",
+      "redistribution": "NOT_BUNDLED_BY_PROJECT",
+      "attribution": "PRESERVE_UPSTREAM_LICENCE_IF_VENDORED",
+      "reviewStatus": "RELEASE_REVIEW_REQUIRED"
+    },
+    {
+      "id": "pyyaml",
+      "kind": "CI_LIBRARY",
+      "component": "PyYAML",
+      "version": "UNPINNED",
+      "licence": "MIT",
+      "licenceEvidence": "https://github.com/yaml/pyyaml",
+      "upstream": "https://github.com/yaml/pyyaml",
+      "declaredIn": ".github/workflows/validate.yml",
+      "declarationFragments": ["python -m pip install --disable-pip-version-check jsonschema PyYAML"],
+      "use": "CI_ONLY",
+      "decision": "APPROVED_CI_ONLY_WITH_PINNING_GATE",
+      "redistribution": "NOT_BUNDLED_BY_PROJECT",
+      "attribution": "PRESERVE_UPSTREAM_LICENCE_IF_VENDORED",
+      "reviewStatus": "RELEASE_REVIEW_REQUIRED"
+    },
+    {
+      "id": "github-actions-checkout",
+      "kind": "CI_ACTION",
+      "component": "actions/checkout",
+      "version": "v4",
+      "licence": "MIT",
+      "licenceEvidence": "https://github.com/actions/checkout",
+      "upstream": "https://github.com/actions/checkout",
+      "declaredIn": ".github/workflows/validate.yml",
+      "declarationFragments": ["uses: actions/checkout@v4"],
+      "use": "CI_ONLY",
+      "decision": "APPROVED_CI_ONLY",
+      "redistribution": "NOT_BUNDLED_BY_PROJECT",
+      "attribution": "PRESERVE_UPSTREAM_LICENCE_IF_VENDORED",
+      "reviewStatus": "RECORDED"
+    },
+    {
+      "id": "github-actions-setup-python",
+      "kind": "CI_ACTION",
+      "component": "actions/setup-python",
+      "version": "v5",
+      "licence": "MIT",
+      "licenceEvidence": "https://github.com/actions/setup-python",
+      "upstream": "https://github.com/actions/setup-python",
+      "declaredIn": ".github/workflows/validate.yml",
+      "declarationFragments": ["uses: actions/setup-python@v5"],
+      "use": "CI_ONLY",
+      "decision": "APPROVED_CI_ONLY",
+      "redistribution": "NOT_BUNDLED_BY_PROJECT",
+      "attribution": "PRESERVE_UPSTREAM_LICENCE_IF_VENDORED",
+      "reviewStatus": "RECORDED"
+    }
+  ],
+  "controlledArtifacts": [
+    {
+      "id": "private-diagnostic-json",
+      "kind": "PRIVATE_DIAGNOSTIC_OUTPUT",
+      "licenceOrRights": "USER_CONTROLLED_PRIVATE_DATA",
+      "decision": "REFERENCE_BY_HASH_AND_DERIVED_FINDINGS_ONLY",
+      "redistribution": "PROHIBITED_WITHOUT_EXPLICIT_OWNER_PERMISSION",
+      "evidence": ["data/artifacts/diagnostic-manifest.yaml"]
+    },
+    {
+      "id": "user-camera-images",
+      "kind": "USER_PHOTOGRAPHS",
+      "licenceOrRights": "USER_COPYRIGHT_OR_OTHER_USER_CONTROLLED_RIGHTS",
+      "decision": "REFERENCE_METADATA_ONLY_UNLESS_PERMISSION_RECORDED",
+      "redistribution": "PROHIBITED_WITHOUT_EXPLICIT_OWNER_PERMISSION",
+      "evidence": ["data/artifacts/diagnostic-manifest.yaml"]
+    },
+    {
+      "id": "stock-camera-apk-and-splits",
+      "kind": "PROPRIETARY_APPLICATION_BINARY",
+      "licenceOrRights": "PROPRIETARY_OR_UNKNOWN",
+      "decision": "REFERENCE_ONLY_FOR_INTEROPERABILITY_RESEARCH",
+      "redistribution": "DO_NOT_COMMIT_OR_REDISTRIBUTE",
+      "evidence": ["data/artifacts/diagnostic-manifest.yaml"]
+    },
+    {
+      "id": "framework-vendor-firmware-artifacts",
+      "kind": "PROPRIETARY_OR_MIXED_SYSTEM_BINARY",
+      "licenceOrRights": "MIXED_OPEN_SOURCE_PROPRIETARY_AND_UNKNOWN",
+      "decision": "RECORD_HASH_PATH_BUILD_ID_AND_LICENCE_PER_ARTIFACT_BEFORE_USE",
+      "redistribution": "NO_REDISTRIBUTION_UNLESS_RIGHTS_ARE_VERIFIED",
+      "evidence": ["data/artifacts/diagnostic-manifest.yaml"]
+    },
+    {
+      "id": "papers-and-public-datasets",
+      "kind": "RESEARCH_SOURCE",
+      "licenceOrRights": "PER_SOURCE",
+      "decision": "CITATION_ONLY_BY_DEFAULT; DATASET_OR_CODE_REUSE_REQUIRES_EXPLICIT_LICENCE_RECORD",
+      "redistribution": "ONLY_WHEN_SOURCE_LICENCE_AND_ATTRIBUTION_ARE_RECORDED",
+      "evidence": ["docs/CMF_PHONE_2_PRO_CAMERA_PLATFORM_SPEC.md"]
+    }
+  ],
+  "cleanRoomBoundary": {
+    "learnedBehaviourAllowed": [
+      "Observe public API results, stock UI behavior, output metadata, timing and failure states.",
+      "Record independently derived interface requirements and black-box compatibility findings.",
+      "Implement portable contracts and algorithms from public specifications, permissively licensed sources or independent design."
+    ],
+    "copyingProhibited": [
+      "Do not copy decompiled stock-camera source, resources, proprietary configuration or native implementation into replacement code.",
+      "Do not paste vendor firmware, APK bytecode, proprietary symbols or extracted assets into public repository files.",
+      "Do not represent a learned output behavior as permission to redistribute the source artifact."
+    ],
+    "requiredSeparation": [
+      "Research evidence records identify source, build, hash, handling and confidence.",
+      "Implementation commits cite behavioral requirements or public specifications, not copied proprietary code.",
+      "Any contributor exposed to restricted source must disclose that exposure before implementing the corresponding component.",
+      "Reviewers reject suspiciously similar code, names, tables, constants or resources until provenance is resolved."
+    ]
+  },
+  "patentSensitiveAreas": [
+    {
+      "area": "multi-frame denoise, HDR, super-resolution and computational photography",
+      "decision": "IMPLEMENTATION_REQUIRES_SEPARATE_PATENT_AND_ALGORITHM_REVIEW_BEFORE_RELEASE",
+      "status": "NOT_CLEARED"
+    },
+    {
+      "area": "image/video codecs and container formats beyond platform APIs",
+      "decision": "USE_PLATFORM_ENCODERS_OR_REVIEW_CODEC_LICENSING_AND_PATENTS",
+      "status": "NOT_CLEARED"
+    },
+    {
+      "area": "vendor camera algorithms, tuning and proprietary request semantics",
+      "decision": "INTEROPERABILITY_OBSERVATION_ONLY_UNTIL RIGHTS_AND_IMPLEMENTATION_BOUNDARY_ARE_REVIEWED",
+      "status": "NOT_CLEARED"
+    }
+  ],
+  "releaseGates": [
+    "Generate and review the resolved runtime and test dependency graph, including transitives.",
+    "Pin Python CI dependency versions and record their resolved dependency graph.",
+    "Produce application third-party notices from the resolved release graph.",
+    "Confirm no proprietary/private artifacts are present in the release source or APK.",
+    "Complete patent review for enabled computational or codec functionality.",
+    "Update this register whenever a dependency, artifact, dataset, paper, build tool or reuse decision changes."
+  ]
+}
