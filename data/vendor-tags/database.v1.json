@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "databaseVersion": "2026.08.04-1",
+  "issue": 55,
+  "status": "MATERIALIZED_FROM_VERSIONED_SOURCES",
+  "buildContext": {
+    "device": "Galaga",
+    "model": "A001",
+    "firmwareBuild": "2606151653",
+    "fingerprint": "Nothing/GalagaEEA/Galaga:16/BP2A.250605.031.A3/2606151653:user/release-keys",
+    "publicCameraIds": ["0", "1"]
+  },
+  "sourceFiles": {
+    "inventory": "data/vendor-tags/inventory.json",
+    "advertisedValues": "data/vendor-tags/advertised-values.json",
+    "routingPriority": "data/vendor-tags/routing-priority.yaml",
+    "runtimeTypeTracer": "tools/frida/dump-camera-key-types.js",
+    "publicCrossReference": "research/mediatek-public-cross-reference.v1.json",
+    "externalSourceIndex": "research/external-source-index.v1.json"
+  },
+  "interpretationRules": [
+    "Every observed key is materialized as one record even when its Java type, native metadata type, tag ID, byte layout, enum meaning or stock call site remains unknown.",
+    "Advertisement in CameraCharacteristics proves visibility only; it does not prove that an ordinary application may write the key or that a write changes the image pipeline.",
+    "A public MediaTek source match is a type or semantic hint only until the target build is verified by runtime metadata or a matching target binary.",
+    "Characteristic values are retained verbatim per public camera ID and are not converted into enum names without separate evidence.",
+    "Session, repeating-request and still-request scope must remain separate when future stock traces add call-site evidence.",
+    "Opaque arrays and byte blobs remain UNKNOWN_LAYOUT until a versioned layout and controlled parser test exist."
+  ],
+  "defaultRecordPolicy": {
+    "javaType": null,
+    "nativeType": null,
+    "vendorId": null,
+    "tagId": null,
+    "typeStatus": "UNKNOWN",
+    "byteLayoutStatus": "UNKNOWN_LAYOUT",
+    "byteLayoutDescription": "No target-verified scalar, array or structure layout has been recovered.",
+    "callSiteStatus": "UNRESOLVED",
+    "stockCallSites": [],
+    "writePolicy": "NO_WRITE_WITHOUT_TARGET_TYPE_AND_STOCK_VALUE",
+    "productionStatus": "DISABLED"
+  },
+  "typeHints": [
+    {
+      "key": "com.mediatek.multicamfeature.availableMultiCamFeatureSensorManualUpdated",
+      "javaType": null,
+      "nativeType": "MINT64",
+      "typeStatus": "PUBLIC_SOURCE_HINT_UNVERIFIED_ON_TARGET",
+      "byteLayoutStatus": "ARRAY_SHAPE_OBSERVED_SEMANTICS_UNKNOWN",
+      "byteLayoutDescription": "Characteristic values are an observed integer array; the public MediaTek-derived metadata mirror suggests MINT64, but packed-field semantics and target native type remain unverified.",
+      "externalSourceRefs": [
+        "research/mediatek-public-cross-reference.v1.json",
+        "research/external-source-index.v1.json"
+      ]
+    }
+  ],
+  "requiredMaterializedFields": [
+    "name",
+    "family",
+    "directions",
+    "cameraIds",
+    "buildContext",
+    "advertisedValues",
+    "javaType",
+    "nativeType",
+    "vendorId",
+    "tagId",
+    "typeStatus",
+    "byteLayoutStatus",
+    "byteLayoutDescription",
+    "callSiteStatus",
+    "stockCallSites",
+    "externalSourceRefs",
+    "writePolicy",
+    "productionStatus"
+  ],
+  "maintenance": {
+    "builder": "tools/build-vendor-tag-database.py",
+    "validator": "tools/validate-vendor-tag-database.py",
+    "document": "docs/VENDOR_TAG_DATABASE.md",
+    "updateTriggers": [
+      "A new firmware build changes the public vendor-key inventory.",
+      "The runtime type tracer recovers Java/native type, vendor ID or tag ID.",
+      "A stock-app trace identifies a key call site, value or request scope.",
+      "A public-source mapping or controlled probe changes confidence or semantics."
+    ]
+  }
+}
