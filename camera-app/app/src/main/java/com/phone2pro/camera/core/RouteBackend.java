@@ -13,6 +13,11 @@ public interface RouteBackend {
 
     int priority();
 
+    /** Shared lifecycle, error and normalized metadata semantics. */
+    default CameraBackendContract contract() {
+        return CameraBackendContract.standard(backendId());
+    }
+
     RouteSupport evaluate(OpticalRoute route, DeviceCapabilitySnapshot capabilities);
 
     /** Resolve a concrete endpoint only when this backend can safely bind one. */
