@@ -11,7 +11,7 @@ import sys
 from decimal import Decimal, InvalidOperation
 from typing import Any, Iterable
 
-LOGCAT_EPOCH = re.compile(r"^(\d+(?:\.\d+)?)\s+(.*)$")
+LOGCAT_EPOCH = re.compile(r"^\s*(\d+(?:\.\d+)?)\s+(.*)$")
 
 
 def load_samples(path: pathlib.Path) -> list[dict[str, Any]]:
@@ -156,23 +156,29 @@ def epoch_text_to_ns(value: str) -> int:
 def normalize_logcat_lines(
     lines: Iterable[str], normalization: dict[str, Any]
 ) -> list[dict[str, Any]]:
-    offset = normalization.get("deviceBoottimeToDeviceRealtimeOffsetNs")
-    if not isinstance(offset, int):
+    realtime_to_boottime = normalization.get(
+        "deviceBoottimeToDeviceRealtimeOffsetNs"
+    )
+    realtime_to_host = normalization.get("deviceRealtimeToHostEpochOffsetNs")
+    if not isinstance(realtime_to_boottime, int):
         raise ValueError("normalization is missing device realtime/BOOTTIME offset")
+    if not isinstance(realtime_to_host, int):
+        raise ValueError("normalization is missing device realtime/host offset")
     events: list[dict[str, Any]] = []
     for line_number, raw_line in enumerate(lines, 1):
-        line = raw_line.rstrip("\n")
+        line = raw_line.rstrip("\r\n")
         match = LOGCAT_EPOCH.match(line)
         if not match:
             continue
-        host_epoch_ns = epoch_text_to_ns(match.group(1))
+        device_realtime_ns = epoch_text_to_ns(match.group(1))
         events.append(
             {
                 "schemaVersion": 1,
                 "source": "logcat-epoch",
                 "sourceLine": line_number,
-                "hostEpochNs": host_epoch_ns,
-                "deviceBoottimeNs": host_epoch_ns - offset,
+                "deviceRealtimeNs": device_realtime_ns,
+                "hostEpochNs": device_realtime_ns + realtime_to_host,
+                "deviceBoottimeNs": device_realtime_ns - realtime_to_boottime,
                 "estimatedUncertaintyNs": normalization["estimatedUncertaintyNs"],
                 "message": match.group(2),
             }
