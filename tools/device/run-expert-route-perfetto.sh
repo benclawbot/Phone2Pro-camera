@@ -239,8 +239,20 @@ python3 "$_CLOCK_CAPTURE_WIN" --phase after-perfetto-start --output "$(cygpath -
   "${CLOCK_SERIAL_ARGS[@]}"
 
 set +e
+# Unset MSYS_NO_PATHCONV for the inner runner. The frida shim it invokes
+# (tools/trace/frida-durable-shim.py when the portable wrapper is used) has a
+# shebang that needs normal path translation — /tmp/p2p-frida.XXXXXX/frida must
+# resolve to C:\Users\<user>\AppData\Local\Temp\... not to C:\tmp\... which is
+# what MSYS rewrites it to when MSYS_NO_PATHCONV=1 is set. The inner runner's
+# own adb calls don't pass /data/... args so this is safe; restore after.
+_SAVED_MSYS_NO_PATHCONV="$MSYS_NO_PATHCONV"
+unset MSYS_NO_PATHCONV
 "$BASE_RUNNER" "${PASS_ARGS[@]}"
 RUNNER_STATUS=$?
+if [[ -n "$_SAVED_MSYS_NO_PATHCONV" ]]; then
+  export MSYS_NO_PATHCONV="$_SAVED_MSYS_NO_PATHCONV"
+fi
+unset _SAVED_MSYS_NO_PATHCONV
 set -e
 
 python3 "$_CLOCK_CAPTURE_WIN" --phase before-perfetto-stop --output "$(cygpath -w "$CLOCK_SAMPLES" 2>/dev/null || echo "$CLOCK_SAMPLES")" \
