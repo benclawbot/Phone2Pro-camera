@@ -159,6 +159,13 @@ need_command adb
 need_command frida
 [[ -f "$FRIDA_SCRIPT" ]] || fail "Frida script not found: $FRIDA_SCRIPT"
 
+# Windows binary (frida.exe) needs Windows-form paths. frida.exe is invoked via
+# the durable-runner shim (tools/trace/frida-durable-shim.py) when the portable
+# wrapper is used; the shim's shebang + PATH translation is the layer that
+# receives the script path, so we hand it the Windows form to avoid the
+# /tmp/... → C:\tmp\... mis-translation that MSYS path conversion can apply.
+FRIDA_SCRIPT_WIN="$(cygpath -w "$FRIDA_SCRIPT" 2>/dev/null || echo "$FRIDA_SCRIPT")"
+
 ADB=(adb)
 if [[ -n "$ADB_SERIAL" ]]; then
   ADB+=( -s "$ADB_SERIAL" )
@@ -293,7 +300,7 @@ Do not select another lens during this run.
 EOF
 
 set +e
-"${FRIDA[@]}" -f "$PACKAGE" -l "$FRIDA_SCRIPT" -o "${RUN_DIR}/frida.log"
+"${FRIDA[@]}" -f "$PACKAGE" -l "$FRIDA_SCRIPT_WIN" -o "$(cygpath -w "${RUN_DIR}/frida.log" 2>/dev/null || echo "${RUN_DIR}/frida.log")"
 FRIDA_STATUS=$?
 set -e
 

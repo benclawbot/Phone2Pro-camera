@@ -1,6 +1,22 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
+# Disable Git Bash MSYS path conversion for adb calls. The wrapper passes
+# /data/... paths to adb.exe, and MSYS otherwise rewrites them to
+# C:/Program Files/Git/data/... causing ENOENT/EACCES on the device.
+export MSYS_NO_PATHCONV=1
+
+# Bootstrap PATH for fresh shells. Some launchers (notably pi-coding-agent)
+# spawn shells with a stale PATH that lacks C:\platform-tools; the python
+# helpers below spawn adb.exe via subprocess.run which uses Windows PATH.
+# Prepend the two standard ADB install locations if present.
+for _adb_path in "/c/platform-tools" "/c/Users/${USER:-thoma}/AppData/Local/Android/Sdk/platform-tools"; do
+  if [[ -x "${_adb_path}/adb.exe" ]] && [[ ":$PATH:" != *":${_adb_path}:"* ]]; then
+    export PATH="${_adb_path}:$PATH"
+  fi
+done
+unset _adb_path
+
 # Run the existing Expert route collector inside a bounded detached Perfetto
 # session and add host/device clock normalization artifacts to its bundle.
 
@@ -24,6 +40,15 @@ PERFETTO_REMOTE_TRACE=""
 PERFETTO_STARTED=0
 PERFETTO_STOPPED=0
 CLOCK_SAMPLES=""
+PERFETTO_REMOTE_CONFIG=""
+
+# Convert script paths to Windows form once. The python interpreter is a
+# Windows binary and even with MSYS_NO_PATHCONV=1 the absolute Unix path form
+# has triggered an unwanted path conversion on this host. cygpath -w makes the
+# arg pass through conversion untouched.
+_CLOCK_CAPTURE_WIN="$(cygpath -w "${REPO_ROOT}/tools/trace/capture-adb-clock-sample.py" 2>/dev/null || echo "${REPO_ROOT}/tools/trace/capture-adb-clock-sample.py")"
+_CLOCK_NORMALIZER_WIN="$(cygpath -w "${REPO_ROOT}/tools/trace/normalize-trace-clocks.py" 2>/dev/null || echo "${REPO_ROOT}/tools/trace/normalize-trace-clocks.py")"
+_PERFETTO_CONFIG_WIN="$(cygpath -w "${PERFETTO_CONFIG}" 2>/dev/null || echo "${PERFETTO_CONFIG}")"
 
 usage() {
   cat <<'EOF'
@@ -191,19 +216,26 @@ if ! "${ADB[@]}" shell command -v perfetto </dev/null | grep -q '/perfetto$'; th
   fail "on-device perfetto command is unavailable"
 fi
 
-python3 "$CLOCK_CAPTURE" --phase before-perfetto --output "$CLOCK_SAMPLES" \
+python3 "$_CLOCK_CAPTURE_WIN" --phase before-perfetto --output "$(cygpath -w "$CLOCK_SAMPLES" 2>/dev/null || echo "$CLOCK_SAMPLES")" \
   "${CLOCK_SERIAL_ARGS[@]}"
 
 # Detached mode is bounded by duration_ms in the config and is explicitly
 # stopped by the EXIT trap, preventing a leaked indefinite tracing session.
-if ! "${ADB[@]}" shell perfetto -c - --txt \
-  --detach="$PERFETTO_SESSION" -o "$PERFETTO_REMOTE_TRACE" \
-  <"$PERFETTO_CONFIG"; then
+# Perfetto v49 on this device refuses `-c -` (stdin) when the config contains
+# buffers{} or atrace_aps. Push to /data/misc/perfetto-configs/ where the
+# Perfetto service can read it (SELinux denies /data/local/tmp for this user).
+PERFETTO_REMOTE_CONFIG="/data/misc/perfetto-configs/${PERFETTO_SESSION}.pbtx"
+
+if ! "${ADB[@]}" push "$_PERFETTO_CONFIG_WIN" "$PERFETTO_REMOTE_CONFIG" </dev/null; then
+  fail "failed to push Perfetto config to $PERFETTO_REMOTE_CONFIG"
+fi
+if ! "${ADB[@]}" shell perfetto --config "$PERFETTO_REMOTE_CONFIG" --txt \
+  --detach="$PERFETTO_SESSION" -o "$PERFETTO_REMOTE_TRACE"; then
   fail "failed to start detached Perfetto session"
 fi
 PERFETTO_STARTED=1
 
-python3 "$CLOCK_CAPTURE" --phase after-perfetto-start --output "$CLOCK_SAMPLES" \
+python3 "$_CLOCK_CAPTURE_WIN" --phase after-perfetto-start --output "$(cygpath -w "$CLOCK_SAMPLES" 2>/dev/null || echo "$CLOCK_SAMPLES")" \
   "${CLOCK_SERIAL_ARGS[@]}"
 
 set +e
@@ -211,14 +243,14 @@ set +e
 RUNNER_STATUS=$?
 set -e
 
-python3 "$CLOCK_CAPTURE" --phase before-perfetto-stop --output "$CLOCK_SAMPLES" \
+python3 "$_CLOCK_CAPTURE_WIN" --phase before-perfetto-stop --output "$(cygpath -w "$CLOCK_SAMPLES" 2>/dev/null || echo "$CLOCK_SAMPLES")" \
   "${CLOCK_SERIAL_ARGS[@]}"
 
 if ! stop_perfetto; then
   fail "failed to stop detached Perfetto session"
 fi
 
-python3 "$CLOCK_CAPTURE" --phase after-perfetto-stop --output "$CLOCK_SAMPLES" \
+python3 "$_CLOCK_CAPTURE_WIN" --phase after-perfetto-stop --output "$(cygpath -w "$CLOCK_SAMPLES" 2>/dev/null || echo "$CLOCK_SAMPLES")" \
   "${CLOCK_SERIAL_ARGS[@]}"
 
 find_run_dir
@@ -232,12 +264,12 @@ fi
 
 NORMALIZE_ARGS=(
   "${RUN_DIR}/clock-samples.jsonl"
-  --output "${RUN_DIR}/clock-normalization.json"
+  --output "$(cygpath -w "${RUN_DIR}/clock-normalization.json" 2>/dev/null || echo "${RUN_DIR}/clock-normalization.json")"
 )
 if [[ -f "${RUN_DIR}/camera-service.log" ]]; then
   NORMALIZE_ARGS+=(
-    --logcat "${RUN_DIR}/camera-service.log"
-    --normalized-logcat "${RUN_DIR}/camera-service.boottime.jsonl"
+    --logcat "$(cygpath -w "${RUN_DIR}/camera-service.log" 2>/dev/null || echo "${RUN_DIR}/camera-service.log")"
+    --normalized-logcat "$(cygpath -w "${RUN_DIR}/camera-service.boottime.jsonl" 2>/dev/null || echo "${RUN_DIR}/camera-service.boottime.jsonl")"
   )
 fi
 python3 "$CLOCK_NORMALIZER" "${NORMALIZE_ARGS[@]}"
